@@ -1,0 +1,1008 @@
+---
+title: "EK2002: Estimation \n"
+subtitle: ''
+author: "Humoon"
+date: "`r Sys.Date()`"
+output: html_document
+documentclass: ctexart
+classoption: hyperref,
+---
+
+```{r setup, include = FALSE}
+source("../config/Rmarkdown_config.R")
+
+## global options ===================================
+knitr::opts_chunk$set(
+  width = config$width,
+  fig.width = config$fig.width,
+  fig.asp = config$fig.asp,
+  out.width = config$out.width,
+  fig.align = config$fig.align,
+  fig.path = config$fig.path,
+  fig.show = config$fig.show,
+  warn = config$warn,
+  warning = config$warning,
+  message = config$message,
+  echo = config$echo,
+  eval = config$eval,
+  tidy = config$tidy,
+  comment = config$comment,
+  collapse = config$collapse,
+  cache = config$cache,
+  cache.comments = config$cache.comments,
+  autodep = config$autodep
+)
+```
+
+```{r, echo=FALSE}
+downloadthis::download_dir(
+  path = "../data",
+  output_name = "data",
+  button_label = "Download data dir",
+  button_type = "success",
+  self_contained = FALSE
+)
+# downloadthis::download_file(
+#   path = "../config/Rmarkdown_config.R",
+#   output_name = "Rmarkdown_config",
+#   button_label = "Download Rmarkdown_config.R",
+#   button_type = "success",
+#   self_contained = FALSE
+# )
+```
+
+```{r}
+source("../config/Rmarkdown_config.R") # 依赖包的导入和一系列 Rmarkdown 设置
+```
+
+## Data Processing
+
+### 数据精度问题
+
+EK2002 作者使用的编程软件是 GAUSS，其数据文件大都是二进制的，无法用文本编辑器打开，只能用 GAUSS 打印到屏幕上，然后手动复制粘贴到文本文件中，以获得本项目的数据源。
+
+然而，图形化界面的 GAUSS IDE，只能显示小数点后三位，这意味着手动复制粘贴的数据从一开始就是不精确的，会影响所有结果的精度。
+
+只有在命令行风格的 GAUSS Terminal Interface 中打印，才能显示数据的完整位数。从这里复制粘贴，才能保证本项目中数据的精确度。
+
+### Read Data
+
+```{r}
+# 一些标量常数
+scalar <- jsonlite::fromJSON("../data/scalar.json")
+
+# 国家代码表
+country_table <- fread("../data/country_code.csv")
+
+# 用于参数估计的数据，数值型变量大多经过了对数标准化
+regression_data <- fread("../data/regression_data.csv")
+
+# 19国50产业价格数据
+price_table <- fread("../data/price.csv")
+```
+
+看一下数据结构：
+
+```{r}
+country_table %>% prettify()
+regression_data
+price_table
+```
+
+### Data Transforming
+
+
+```{r}
+## scalar.json
+
+N <- scalar$N # 国家数量
+beta <- scalar$beta # 各国平均 beta
+theta_estimates <- scalar$theta # 三种不同水平的theta值
+```
+
+```{r}
+## regression_data.csv
+
+# 进出口国 index
+c(import_country, export_country) %<-% regression_data[, c(1, 2)]
+
+
+# 对数标准化的制造业双边贸易数据 ln(Xni/Xnn)
+trade <- regression_data[, 4] %>% pull()
+
+# ln(X'ni/X'nn), (26)式等号的左边
+trade_prime <- regression_data[, 5] %>% pull()
+
+# 由ln(X'ni)的定义可计算(12)式的左边 ln (Xni/Xn)/(Xii/Xi)
+# 可将其视为 country n's normalized import share from country i
+normalized_trade_share <- -(trade_prime - trade) * beta / (1 - beta) + trade
+
+
+# 六档距离，说明见P21
+c(dist1, dist2, dist3, dist4, dist5, dist6) %<-% regression_data[, 6:11]
+
+# 是否share border/language, 是否均在 EEC/EFTA 中
+# 欧共体EEC是EU的前身，EFTA是欧自联
+c(border, language, EU, EFTA) %<-% regression_data[, c(12, 18, 19, 20)]
+
+# 横向合并distance, border, language, RTA 等虚拟变量
+# 注意，六档距离只需要5个dummy variable
+geography_dummy <- cbind(dist2, dist3, dist4, dist5, dist6, border, language, EU, EFTA)
+
+
+# 以下5个变量的数值都是对数标准化的，即 ln(var_i/var_n)
+# 分别是(1)R&D 支出, (2)以平均受教育年限来衡量的 human capital
+# (3)人口密度, (4)制造业劳动力数量, (5)工资（均以美元计）
+c(r_and_d, human_capital, density, labor, wage) %<-% regression_data[, 13:17]
+
+
+# 国家首都之间的距离
+distance <- regression_data$distance
+ln_distance <- log(distance) # 化为对数距离
+
+
+# 进口国（目的地国）虚拟变量的稀疏矩阵
+destination_matrix <- kronecker(diag(N), rep(1, N)) # 克罗内克积
+destination_matrix %>%
+  as.data.table() %>%
+  set_colnames(1:19 %>% str_c("m", .))
+# 出口国（来源国）虚拟变量的稀疏矩阵
+source_matrix <- kronecker(rep(1, N), diag(N))
+source_matrix %>%
+  as.data.table() %>%
+  set_colnames(1:19 %>% str_c("S", .))
+
+# 来源国虚拟变量 S_i-S_n, (28)式
+source_dummy <- source_matrix - destination_matrix
+# 这个减法决定了 source_dummy 和 destination_dummy 在(30)式中是不对称的
+source_dummy %>% as.data.table() # 观察一下全貌
+
+# 目的地国虚拟变量 m_n, (29)式
+destination_dummy <- destination_matrix
+
+# 虚拟变量多一个自由度，要以其中一个为基准
+# 用其他虚拟变量与这个基准的相对差异，作为回归模型的自变量
+# 以美国（第19列）为基准，前18列都减去19列
+relative_source_dummy <- (source_dummy[, -N] - source_dummy[, N]) %>%
+  as.data.table() %>% # 矩阵转换为DT
+  set_colnames(1:18 %>% str_c("S", .))
+relative_source_dummy # 观察一下全貌
+
+relative_destination_dummy <- (destination_dummy[, -N] - destination_dummy[, N]) %>%
+  as.data.table() %>%
+  set_colnames(1:18 %>% str_c("m", .))
+relative_destination_dummy # 观察一下全貌
+```
+
+
+```{r}
+## price.csv
+
+# 50种商品的对数标准化价格（以美国为基准）
+price <- price_table %>%
+  select(-country) %>%
+  as.matrix()
+
+
+# 目的地国50种商品对数标准化价格 ln p_n(j)
+destination_price <- kronecker(price, rep(1, N))
+# 来源地国50种商品对数标准化价格 ln p_i(j)
+source_price <- kronecker(rep(1, N), price)
+# r_{ni}(j)=ln p_n(j)-ln p_i(j)
+relative_price <- destination_price - source_price
+# 各行最大的r_{ni}(j)
+max_price <- apply(relative_price, 1, max)
+# 各行最大r_{ni}(j)的j（商品种类index）
+max_price_index <- apply(relative_price, 1, which.max)
+# 遍历各行，将最大的r_{ni}(j)替换为-100
+for (k in 1:nrow(relative_price)) {
+  relative_price[k, max_price_index[k]] <- -100
+}
+# 然后求各行第二大的r_{ni}(j)，作为作为ln d_{ni}的代理变量
+ln_dni <- max_price2 <- apply(relative_price, 1, max)
+
+
+# 价格指数
+# 用50种商品对数标准化价格的平均值作为各国价格指数的代理变量
+mean_price <- apply(price, 1, mean)
+# 目的地国价格指数 ln p_n
+destination_price_index <- kronecker(mean_price, rep(1, N))
+# 来源地国价格指数 ln p_i
+source_price_index <- kronecker(rep(1, N), mean_price)
+# (13)式: D_{ni}=ln(p_i)-ln(p_n)+ln(d_{ni})
+Dni <- source_price_index - destination_price_index + ln_dni
+```
+
+```{r}
+## delete invalid observations
+
+# 删掉 n==i 的行，保留342行
+# 因为这些行自变量和因变量的标准化值都等于0，属于无效数据
+
+# 无效行的index
+invalid_line_index <- which(import_country == export_country)
+
+# destinations and sources index
+import_country_valid <- import_country[-invalid_line_index]
+export_country_valid <- export_country[-invalid_line_index]
+
+# ln (Xni/Xn)/(Xii/Xi)
+normalized_trade_share_valid <- normalized_trade_share[-invalid_line_index]
+
+# ln(X'ni/X'nn)
+trade_prime_valid <- trade_prime[-invalid_line_index]
+
+# D_{ni}
+Dni_valid <- Dni[-invalid_line_index]
+
+# exp(D_{ni})，用于 Figure 2
+price_measure <- exp(Dni_valid)
+
+# ln_distance
+ln_distance_valid <- ln_distance[-invalid_line_index]
+
+# 合并距离、边界、语言、RTA等虚拟变量
+geography_dummy_valid <- geography_dummy[-invalid_line_index, ]
+
+# destinations and sources dummies 组合为数据框
+relative_source_dummy_valid <- relative_source_dummy[-invalid_line_index, ]
+relative_dest_dummy_valid <- relative_destination_dummy[-invalid_line_index, ]
+
+country_dummy_valid <- cbind(
+  relative_dest_dummy_valid,
+  relative_source_dummy_valid
+) %>% as.data.table()
+```
+
+## Section 3
+
+### FIGURE I
+
+```{r, echo=FALSE}
+title1 <- "<b>FIGURE I: Trade and Geography</b>"
+xtitle1 <- TeX("\\text{distance (in miles) between countries n and i}")
+ytitle1 <- TeX("\\text{normalized import share: } \\frac{X_{ni}/Xn}{X_{ii}/X_i}")
+
+fig1 <- canvas %>%
+  add_markers(
+    x = distance[-invalid_line_index] * 1000, # 单位：mile
+    y = exp(normalized_trade_share_valid),
+    marker = list(color = "black")
+  ) %>%
+  academic_layout() %>%
+  layout(
+    title = list(text = title1),
+    xaxis = list(
+      type = "log", range = c(2, 5),
+      nticks = 4, title = list(text = xtitle1)
+    ),
+    yaxis = list(
+      type = "log", range = c(-4, 0),
+      nticks = 5, title = list(text = ytitle1)
+    )
+  )
+fig1
+saveWidget(fig1, "../export/Figure1.html",
+  selfcontained = F, libdir = "lib"
+)
+```
+
+```{r}
+# 标准化贸易份额的最大值
+exp(normalized_trade_share_valid) %>% max()
+# 横跨近四个数量级
+exp(normalized_trade_share_valid) %>%
+  max() %>%
+  `/`(exp(normalized_trade_share_valid) %>% min()) %>%
+  log() %>%
+  `/`(log(10))
+```
+
+### FIGURE II
+
+```{r, echo=FALSE}
+title2 <- "<b>FIGURE II: Trade and Prices</b>"
+xtitle2 <- TeX("\\text{price mearsure: }D_{ni}")
+ytitle2 <- TeX("\\text{log of normalized import share: }\\ln \\frac{X_{ni}/Xn}{X_{ii}/X_i}")
+
+fig2 <- canvas %>%
+  add_markers(
+    x = Dni_valid, y = normalized_trade_share_valid,
+    showlegend = FALSE, marker = list(color = "black"),
+    opacity = 0.8
+  ) %>%
+  academic_layout() %>%
+  layout(
+    title = list(text = title2),
+    xaxis = list(range = c(0, 1.4), title = list(text = xtitle2)),
+    yaxis = list(range = c(-12, 0), title = list(text = ytitle2))
+  )
+
+fig2
+saveWidget(fig2, "../export/Figure2.html",
+  selfcontained = F, libdir = "lib"
+)
+```
+
+```{r}
+# 相关系数 correlation
+cor(Dni_valid, normalized_trade_share_valid)
+```
+
+### TABLE II
+
+```{r}
+price_measure_table <- # 三列：进口国index，出口国index，exp(Dni)
+  cbind(import_country_valid, export_country_valid, price_measure) %>%
+  as.data.table() %>% # 转换数据类型
+  # 左连接匹配国家代码（code列）
+  left_join(country_table, by = c("import_country_valid" = "id")) %>%
+  rename(dest = code) %>%
+  left_join(country_table, by = c("export_country_valid" = "id")) %>%
+  rename(source = code) %>%
+  # 挑选这三列，其余删掉
+  select(dest, source, price_measure)
+
+price_measure_table
+
+
+table2 <- country_table$code %>% # 迭代对象: 19个国家代码
+  map_dfr( # 每轮迭代生成一行，最后把这些行纵向摞起来
+    function(country_code) {
+
+      # select 进口国为country_code的所有的行
+      dest_table <- price_measure_table[dest == country_code, ]
+
+      source_min <- dest_table[
+        which.min(price_measure), # select price_measure 最小值所在的行
+      ][
+        , concatenation := str_c(source, "(", sprintf("%0.2f", price_measure), ")")
+      ] %>% pull(concatenation)
+
+      source_max <- dest_table[
+        which.max(price_measure),
+      ][
+        , concatenation := str_c(source, "(", sprintf("%0.2f", price_measure), ")")
+      ] %>% pull(concatenation)
+
+
+      # 出口国为country_code的所有的行
+      source_table <- price_measure_table[source == country_code, ]
+
+      dest_min <- source_table[
+        which.min(price_measure),
+      ][
+        , concatenation := str_c(dest, "(", sprintf("%0.2f", price_measure), ")")
+      ] %>% pull(concatenation)
+
+      dest_max <- source_table[
+        which.max(price_measure),
+      ][
+        , concatenation := str_c(dest, "(", sprintf("%0.2f", price_measure), ")")
+      ] %>% pull(concatenation)
+
+
+      # map_dfr()的每个返回值都是Table II的一行
+      data.table(
+        Country = str_c(
+          country_table[code == country_code, ] %>% pull(name),
+          " (", country_code, ")"
+        ),
+        source_min, source_max, dest_min, dest_max
+      )
+    }
+  )
+
+table2 %>%
+  set_colnames(c("Country", "Minimum", "Maximum", "Minimum", "Maximum")) %>%
+  prettify(caption = "TABLE II \\\n Price Measure Statistics") %>%
+  add_header_above(c(" " = 1, "Foreign Source \n (Column 1 As Destination)" = 2, "Foreign Destinations \n (Column 1 As Source)" = 2)) %>%
+  footnote(
+    general = "本表中的数值为 $e^{D_{ni}}$，其中 $D_{ni}$ 在 (13) 式中定义，为 $\\ln (p_i d_{ni}/p_n)$ 的代理变量。因此，$e^{D_{ni}}$ 表示进口国 $n$ 若全部从出口国 $i$ 的市场购买商品（花费当地价格及运输成本），比实际的购买（在本国市场充分遵循比较优势）会贵多少。",
+    general_title = "\n Note: ",
+    footnote_as_chunk = T
+  )
+```
+
+### 用 (12) 式估计 $\theta$
+
+以 $\ln (Xni/Xn)/(Xii/Xi)$ 为被解释变量，以 $D_{ni}$ 为解释变量，估计出来的系数是 $-\theta$，因此 $\theta$ 值还要取一个负号。
+
+#### Moments Estimation
+
+最简单的一阶矩估计
+
+```{r}
+x_center <- mean(Dni_valid)
+y_center <- mean(normalized_trade_share_valid)
+theta <- y_center / x_center
+theta
+```
+
+$\theta=8.28$
+
+#### OLS Estimation
+
+```{r}
+# 无截距项
+lm_1 <- lm(normalized_trade_share_valid ~ 0 + Dni_valid)
+summary(lm_1) %>%
+  `[[`("coefficients") %>%
+  prettify()
+```
+
+$\theta=8.03(0.15)$, 与矩估计的估计值很接近。
+
+```{r}
+# 有截距项
+lm_2 <- lm(normalized_trade_share_valid ~ Dni_valid)
+summary(lm_2) %>%
+  `[[`("coefficients") %>%
+  prettify()
+```
+
+$\theta=4.57(0.56)$. 截距项为负，与理论预测（为0）不一致，表明数据中可能有较大的误差.
+
+```{r, echo=FALSE}
+xs <- data.table(Dni_valid = Dni_valid)
+ys_hat1 <- fitted(lm_1)
+ys_hat2 <- fitted(lm_2)
+
+# 绘图
+title2 <- "<b>FIGURE 2: Trade and Prices</b>"
+xtitle2 <- TeX("\\text{price mearsure: }D_{ni}")
+ytitle2 <- TeX("\\text{log of normalized import share: }\\ln \\frac{X_{ni}/Xn}{X_{ii}/X_i}")
+
+fig2 %>%
+  add_lines(
+    line = list(color = "royalblue"),
+    x = xs$Dni_valid, y = ys_hat1, name = "no constant<br>OLS estimation",
+    opacity = 0.8
+  ) %>%
+  add_lines(
+    line = list(color = "green"),
+    x = xs$Dni_valid, y = ys_hat2, name = "with constant<br>OLS estimation",
+    opacity = 0.8
+  ) %>%
+  add_markers(
+    x = x_center, y = y_center, name = "moments estimation",
+    marker = list(color = "red", size = 10)
+  ) %>%
+  add_lines(
+    line = list(color = "orangered", dash = "dot"),
+    x = c(0, x_center), y = c(0, y_center), showlegend = FALSE
+  )
+```
+
+#### 分别估计 $D_{ni}$ 三个组成部分的参数
+
+探讨 $D_{ni}$ 三个组成部分 $\ln p_i, \ln p_n, \ln d_{ni}$ 对标准化贸易份额的分别贡献。
+
+```{r}
+# 三个组成部分分别为三列，去掉无效行
+trade_share_components <- data.table(
+  y = normalized_trade_share_valid,
+  ln_pi = source_price_index[-invalid_line_index],
+  ln_pn = destination_price_index[-invalid_line_index],
+  ln_dni = ln_dni[-invalid_line_index]
+)
+
+# 无截距项
+lm_3 <- lm(y ~ 0 + ln_pi + ln_pn + ln_dni, data = trade_share_components)
+summary(lm_3) %>%
+  `[[`("coefficients") %>%
+  prettify()
+
+# 有截距项
+lm_4 <- lm(y ~ ln_pi + ln_pn + ln_dni, data = trade_share_components)
+summary(lm_4) %>%
+  `[[`("coefficients") %>%
+  prettify()
+```
+
+无论有无截距项，估计出来的参数的正负与理论预测的一致
+
+#### IV Estimation
+
+有截距 OLS 回归的截距不为0，表明我们的价格数据可能有系统误差。
+
+为 price measure $D_{ni}$ 寻找工具变量（IV），用工具变量法估计 $\theta$ ([**以下两种估计仅在源代码中出现，未在论文中出现**]{style="color:red"}).
+
+1. 以对数实际距离作为 $D_{ni}$ 的工具变量
+
+```{r, echo=FALSE}
+# # 第一阶段：D_{ni} 对工具变量 ln_distance 做回归
+# lm_6 <- lm(Dni_valid ~ ln_distance_valid)
+# Dni_fitted <- fitted(lm_6) # Dni^hat
+
+# # 第二阶段：对数标准化贸易份额再对 Dni^hat 回归
+# lm_7 <- lm(normalized_trade_share_valid ~ Dni_fitted)
+# summary(lm_7)
+```
+
+```{r}
+# ivreg::ivreg() 可以做工具变量回归，第一个参数（字符串）为回归公式，形式为：
+# 被解释变量 ~ 内生变量 + 外生变量 | 工具变量 + 外生变量
+fit_iv_1 <- ivreg(normalized_trade_share_valid ~ Dni_valid | ln_distance_valid)
+summary(fit_iv_1, test = TRUE) # 对IV回归进行诊断
+```
+
+IV 回归通过了诊断，$\theta=14.51(1.57)$
+
+2. 以地理距离、source[^3] & destination dummies 作为 $D_{ni}$ 的工具变量
+
+[^3]: source dummies 是 (28) 式 $S_i-S_n$ 的形式。
+
+```{r, echo=FALSE}
+# 2SLS 实现 IV estimation
+
+# lm_8 <- lm(Dni_valid ~ .,
+#   data = cbind(Dni_valid, ln_distance_valid, country_dummy_valid)
+# )
+# Dni_fitted <- fitted(lm_8) # Dni^hat
+# lm_9 <- lm(normalized_trade_share_valid ~ Dni_fitted)
+# summary(lm_9)
+```
+
+```{r}
+instrument_data <- cbind(ln_distance_valid, country_dummy_valid)
+formula_instrument <- colnames(instrument_data) %>% str_c(collapse = " + ")
+formula_instrument
+
+fit_iv_2 <- ivreg(
+  formula = str_c("normalized_trade_share_valid ~ Dni_valid | ", formula_instrument),
+  data = cbind(normalized_trade_share_valid, Dni_valid, instrument_data)
+)
+summary(fit_iv_2, test = TRUE)
+```
+
+$\theta=6.90(0.71)$
+
+
+## Section 5.3
+
+估计一个结果被报告在正文中、但方程从未出现过的计量模型[^4]：以 $\ln (X'_{ni}/X'_{nn})$ 为被解释变量，$D_{ni}$ 为内生解释变量，source & destination dummies 为外生解释变量
+
+[^4]: 这并非 (28) 式，它用 $D_{ni}$ 替代了 $\ln d_{ni}$，还添加了进口国虚拟变量。事实上，EK 的源代码从未估计过 (28) 式。
+
+### OLS Estimation
+
+```{r}
+lm_5 <- lm(
+  trade_prime_valid ~ ., # . 代表所有其他变量
+  data = cbind(trade_prime_valid, Dni_valid, country_dummy_valid)
+)
+summary(lm_5) %>%
+  `[[`("coefficients") %>%
+  prettify()
+```
+
+$\theta=2.45(0.49)$
+
+### IV Estimation
+
+以 geography_dummies 为工具变量，包括距离、边界、语言、RTA 等，解释内生变量 D_ni；country_dummies 为外生变量。
+
+```{r, echo=FALSE}
+# lm_8 <- lm(Dni_valid ~ .,
+#   data = cbind(Dni_valid, geography_dummy_valid, country_dummy_valid)
+# )
+# summary(lm_8)
+# Dni_fitted <- fitted(lm_8)
+#
+# lm_9 <- lm(trade_prime_valid ~ .,
+#            data = cbind(trade_prime_valid, Dni_fitted, country_dummy_valid))
+# summary(lm_9)
+```
+
+```{r}
+TSLS_data <- cbind(trade_prime_valid, Dni_valid, geography_dummy_valid, country_dummy_valid)
+TSLS_data
+
+# 外生变量
+formula_exogenous <- colnames(country_dummy_valid) %>% str_c(collapse = " + ")
+formula_exogenous
+
+# 工具变量
+formula_instrument <- colnames(geography_dummy_valid) %>% str_c(collapse = " + ")
+formula_instrument
+
+# 回归公式
+formula <- str_c(
+  "trade_prime_valid ~ Dni_valid + ", formula_exogenous, " | ",
+  formula_instrument, " + ", formula_exogenous
+)
+formula
+
+fit_iv_3 <- ivreg(formula = formula, data = TSLS_data)
+summary(fit_iv_3, test = TRUE)
+```
+
+$\theta=12.86(1.74)$
+
+## Section 5.1
+
+### TABLE III
+
+估计 (30) 式
+
+#### OLS estimation
+
+```{r}
+# 组织数据框
+table3_data <- cbind(
+  trade_prime, dist1, geography_dummy,
+  relative_source_dummy, relative_destination_dummy
+) %>%
+  as.data.table() %>%
+  `[`(-invalid_line_index, )
+
+# OLS
+lm_table3 <- lm(trade_prime ~ 0 + ., data = table3_data)
+summary(lm_table3)
+```
+
+#### GLS estimation
+
+-   由理论推断，(30) 式的回归模型违反了 OLS 的基本假设: $\text{cov}(\varepsilon_j, \varepsilon_k)=E(\varepsilon_{j}\varepsilon_{k})-E(\varepsilon_{j})E(\varepsilon_{k})=E(\varepsilon_{j}\varepsilon_{k}) = 0, \forall j \neq k$.
+
+    -   这是因为，贸易具有互惠性，如果 $i$ 国向 $n$ 国出口的贸易障碍偏低（实际值低于模型拟合值），则一般 $n$ 国向 $i$ 国出口的贸易障碍也会偏低。这两个误差 $\varepsilon_{n \leftarrow i}, \varepsilon_{i\leftarrow n}$（以下简写为 $\varepsilon_{ni}$ 和 $\varepsilon_{in}$）往往同时偏高或偏低，有一定相关性，故 $\text{cov}(\varepsilon_{ni}, \varepsilon_{in})>0$
+
+    -   设误差 $\varepsilon_{ni}=\varepsilon_{ni}^1+\varepsilon_{ni}^2$ 可以分为两部分，**两部分之间不相关**
+
+    -   第一部分 $\varepsilon_{ni}^1$ 符合 OLS 的经典假设，即 $\begin{aligned}E(\varepsilon_{ab}^1\varepsilon_{cd}^1) = \left\{\begin{matrix} \sigma_1^2, & \forall a=c \land b=d\\ 0, & \text{otherwise.} \end{matrix}\right.\end{aligned}$
+
+    -   第二部分专门体现两国贸易的互惠性，有性质 $\varepsilon_{ni}^2=\varepsilon_{in}^2$，使得 $E(\varepsilon_{ni}^2\varepsilon_{in}^2)= E(\varepsilon_{ni}^2\varepsilon_{ni}^2) =\sigma_2^2$
+
+    -   则总误差满足 \begin{align}
+        E(\varepsilon_{ab}\varepsilon_{cd}) & = E(\varepsilon_{ab}^1\varepsilon_{cd}^1)+E(\varepsilon_{ab}^1\varepsilon_{cd}^2)+E(\varepsilon_{ab}^2\varepsilon_{cd}^1)+E(\varepsilon_{ab}^2\varepsilon_{cd}^2) \\
+        &=E(\varepsilon_{ab}^1\varepsilon_{cd}^1)+E(\varepsilon_{ab}^2\varepsilon_{cd}^2) \\
+
+        &= \left\{\begin{matrix}
+        \sigma_1^2+\sigma_2^2, & \forall a=c \land  b=d  \\
+         \sigma_2^2, & \forall a=d \land b=c\\
+        0, & \text{otherwise.}
+        \end{matrix}\right.
+        \end{align}
+
+-   误差项有了上述性质，便不能再使用 OLS estimation，而应使用广义最小二乘法（GLS）[^5]。
+
+    -   设误差向量 $\boldsymbol{\varepsilon}$ 的协方差矩阵为 $\boldsymbol{\Omega}$，则系数向量 $\boldsymbol{\beta}$ 在经过一定变换后的新模型中的 GLS estimator 为 $\hat{\boldsymbol{\beta}}^\ast=(\boldsymbol{X}'\boldsymbol{\Omega}^{-1}\boldsymbol{X})^{-1}\boldsymbol{X}'\boldsymbol{\Omega}^{-1}\boldsymbol{Y}$，协方差矩阵为 $\text{Var}(\hat{\boldsymbol{\beta}}^\ast)=(\boldsymbol{X}'\boldsymbol{\Omega}^{-1}\boldsymbol{X})^{-1}$
+    -   事实上，$\boldsymbol{\Omega}$ 的具体形式是很难了解的。但在本文中，可以根据理论，使用 $\boldsymbol{e}\boldsymbol{e}'$ 对其进行估计（$\boldsymbol{e}$ 为残差向量）
+
+-   对于纯粹的异方差问题（误差的协方差矩阵只是对角元素不同，但非对角元素保证为 0），R base 中有 `lm()` 或 `lm.gls()` 函数可以直接用；但对于协方差矩阵非对角元素不为零的情况，目前似乎没有很好的 library 提供现成的函数，需要自己写矩阵运算。
+
+[^5]: 朱建平, 胡朝霞, 王艺明. 高级计量经济学导论[M]. 北京: 北京大学出版社, 2009: 120-121.
+
+
+```{r}
+# 由 OLS 求得所有观测的残差，并将其扩展为矩阵，作为估计误差协方差的材料
+ee_matrix <- lm_table3$residuals %o% lm_table3$residuals
+# 这是一个 342*342 的大矩阵
+
+# 估计 sigma_1^2 + sigma_2^2
+sum_sigma_square <- diag(ee_matrix) %>% # 从n到i与从n到i的trade_prime的残差之积
+  mean() # 期望为 sigma_1^2 + sigma_2^2
+
+# 估计 sigma_2^2
+observation_valid <- data.table(n = import_country, i = export_country) %>%
+  `[`(-invalid_line_index, ) %>%
+  `[`(, row_index := .I)
+
+print(observation_valid)
+
+sigma2_square <- observation_valid$row_index %>%
+  map_dbl(function(row_index) {
+    row_n <- observation_valid$n[row_index]
+    row_i <- observation_valid$i[row_index]
+    col_index <- observation_valid[n == row_i & i == row_n, ]$row_index
+    ee_matrix[row_index, col_index] # 从n到i与从i到n的trade_prime的残差之积
+  }) %>%
+  mean() # 期望为 sigma_2^2
+
+sigma2_square
+sum_sigma_square - sigma2_square
+```
+
+因此
+
+$\theta^2\sigma_2^2=$ `r round(sigma2_square, 2)`
+
+$\theta^2\sigma_1^2=$ `r round(sum_sigma_square-sigma2_square, 2)`
+
+
+```{r}
+# 误差协方差矩阵 Omega
+Omega <- diag(nrow(observation_valid)) * sum_sigma_square
+
+observation_valid$row_index %>%
+  walk(function(row_index) {
+    row_n <- observation_valid$n[row_index]
+    row_i <- observation_valid$i[row_index]
+    col_index <- observation_valid[n == row_i & i == row_n, ]$row_index
+    Omega[row_index, col_index] <<- sigma2_square # "<<-" 对环境外变量赋值
+  })
+
+Omega %>% round(2) %>% as.data.table()
+
+# 求逆
+Omega_inverse <- solve(Omega)
+
+# GLS estimation
+Y <- table3_data$trade_prime
+X <- table3_data[, -1] %>% as.matrix()
+
+estimate <- solve(t(X) %*% Omega_inverse %*% X) %*% t(X) %*% Omega_inverse %*% Y
+estimate_S19 <- -estimate[11:28] %>% sum() # 保证虚拟变量效应之和为0
+estimate_m19 <- -estimate[29:46] %>% sum()
+
+var_estimate <- solve(t(X) %*% Omega_inverse %*% X)
+stand_error <- diag(var_estimate) %>% sqrt()
+stand_error_S19 <- var_estimate[11:28, 11:28] %>%
+  sum() %>% # -S19等于S1到S18的和，因此S19的方差应等于S1到S18所有的方差和协方差之和
+  sqrt()
+stand_error_m19 <- var_estimate[29:46, 29:46] %>%
+  sum() %>%
+  sqrt()
+```
+
+```{r}
+# Table III
+gls_estimate <- c(
+  estimate[1:28], estimate_S19,
+  estimate[29:46], estimate_m19
+)
+gls_stand_error <- c(
+  stand_error[1:28], stand_error_S19,
+  stand_error[29:46], stand_error_m19
+)
+gls_parameters <- c(
+  1:6 %>% str_c("$-\\theta d_{", ., "}$"),
+  "$-\\theta b$", "$-\\theta l$", "$-\\theta e_1$", "$-\\theta e_2$",
+  1:19 %>% str_c("$S_{", ., "}$"),
+  1:19 %>% str_c("$-\\theta m_{", ., "}$")
+)
+variable_names <- c(
+  "Distance [0, 375)", "Distance [375, 750)", "Distance [750, 1500)",
+  "Distance [1500, 3000)", "Distance [3000, 6000)", "Distance [6000, maximum)",
+  "Shared border", "Shared language", "Both in EEC/EU", "Both in EFTA",
+  country_table$name %>% str_c("Source country: ", .),
+  country_table$name %>% str_c("Destination country: ", .)
+)
+
+
+table3 <- data.table(
+  variables = variable_names,
+  parameters = gls_parameters,
+  estimate = round(gls_estimate, 2),
+  std_error = round(gls_stand_error, 2)
+)
+
+table3 %>%
+  mutate(std_error = str_c("(", std_error, ")")) %>%
+  set_colnames(c("Variable", "parameter", "est.", "s.e.")) %>%
+  prettify(caption = "TABLE III \\\n Bilateral Trade Equation") %>%
+  footnote(
+    general = "Estimated by GLS. The parameter are normalized so that ${\\textstyle \\sum_{i=1}^{19} S_i}=0$ and ${\\textstyle \\sum_{n=1}^{19} m_n}=0$. Standard errors are in parentheses.",
+    general_title = "\n Note: ",
+    footnote_as_chunk = T
+  )
+```
+
+#### 保存估计结果
+
+TABLE III 的估计值对于下一步的 simulation 非常重要。
+
+1. Source country dummy 的估计值可用于计算各国技术水平
+2. 其他虚拟变量的估计值（$-\theta \ln(d_{ni})$ 各组成部分的系数）可计算 $-\theta \ln(d_{ni})$ 的拟合值。将此拟合值命名为 barrier_measure，作为 simulation 阶段 $d_{ni}$ 的数据来源。
+
+```{r}
+table3_estimate <- gls_estimate # 是用高精度估计值
+# table3$estimate 的数据只有两位小数，不能用
+
+barrier_dummy <- cbind(regression_data[, c(6:12, 18:20)], destination_dummy) %>%
+  as.matrix() # 361*29
+barrier_estimate <- gls_estimate[c(1:10, 30:48)] # 29*1
+
+barrier_measure <- barrier_dummy %*% barrier_estimate %>% # 361*1
+  `[<-`(invalid_line_index, 0) %>% # n==i 的行取0
+  matrix(nrow = N, byrow = TRUE)
+```
+
+```{r}
+# 保存为 R 二进制文件 .rda，使用时直接 load()
+save(table3_estimate, barrier_measure,
+  file = "../data/estimation-output.rda"
+)
+```
+
+## Section 5.2
+
+### TABLE IV
+
+```{r}
+# 所有国家相对于美国的 R&D stock，TABLE 4 的第一列
+relative_r_and_d <- exp(r_and_d[1:N]) / exp(r_and_d[N])
+# 各国平均教育年限，TABLE 4 的第二列
+edu_year <- regression_data[1:N, 22][[1]] # 一定要转换为向量
+# 各国相对于美国的有效制造业劳动力，TABLE 4 的第三列
+adjusted_relative_labor <- exp(labor[1:N]) * exp(0.06 * edu_year) /
+  (exp(labor[N]) * exp(0.06 * edu_year[N]))
+# 各国相对于美国的有效（经人力资本调整）工资
+adjusted_relative_wage <- exp(wage[1:N]) * exp(-0.06 * edu_year) /
+  (exp(wage[N]) * exp(-0.06 * edu_year[N]))
+# 各国相对于美国的人口密度
+relative_density <- exp(density[1:N]) / exp(density[N])
+
+
+table4 <- data.table(
+  country = country_table$name,
+  research_stock = relative_r_and_d %>% sprintf("%.4f", .),
+  years_of_schooling = edu_year %>% sprintf("%.2f", .),
+  labor_force_HK_adjusted = adjusted_relative_labor %>% sprintf("%.3f", .),
+  density = relative_density %>% sprintf("%.2f", .)
+)
+
+table4 %>%
+  set_colnames(c(
+    "Country", "Research \\\n Stock \\\n (U.S.=1)", "Years of\\\n Schooling \\\n (years/person)", "Labor Force \\\n (HK adjusted) \\\n (U.S.=1)", "Density \\\n (pop/area) \\\n (U.S.=1)"
+  )) %>%
+  prettify(caption = "TABLE IV \\\n Data for Alternative Parameters") %>%
+  footnote(
+    general = "Research stocks, in 1990, are from Coe and Helpman (1995). Average years of schooling $H_i$, in 1985, are from Kyriacou (1991). Labor forces, in 1990, are from Summers and Heston (1991). They are adjusted for human capital by multiplying the country $i$ figure by $e^{0.06H_i}$. See the Appendix for complete definitions.",
+    general_title = "\n Note: ",
+    footnote_as_chunk = T
+  )
+```
+
+### TABLE V
+
+估计 Section 5.2 的未编号公式
+
+```{r}
+source_parameters <- gls_estimate[11:29]
+```
+
+#### OLS estimation
+
+```{r}
+competitiveness <- data.table(
+  research_stock = log(relative_r_and_d),
+  human_capital = 1 / edu_year,
+  wage = log(adjusted_relative_wage)
+) %>%
+  cbind(source_parameters, .)
+
+lm_table5 <- lm(source_parameters ~ ., data = competitiveness)
+summary(lm_table5)
+```
+
+#### IV estimation
+
+工资与技术水平之间可能存在内生性问题
+
+将劳动力和人口密度作为工资的工具变量，这二者外生于技术
+
+```{r}
+relative_density <- exp(density[1:N]) / exp(density[N])
+
+competitiveness_2SLS <- data.table(
+  research_stock = log(relative_r_and_d),
+  human_capital = 1 / edu_year,
+  wage = log(adjusted_relative_wage),
+  labor = log(adjusted_relative_labor),
+  density = log(relative_density)
+) %>%
+  cbind(source_parameters, .)
+
+fit_iv <- ivreg(
+  formula = source_parameters ~ research_stock + human_capital + wage |
+    research_stock + human_capital + labor + density,
+  data = competitiveness_2SLS
+)
+summary(fit_iv, test = TRUE)
+```
+
+估计得 $\theta=3.60(1.21)$
+
+
+
+## Section 5.4
+
+### TABLE VI
+
+由 (30) 式估计的 $S$ 和各种方法估计的 $\theta$，利用 (27) 式计算技术水平 $T$（另一种思路是由 Section 5.2 估计的 $a_0$、$a_R$、$a_H$ 计算 $T$）
+
+```{r}
+table6 <- theta_estimates %>%
+  map_dfc(function(theta) {
+    # (27) 式变形
+    tech <- log(adjusted_relative_wage) %>% # ln(w_i)
+      `*`(theta) %>% # * theta
+      `+`(source_parameters) %>% # + S_i
+      `*`(beta) %>% # × beta
+      exp() # e^
+
+    (tech / tech[N]) %>%
+      sprintf("%.2f", .) %>%
+      as.data.frame() %>%
+      set_colnames(str_c("$\\theta=", sprintf("%.2f", theta), "$"))
+  }) %>%
+  mutate(
+    Country = country_table$name,
+    `Estimated Source-country Competitiveness` = source_parameters %>% sprintf("%.2f", .)
+  ) %>%
+  select(Country, `Estimated Source-country Competitiveness`, everything())
+
+
+table6 %>%
+  prettify(caption = "TABLE VI \\\n States of Technology") %>%
+  footnote(
+    general = "The estimates of source-country competitiveness are the same as those shown in Table III. For an estimated parameter $\\hat{S_i}$, the implied state of technology is $T_i=(e^{\\hat{S_i}}w_i^\\theta)^\\beta$. States of technology are normalized relative to the U.S. value.",
+    general_title = "\n Note: ",
+    footnote_as_chunk = T
+  ) %>%
+  add_header_above(c(
+    " " = 1, " " = 1,
+    "Implied States of Technology" = 3
+  ))
+```
+
+### TABLE VII
+
+用 (29) 式计算贸易障碍
+
+```{r}
+barrier_parameters <- gls_estimate[-11:-29]
+
+barrier_names <- c(
+  "Distance [0, 375)", "Distance [375, 750)", "Distance [750, 1500)",
+  "Distance [1500, 3000)", "Distance [3000, 6000)", "Distance [6000, maximum)",
+  "Shared border", "Shared language", "Both in EEC/EU", "Both in EFTA",
+  country_table$name
+)
+
+table7 <- theta_estimates %>%
+  map_dfc(function(theta) {
+    # (29), (30) 变形
+    (barrier_parameters / (-theta)) %>% # 除以 -theta, 才是对 ln(d_ni) 的影响
+      exp() %>% # 对dni的影响
+      `-`(1) %>%
+      `*`(100) %>% # 百分比变化
+      sprintf("%.2f", .) %>%
+      as.data.frame() %>%
+      set_colnames(str_c("$\\theta=", sprintf("%.2f", theta), "$"))
+  }) %>%
+  mutate(
+    source_of_barrier = barrier_names,
+    parameters = barrier_parameters %>% sprintf("%.2f", .)
+  ) %>%
+  select(source_of_barrier, parameters, everything())
+
+table7 %>%
+  rename(
+    `Source of Barrier` = source_of_barrier,
+    `Estimated Geograpy Parameters` = parameters
+  ) %>%
+  prettify(caption = "TABLE VII \\\n Geographic Barriers") %>%
+  footnote(
+    general = "The estimated parameters governing geographic barriers are the same as those shown in Table III. For an estimated parameter $\\hat{d}$, the implied effect on cost is $(e^{-\\hat{d}/\\theta}-1) \\times 100\\%$.",
+    general_title = "\n Note: ",
+    footnote_as_chunk = T
+  ) %>%
+  add_header_above(c(
+    " " = 1, " " = 1,
+    "Implied Barrier's $\\%$ Effect on Cost" = 3
+  )) %>%
+  group_rows("Destination country:", 11, 29,
+    bold = FALSE,
+    label_row_css = "border-top: 1px solid;"
+  )
+```
+
+
+## 总结
+
+estimation 部分，通过各种方式估计 $\theta$，符号一致，数值有大有小。
+
+选择中间的、也是最简单的矩估计值 $8.28$，用于后面的 simulation

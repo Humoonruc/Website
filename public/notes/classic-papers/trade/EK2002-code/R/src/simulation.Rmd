@@ -1,0 +1,959 @@
+---
+title: "EK2002: Simulation \n"
+subtitle: ''
+author: "Humoon"
+date: "`r Sys.Date()`"
+output: html_document
+documentclass: ctexart
+classoption: hyperref,
+editor_options: 
+  markdown: 
+    wrap: 80
+---
+
+```{r setup, include = FALSE}
+source("../config/Rmarkdown_config.R")
+
+## global options ===================================
+knitr::opts_chunk$set(
+  width = config$width,
+  fig.width = config$fig.width,
+  fig.asp = config$fig.asp,
+  out.width = config$out.width,
+  fig.align = config$fig.align,
+  fig.path = config$fig.path,
+  fig.show = config$fig.show,
+  warn = config$warn,
+  warning = config$warning,
+  message = config$message,
+  echo = config$echo,
+  eval = config$eval,
+  tidy = config$tidy,
+  comment = config$comment,
+  collapse = config$collapse,
+  cache = config$cache,
+  cache.comments = config$cache.comments,
+  autodep = config$autodep
+)
+```
+
+```{r, echo=FALSE}
+downloadthis::download_dir(
+  path = "../data",
+  output_name = "data",
+  button_label = "Download data dir",
+  button_type = "success",
+  self_contained = FALSE
+)
+# downloadthis::download_file(
+#   path = "../config/Rmarkdown_config.R",
+#   output_name = "Rmarkdown_config",
+#   button_label = "Download Rmarkdown_config.R",
+#   button_type = "success",
+#   self_contained = FALSE
+# )
+```
+
+```{r}
+source("../config/Rmarkdown_config.R") # 依赖包的导入和一系列 Rmarkdown 设置
+```
+
+## Data Processing
+
+### Read Data
+
+```{r}
+# 一些标量常数
+scalar <- jsonlite::fromJSON("../data/scalar.json")
+
+# 国家代码表
+country_table <- fread("../data/country_code.csv")
+
+# 国别原始数据
+nominal_variables <- fread("../data/nominal_variable.csv")
+
+# TABLE III 中所有虚拟变量的系数估计值
+load("../data/estimation-output.rda")
+```
+
+### Data Transformation
+
+```{r}
+## 1. scalars
+beta <- scalar$beta
+N <- scalar$N
+theta <- scalar$theta[2]
+
+
+## 2. exchange rate
+exchange_rate <- nominal_variables$exchange_rate
+
+
+## 3. trade data
+
+# nominal bilateral trade
+Xni_nominal <- nominal_variables[, -1:-6] %>%
+  as.matrix() %>%
+  set_colnames(NULL) %>% # 去掉列名
+  `*`(10^6)
+
+# real bilateral trade
+Xni <- Xni_nominal / exchange_rate # 自动扩展除数为矩阵
+Xnn <- diag(Xni)
+
+# expenditure on manufacturing goods
+Xn <- Xni %>% apply(1, sum)
+
+imports <- Xn - Xnn
+exports <- Xni %>% apply(2, sum) - Xnn
+
+
+## 4. manufacturing labor and wage
+industrial_labor <- nominal_variables$industrial_labor
+nominal_wage <- nominal_variables$nominal_wage # 已经以美元计价
+
+edu_year <- nominal_variables$edu_year
+
+effective_labor <- industrial_labor * exp(0.06 * edu_year)
+effective_wage <- nominal_wage * exp(-0.06 * edu_year)
+
+
+## 5. income/expenditure
+
+# GDP in dollars
+Y <- nominal_variables$gdp * 10^6 / exchange_rate
+
+# manufacturing labor income
+Y_l <- effective_wage * effective_labor
+
+# non-manufacturing income
+Y_o <- Y - Y_l
+
+
+## 6. beta and alpha
+
+# beta = manufacturing labor income / manufacturing output
+beta_vector <- Y_l / (Xnn + exports)
+beta_vector # 不知作者如何加权得出了 beta = 0.21221 这个数值
+
+# alpha = manufacturing expenditure / total expenditure
+alpha_vector <- (Y_l + imports - exports) / Y
+alpha_vector
+
+# 各国按GDP加权计算 alpha
+alpha <- (alpha_vector * Y / sum(Y)) %>% sum()
+alpha
+
+
+## 7. technology
+# 表示技术的 T 来源于 (27) 式
+# 计算所需的 source dummies 的估计系数见 TABLE VI
+source_estimate <- table3_estimate[11:29]
+
+# 这个 tech 使用的都是绝对数据
+absolute_tech <- log(effective_wage) %>%
+  `*`(theta) %>%
+  `+`(source_estimate) %>%
+  `*`(beta) %>%
+  exp()
+# 用绝对数据，保持准确量纲，便于 wL 直接与 Y/Y_o 相比
+
+
+## 8. geography barrier
+# dni^{-theta} 矩阵
+Dni <- exp(barrier_measure)
+# barrier_measure 来源于 (28) 式，为 -theta ln(dni)
+# 用 (30) 式计算 barrier_measure 时，所需的 barrier dummies 的估计系数见 TABLE VII
+
+
+## 9. gamma constant
+gamma <- beta^(beta) * (1 - beta)^(1 - beta) # 不知为何 gamma 可以由 beta 推出
+g <- gamma^(-theta)
+```
+
+## Section 4
+
+求解一般均衡模型的多元非线性方程组，作为反事实模拟的 baseline
+
+### 求解多元非线性方程组
+
+Counterfactual Simulation 的前提，是求解多元非线性方程组
+$\boldsymbol{F}(\boldsymbol{x})=0$.
+这样，对于任何情形，确定了方程组的参数后，便可解出我们希望查看的变量。
+
+最常用的数值解法，是 Newton-Raphson 迭代法：
+
+若 $\boldsymbol{F}(\boldsymbol{x})$ 关于 $\boldsymbol{x}$ 的 Jacobi 矩阵 $$
+\begin{aligned} \boldsymbol{J}(\boldsymbol{x}) \equiv \frac{\partial \boldsymbol{F}}{\partial \boldsymbol{x}} \end{aligned}=\left[\begin{array}{cccc}
+\frac{\partial f_{1}}{\partial x_{1}} & \frac{\partial f_{1}}{\partial x_{2}} & \cdots & \frac{\partial f_{1}}{\partial x_{n}} \\
+\frac{\partial f_{2}}{\partial x_{1}} & \frac{\partial f_{2}}{\partial x_{2}} & \cdots & \frac{\partial f_{2}}{\partial x_{n}} \\
+\vdots & \vdots & \ddots & \vdots \\
+\frac{\partial f_{n}}{\partial x_{1}} & \frac{\partial f_{n}}{\partial x_{2}} & \cdots & \frac{\partial f_{n}}{\partial x_{n}}
+\end{array}\right]
+$$ 可逆，令 $$
+\boldsymbol{x}^{k+1}=\boldsymbol{x}^k-\boldsymbol{J}^{-1}(\boldsymbol{x}^k)\boldsymbol{F}(\boldsymbol{x}^k)
+$$ $\boldsymbol{x}^k$ 就组成了一个序列。若这个序列收敛，即
+$\boldsymbol{F}(\boldsymbol{x}^k) \to 0$，便能在适当的精度下找到方程组的近似数值解。
+
+具体做法为：
+
+1.  确定初始向量 $\boldsymbol{x}^0$，最大迭代次数 $N$ 和精度要求
+    $\varepsilon$，然后开启循环
+2.  令
+    $\boldsymbol{d}^k=\boldsymbol{J}^{-1}(\boldsymbol{x}^k)\boldsymbol{F}(\boldsymbol{x}^k)$（$\boldsymbol{d}^k$
+    即线性方程组
+    $\boldsymbol{J}(\boldsymbol{x}^k)\boldsymbol{d}=\boldsymbol{F}(\boldsymbol{x}^k)$
+    的解）
+3.  若 $|\boldsymbol{d}^k|<\varepsilon$ 或 $k=N$，则停止计算；否则，令
+    $\boldsymbol{x}^{k+1}=\boldsymbol{x}^k-\boldsymbol{d}^k$，然后回到第二步计算
+    $\boldsymbol{d}^{k+1}$，直到精度满足要求或迭代次数耗尽。
+4.  当精度满足要求时，迭代所得的 $\boldsymbol{x}$ 就可以作为
+    $\boldsymbol{F}(\boldsymbol{x})=0$ 的根。
+
+### 一般均衡模型的矩阵形式
+
+当使用支持向量化操作的语言编程时，最好先将模型都写成矩阵形式。因为数据多以向量和矩阵的形式保存，矩阵运算本身就是相当完善的伪代码，使真正的代码编写变得非常省脑。
+
+令 $P_n=p_n^{-\theta}$，$g=\gamma^{-\theta}$，$D_{ni}=d_{ni}^{-\theta} \in (0,1]$，$k_i=gT_iw_i^{-\beta\theta}$
+
+> 源代码中用 $\beta^\beta(1-\beta)^{1-\beta}$ 作为 $\gamma$ 值，理由何在？(9) 式中，$\gamma$ 明明是由 $\theta$ 和 $\sigma$ 决定的。
+
+#### 情境一：劳动力可跨部门流动
+
+制造业部门雇佣劳动力可变，工资不变（由非贸易部门决定），国民收入不变。
+
+已知工资、技术、地理障碍、国民收入数据
+
+1.  由 (16) 式解出均衡**价格**
+2.  通过 (17) 式计算**贸易份额**
+3.  通过 (20) 式计算**制造业劳动力**
+4.  通过 (19) 式计算对制造业产品的支出，再结合 (17) 式即可知**双边贸易量**
+5.  最后由 $W_{n}=Y_{n} / p_{n}^{\alpha}$ 计算**福利**水平
+
+将 (16) 式写为矩阵形式：
+
+$$
+\begin{bmatrix}
+ P_1 \\ \vdots \\ P_N
+\end{bmatrix} = \boldsymbol{D}\left( \boldsymbol{k} \circ
+\begin{bmatrix}
+ P_1^{1-\beta} \\ \vdots \\ P_N^{1-\beta}
+\end{bmatrix} \right)
+$$ 
+
+其中
+
+$\boldsymbol{D} = \begin{bmatrix} D_{11} & D_{12} & \cdots & D_{1N} \\ \vdots & \vdots & \vdots & \vdots \\ D_{N1} & D_{N2} & \cdots & D_{NN} \end{bmatrix}$，$\boldsymbol{k}=\begin{bmatrix} k_1 \\ \vdots \\ k_N \end{bmatrix}=g \cdot \begin{bmatrix} T_1 \\ \vdots \\ T_N \end{bmatrix} \circ \begin{bmatrix} w_1^{-\beta\theta} \\ \vdots \\ w_N^{-\beta\theta} \end{bmatrix}$
+
+$\circ$ 表示哈达马积（矩阵的对应元素相乘），则 (16) 式所代表的 $N$
+元非线性方程组可以写为 $$
+\boldsymbol{D}^{-1}\begin{bmatrix}
+ P_1 \\ \vdots \\ P_N
+\end{bmatrix} - g \cdot \begin{bmatrix}
+ T_1 \\ \vdots \\ T_N
+\end{bmatrix}  \circ \begin{bmatrix}
+ w_1^{-\beta\theta} \\ \vdots \\ w_N^{-\beta\theta}
+\end{bmatrix} \circ \begin{bmatrix}
+ P_1^{1-\beta} \\ \vdots \\ P_N^{1-\beta}
+\end{bmatrix} = \boldsymbol{0}
+$$ 由于工资不变，仅有 $P_n$ 这 $N$ 个未知数，可以用 Newton-Raphson 迭代法求
+$P_n$ 的数值解。
+
+> 使用 Newton-Raphson Method 时，需要定义迭代的初值。
+>
+> 由理论不难推断，$P_n$ 是存在上下限的：
+>
+> 1.  Autarky 时，价格水平 $p_n$ 最高，$P_n$ 取得最小值。此时
+>     $d_{ni} \to \infty, D_{ni} = 0, \forall n \neq i$，从而 $\boldsymbol{D}$
+>     为单位矩阵 $\boldsymbol{I}_N$，从方程组中解得 $P_n^{low} = k_n^{1/\beta}$
+> 2.  零贸易障碍时，能买到国外便宜的商品，且加价为 $0$，故价格水平 $p_n$
+>     最低，$P_n$ 取得最大值。此时 $D_{ni} = d_{ni} = 1, \forall n \neq i$，从而
+>     $\boldsymbol{D}$ 为全 $1$ 矩阵，从方程组中解得
+>     $P_n^{high} = \left({\textstyle \sum_{n=1}^{N} k_n} \right)^{1/\beta}$
+>
+> 最好使用 $P_n^{low}$ 和 $P_n^{high}$
+> 之间的数值作为迭代初值，迭代序列一般都能顺利收敛
+>
+> 此外，由于 $P_n^{low}$ 和 $P_n^{high}$ 要在 Newton-Raphson
+> 迭代之外算出来，所以 $k_i=gT_iw_i^{-\beta\theta}$ 也必须提前算好。
+
+将 (17) 式的标量形式 $\pi_{ni}=k_iD_{ni}P_i^{1-\beta}/P_n$
+改写为矩阵形式，即可计算 $\boldsymbol{\Pi}$：
+
+$$
+\boldsymbol{\Pi}=\begin{bmatrix}
+\pi_{11} & \pi_{12} & \cdots & \pi_{1N} \\ 
+\vdots & \vdots & \vdots & \vdots \\ 
+\pi_{N1} & \pi_{N2} & \cdots & \pi_{NN}
+\end{bmatrix}=\boldsymbol{D} \circ \left(  \begin{bmatrix}
+ 1/P_1 \\ \cdots \\ 1/P_N
+\end{bmatrix}\otimes \left( g \cdot \begin{bmatrix}
+ T_1 \\ \vdots \\ T_N
+\end{bmatrix}  \circ \begin{bmatrix}
+ w_1^{-\beta\theta} \\ \vdots \\ w_N^{-\beta\theta}
+\end{bmatrix} \circ \begin{bmatrix}
+ P_1^{1-\beta} \\ \vdots \\ P_N^{1-\beta}
+\end{bmatrix}\right)'\right)
+$$
+
+$\otimes$ 表示克罗内克积
+
+将 (20) 式写为矩阵形式：
+
+$$
+\begin{bmatrix}
+ w_1L_1 \\ \vdots \\ w_NL_N
+\end{bmatrix} = (1-\beta)\boldsymbol{\Pi}'\begin{bmatrix}
+ w_1L_1 \\ \vdots \\ w_NL_N
+\end{bmatrix}+\alpha\beta\boldsymbol{\Pi}'\begin{bmatrix}
+Y_1 \\ \vdots \\ Y_N
+\end{bmatrix}
+$$ 
+
+为求解各国制造业劳动力向量 $\boldsymbol{L}$，将其变形为 
+
+$$
+\begin{bmatrix}
+L_1 \\ \vdots \\ L_N
+\end{bmatrix} = \alpha\beta\begin{bmatrix}
+1/w_1 \\ \vdots \\ 1/w_N
+\end{bmatrix}\circ\left(\left(I_N-(1-\beta)\boldsymbol{\Pi}'\right)^{-1}\boldsymbol{\Pi}'\begin{bmatrix}
+Y_1 \\ \vdots \\ Y_N
+\end{bmatrix}\right)
+$$
+
+将 (19) 式写为矩阵形式：
+
+$$
+\boldsymbol{X_n} \equiv \begin{bmatrix}
+X_1 \\ \vdots \\ X_N
+\end{bmatrix} =\begin{bmatrix}
+ w_1 \\ \vdots \\ w_N
+\end{bmatrix} \circ \begin{bmatrix}
+ L_1 \\ \vdots \\ L_N
+\end{bmatrix} *(1-\beta)/\beta+\alpha\begin{bmatrix}
+Y_1 \\ \vdots \\ Y_N
+\end{bmatrix}
+$$ 从而由 (17) 式知双边贸易量矩阵 $$
+\boldsymbol{X}_{ni} \equiv \begin{bmatrix}
+X_{11} & X_{12} & \cdots & X_{1N} \\ 
+\vdots & \vdots & \vdots & \vdots \\ 
+X_{N1} & X_{N2} & \cdots & X_{NN}
+\end{bmatrix}=\boldsymbol{\Pi} \circ \left(\begin{bmatrix}
+X_1 \\ \vdots \\ X_N
+\end{bmatrix} \otimes [1 \cdots 1] \right)
+$$ 该矩阵所有元素的和减去迹即为 19 国之间的**双边贸易总量** $$
+\text{trade volumn}= \sum_{n=1}^N\sum_{i=1}^N X_{ni}-tr(\boldsymbol{X}_{ni})
+$$
+
+最后，福利水平为 $$
+\begin{bmatrix}
+W_1 \\ \vdots \\ W_N
+\end{bmatrix} =\begin{bmatrix}
+Y_1 \\ \vdots \\ Y_N
+\end{bmatrix} \circ \begin{bmatrix}
+1/p_1^{\alpha} \\ \vdots \\ 1/p_N^{\alpha}
+\end{bmatrix}=\begin{bmatrix}
+Y_1 \\ \vdots \\ Y_N
+\end{bmatrix} \circ \begin{bmatrix}
+P_1^{\alpha/\theta} \\ \vdots \\ P_N^{\alpha/\theta}
+\end{bmatrix}
+$$
+
+模型输出三个向量 $\boldsymbol{p}=\boldsymbol{P}^{-1/\theta}$, $\boldsymbol{L}$, $\boldsymbol{W}$, 一个矩阵
+$\boldsymbol{X}_{ni}$, 一个标量 $\text{trade volumn}$
+
+> 注：为了便于后续使用，输出 $p_n$ 而非 $P_n$
+
+#### 情境二：劳动力不可跨部门流动
+
+制造业部门工资可变，雇佣劳动力不变，国民收入可变，非制造业劳动力收入不变。
+
+已知制造业劳动力、技术、地理障碍、非制造业劳动力收入数据
+
+1.  由 (16)、(21) 式联立计算出均衡**工资**、均衡**价格**
+2.  通过 (17) 式计算**贸易份额**
+3.  通过 (19) 式计算对制造业产品的支出，再结合 (17) 式即可知**双边贸易量**
+4.  最后由 $W_{n}=(w_nL_n+Y_{n}^o) / p_{n}^{\alpha}$ 计算**福利**水平
+
+将 (21) 式写为矩阵形式：
+
+$$
+\left[I_N-(1-\beta+\alpha\beta)\boldsymbol{\Pi}'\right]\begin{bmatrix}
+ w_1 \\ \vdots \\ w_N
+\end{bmatrix} \circ \begin{bmatrix}
+L_1 \\ \vdots \\ L_N
+\end{bmatrix}-\alpha\beta \boldsymbol{\Pi}'\begin{bmatrix}
+Y_1^o \\ \vdots \\ Y_N^o
+\end{bmatrix}=\boldsymbol{0}
+$$
+
+其中非制造业收入 $Y_n^o$、制造业劳动力 $L_n$ 为常量。但这 $N$
+个方程无法解出工资向量 $w_n$，因为 $\boldsymbol{\Pi}$ 中还含有 $P_n$
+
+这 $N$ 个方程需要与 (16) 式代表的 $N$ 个方程 $$
+\boldsymbol{D}^{-1}\begin{bmatrix}
+ P_1 \\ \vdots \\ P_N
+\end{bmatrix} - g \cdot \begin{bmatrix}
+ T_1 \\ \vdots \\ T_N
+\end{bmatrix}  \circ \begin{bmatrix}
+ w_1^{-\beta\theta} \\ \vdots \\ w_N^{-\beta\theta}
+\end{bmatrix} \circ \begin{bmatrix}
+ P_1^{1-\beta} \\ \vdots \\ P_N^{1-\beta}
+\end{bmatrix} = \boldsymbol{0}
+$$ 联立，才能解出 $w_n$ 和 $P_n$. 因此，这是一个 $2N$ 元非线性方程组的求解问题。
+
+解出 $w_n$和 $P_n$ 后，同样从 (17) 式可计算 $$
+\boldsymbol{\Pi}=\begin{bmatrix}
+\pi_{11} & \pi_{12} & \cdots & \pi_{1N} \\ 
+\vdots & \vdots & \vdots & \vdots \\ 
+\pi_{N1} & \pi_{N2} & \cdots & \pi_{NN}
+\end{bmatrix}=\boldsymbol{D} \circ \left(  \begin{bmatrix}
+ 1/P_1 \\ \cdots \\ 1/P_N
+\end{bmatrix}\otimes \left( g \cdot \begin{bmatrix}
+ T_1 \\ \vdots \\ T_N
+\end{bmatrix}  \circ \begin{bmatrix}
+ w_1^{-\beta\theta} \\ \vdots \\ w_N^{-\beta\theta}
+\end{bmatrix} \circ \begin{bmatrix}
+ P_1^{1-\beta} \\ \vdots \\ P_N^{1-\beta}
+\end{bmatrix}\right)'\right)
+$$ 由 (19) 式可计算 $$
+\boldsymbol{X}_n \equiv \begin{bmatrix}
+X_1 \\ \vdots \\ X_N
+\end{bmatrix} =\begin{bmatrix}
+ w_1 \\ \vdots \\ w_N
+\end{bmatrix} \circ \begin{bmatrix}
+ L_1 \\ \vdots \\ L_N
+\end{bmatrix} *\left(\alpha+\frac{1-\beta}{\beta}\right)+\alpha\begin{bmatrix}
+Y_1^o \\ \vdots \\ Y_N^o
+\end{bmatrix}
+$$
+
+再代入 (17) 式即得双边贸易量矩阵 $$
+\boldsymbol{X}_{ni} \equiv \begin{bmatrix}
+X_{11} & X_{12} & \cdots & X_{1N} \\ 
+\vdots & \vdots & \vdots & \vdots \\ 
+X_{N1} & X_{N2} & \cdots & X_{NN}
+\end{bmatrix}=\boldsymbol{\Pi} \circ \left(\begin{bmatrix}
+X_1 \\ \vdots \\ X_N
+\end{bmatrix} \otimes [1 \cdots 1] \right)
+$$
+
+该矩阵所有元素的和减去迹即为 19 国之间的**双边贸易总量** $$
+\text{trade volumn} = \sum_{n=1}^N\sum_{i=1}^N X_{ni}-tr(\boldsymbol{X}_{ni})
+$$
+
+最后，福利水平为 $$
+\begin{bmatrix}
+W_1 \\ \vdots \\ W_N
+\end{bmatrix} = \left( \begin{bmatrix}
+ w_1 \\ \vdots \\ w_N
+\end{bmatrix} \circ \begin{bmatrix}
+ L_1 \\ \vdots \\ L_N
+\end{bmatrix} + \begin{bmatrix}
+Y_1^o \\ \vdots \\ Y_N^o
+\end{bmatrix} \right) \circ \begin{bmatrix}
+P_1^{\alpha/\theta} \\ \vdots \\ P_N^{\alpha/\theta}
+\end{bmatrix}
+$$
+
+模型输出三个向量 $\boldsymbol{p}$, $\boldsymbol{w}$, $\boldsymbol{W}$, 一个矩阵
+$\boldsymbol{X}_{ni}$, 一个标量 $\text{trade volumn}$
+
+#### 总结：参数与输出
+
+|          | 情境一：mobile labor                                                                                               | 情境二：immobile labor                                                                                           |
+|---------------------|------------------------------|------------------------------|
+| 不变参数 | 制造业工资 $\boldsymbol{w}$、国民收入 $\boldsymbol{Y}$                                                                                       | 制造业劳动力 $\boldsymbol{L}$、非制造业劳动力收入 $\boldsymbol{Y^o}$                                                                       |
+| 可变参数 | 地理障碍 $\boldsymbol{D}$、技术 $\boldsymbol{T}$、关税率 $\boldsymbol{t}$                                                                                 | 地理障碍 $\boldsymbol{D}$、技术 $\boldsymbol{T}$、关税率 $\boldsymbol{t}$                                                                                 |
+| 模型输出 | 价格指数 $\boldsymbol{p}$、制造业劳动力 $\boldsymbol{L}$、福利水平 $\boldsymbol{W}$、双边贸易量矩阵 $\boldsymbol{X}_{ni}$、19 国贸易总量 $\text{trade volumn}$ | 价格指数 $\boldsymbol{p}$、制造业工资 $\boldsymbol{w}$、福利水平 $\boldsymbol{W}$、双边贸易量矩阵 $\boldsymbol{X}_{ni}$、19 国贸易总量 $\text{trade volumn}$ |
+
+### 编程实现
+
+#### 情境一：劳动力可以跨部门流动
+
+```{r}
+
+model_mobile <- function(tech, Dni) {
+  # 不变参数
+  w <- effective_wage
+  Y <- Y
+
+  # 可变参数
+  T <- tech
+  D <- Dni
+  k <- g * T * w^(-beta * theta)
+
+  # 设定 P 的迭代初值
+  P_low <- k^(1 / beta)
+  P_high <- rep(sum(k)^(1 / beta), N)
+  P_start <- (P_low + P_high) / 2
+
+  # (16) 式
+  equations <- function(P) {
+    solve(D) %*% P - k * P^(1 - beta)
+  }
+  
+  # 解 P
+  if (identical(D, matrix(rep(1, N^2), nrow = N))) {
+    P <- P_high
+  } else {
+    P <- rootSolve::multiroot(
+      f = equations, start = P_start,
+      rtol = 1e-10, positive = TRUE
+    )$root
+  }
+  
+  # 根据 P 推导其他变量
+  Pi <- D * kronecker(1 / P, t(k * P^(1 - beta)))
+
+  L <- alpha * beta * (1 / w) * (solve(diag(N) - (1 - beta) * t(Pi)) %*% t(Pi) %*% Y) %>%
+    as.vector()
+
+  Xn <- w * L * (1 - beta) / beta + alpha * Y
+
+  Xni <- Pi * kronecker(Xn, rep(1, N) %>% t())
+
+  trade_volumn <- sum(Xni) - diag(Xni) %>% sum()
+
+  W <- Y * P^(alpha / theta)
+
+  # 输出模型结果
+  list(
+    p = P^(-1 / theta), L = L, W = W,
+    Xni = Xni, trade_volumn = trade_volumn
+  )
+}
+
+baseline_mobile <- model_mobile(absolute_tech, Dni)
+```
+
+#### 情境二：劳动力不能跨部门流动
+
+```{r}
+model_immobile <- function(tech, Dni) {
+  # 不变参数
+  L <- effective_labor
+  Y_o <- Y_o
+
+  # 可变参数
+  T <- tech
+  D <- Dni
+
+  # w 初始值
+  w <- effective_wage
+
+  # 假设w已知，由(16)解出P后，可推出Y_l/w，即对劳动力的引致需求
+  # 它与劳动力L的差，为超额需求，会根据一定弹性拉动w的变化
+  # 然后不断迭代 w，直到超额需求为0
+  for (i in 1:500) {
+    # 迭代初值
+    k <- g * T * w^(-beta * theta)
+    P_low <- k^(1 / beta)
+    P_high <- rep(sum(k)^(1 / beta), N)
+    P_start <- (P_low + P_high) / 2
+    
+    # (16) 式
+    equations <- function(P) {
+      solve(D) %*% P - k * P^(1 - beta)
+    }
+    
+    # 解 P
+    if (identical(D, matrix(rep(1, N^2), nrow = N))) {
+      P <- P_high
+    } else {
+      P <- rootSolve::multiroot(
+        f = equations, start = P_start,
+        rtol = 1e-10, positive = TRUE
+      )$root
+    }
+
+    Pi <- D * kronecker(1 / P, t(k * P^(1 - beta)))
+
+    # 用 (21) 式计算制造业收入(世界市场对各国制造业产品的需求)
+    Y_l <- (1 - beta + alpha * beta) * t(Pi) %*% (w * L) +
+      alpha * beta * t(Pi) %*% Y_o
+
+    # 引致的超额劳动需求
+    excess_labor_ratio <- (as.vector(Y_l) / w - L) / L
+
+    tolerance <- sum(excess_labor_ratio^2) %>% sqrt()
+
+    if (tolerance < 1e-9) {
+      # 精度符合要求，可输出模型结果
+      Xn <- w * L * (alpha + (1 - beta) / beta) + alpha * Y_o
+      Xni <- Pi * kronecker(Xn, rep(1, N) %>% t())
+      trade_volumn <- sum(Xni) - diag(Xni) %>% sum()
+      W <- (w * L + Y_o) * P^(alpha / theta)
+
+      return(list(
+        p = P^(-1 / theta), w = w, W = W,
+        Xni = Xni, trade_volumn = trade_volumn
+      ))
+    } else {
+      # 对劳动的超额需求会导致工资发生变化
+      w <- w * (1 + excess_labor_ratio * 0.3) # 0.3 为弹性
+      # print(str_c("iterator: ", i))
+    }
+  }
+  
+  # 500 次迭代还没结果，一般来说，是因为序列不收敛
+  print("not convergent")
+}
+
+baseline_immobile <- model_immobile(absolute_tech, Dni)
+```
+
+## Section 6 Counterfactual Simulation
+
+从一般均衡模型解出的任何一个变量 $x$，都可用
+$\begin{aligned} 100\ln \frac{x'}{x_0}\end{aligned}$ 计算反事实模拟值 $x'$
+相对于 baseline 值 $x_0$ 的百分比变化
+
+### TABLE IX
+
+提高贸易障碍至 Autarky
+
+```{r}
+D_autarky <- diag(19)
+
+autarky_mobile <- model_mobile(absolute_tech, D_autarky)
+autarky_immobile <- model_immobile(absolute_tech, D_autarky)
+
+table9 <- cbind(
+  country_table$name,
+  (100 * log(autarky_mobile$W / baseline_mobile$W)) %>% sprintf("%.1f", .),
+  (100 * log(autarky_mobile$p / baseline_mobile$p)) %>% sprintf("%.1f", .),
+  (100 * log(autarky_mobile$L / baseline_mobile$L)) %>% sprintf("%.1f", .),
+  (100 * log(autarky_immobile$W / baseline_immobile$W)) %>% sprintf("%.1f", .),
+  (100 * log(autarky_immobile$p / baseline_immobile$p)) %>% sprintf("%.1f", .),
+  (100 * log(autarky_immobile$w / baseline_immobile$w)) %>% sprintf("%.1f", .)
+) %>%
+  as.data.table()
+
+
+table9 %>%
+  set_colnames(c(
+    "Country", "Welfare", "Mfg.Prices", "Mfg.Labor", "Welfare", "Mfg.Prices", "Mfg.Wages"
+  )) %>%
+  prettify(
+    caption = "TABLE IX \\\n The Gains from Trade: Raising Geographic Barriers"
+  ) %>%
+  add_header_above(c(
+    " " = 1, "Mobile Labor" = 3,
+    "Immobile Labor" = 3
+  )) %>%
+  add_header_above(c(
+    " " = 1, "Percentage Change from Baseline to Autarky" = 6
+  ))
+```
+
+### TABLE X
+
+降低贸易障碍。贸易障碍可以理解为 $d_{ni}-1$，即价格加成的幅度
+
+```{r}
+D_zero_barrier <- matrix(rep(1, N^2), nrow = N)
+zero_barrier_mobile <- model_mobile(absolute_tech, D_zero_barrier)
+zero_barrier_mobile$trade_volumn / baseline_mobile$trade_volumn
+```
+
+可见，若完全消除贸易障碍，贸易规模将是现在的将近 5 倍之多。
+
+```{r}
+D_double_trade <- (Dni^(-1 / theta)) %>% # dni
+  `-`(1) %>% # dni-1，可以认为这是贸易障碍（加价程度）
+  `*`(0.667) %>% # 贸易障碍变为实际水平的 66.7%
+  `+`(1) %>% # 新的 dni
+  `^`(-theta)
+double_trade_mobile <- model_mobile(absolute_tech, D_double_trade)
+double_trade_mobile$trade_volumn / baseline_mobile$trade_volumn
+```
+
+贸易障碍变为当前的 66.7%，贸易规模将翻倍
+
+```{r}
+table10 <- cbind(
+  country_table$name,
+  (100 * log(zero_barrier_mobile$W / baseline_mobile$W)) %>% sprintf("%.1f", .),
+  (100 * log(zero_barrier_mobile$p / baseline_mobile$p)) %>% sprintf("%.1f", .),
+  (100 * log(zero_barrier_mobile$L / baseline_mobile$L)) %>% sprintf("%.1f", .),
+  (100 * log(double_trade_mobile$W / baseline_mobile$W)) %>% sprintf("%.1f", .),
+  (100 * log(double_trade_mobile$p / baseline_mobile$p)) %>% sprintf("%.1f", .),
+  (100 * log(double_trade_mobile$L / baseline_mobile$L)) %>% sprintf("%.1f", .)
+) %>%
+  as.data.frame()
+
+
+table10 %>%
+  set_colnames(c(
+    "Country", "Welfare", "Mfg.Prices", "Mfg.Labor", "Welfare", "Mfg.Prices", "Mfg.Labor"
+  )) %>%
+  prettify(
+    caption = "TABLE X \\\n The Gains from Trade: Lowering Grographic Barriers"
+  ) %>%
+  add_header_above(c(
+    " " = 1, "Baseline to Zero Gravity" = 3,
+    "Baseline to Doubled Trade" = 3
+  )) %>%
+  add_header_above(c(
+    " " = 1, "Percentage Changes in the Case of Mobile Labor" = 6
+  ))
+```
+
+若实现零贸易障碍，小国的福利增长幅度更大；而美国、日本、德国等大国的福利增长幅度更小。因此小国对降低贸易障碍往往持更热切的态度。
+
+### FIGURE III
+
+贸易障碍为无穷大（autarky）时，制造业就业占比均等于常数 $\alpha$；贸易障碍为零时，制造业就业占比正比于 $T_i/w_i^{1+\theta\beta}$，完全由技术和工资决定；贸易障碍在二者之间，制造业就业占比同时受到地理因素和技术/工资的影响。
+
+> 注：地理因素就是 TABLE VII 中的 29 个影响贸易障碍的虚拟变量，包括区位、语言、贸易协定、目的地国效应等。
+
+#### 地理障碍的下降的两种效应
+
+1. 会导致可贸易品范围的不断拓宽。只要贸易障碍不再是无穷大，给定 Fréchet 效率分布，各国都有部分产品效率足够高、价格足够低，可以跨越地理障碍开展贸易。而且，随着贸易障碍逐渐下降，能够跨越门槛进行贸易的商品种类越来越多，推动贸易不断增长。
+2. 会影响中间投入品的价格。但各国中间投入品价格下降的速率是不同的，从而导致各国最终品价格变化幅度的不对称和贸易增量的不对称。
+
+#### 制造业就业变化的两种模式
+
+Simulation 的结果显示，各国制造业就业的变化似乎遵循两种模式：小国的制造业先萎缩后扩张；大国的制造业先扩张后萎缩。美国、日本、德国是比较典型的大国，英国、法国、意大利、加拿大处于临界状态，其他国家则是典型的小国。
+
+一种可能的解释如下：
+
+1. 起初，大国的中间投入品更便宜，使大国拥有对小国的要素成本优势，大国能够打入小国市场的产品相对多，小国能打入大国市场的产品相对少。因此，大国对小国的净出口为正，大国制造业扩张，小国制造业萎缩。
+2. 随着地理障碍的不断下降，越来越多的商品跨越了贸易障碍的门槛。大国对小国的净出口越来越多（虽然贸易增量中大国出口对小国出口的比例在下降），小国制造业日益萎缩。
+3. 当地理障碍下降到一定程度时，上述趋势将被逆转：此时较小的国家也可以低价购买中间产品（**小国中间投入品下降的速度比大国快**），使小国制造业产品逐渐获得要素成本优势。当越来越多的小国制造业产品反攻进入大国市场，与大国对小国的出口增量持平时，就出现了拐点。越过这个拐点，大国对小国的净出口将开始减少，乃至由正专负，大国制造业转向萎缩（相比 autarky），小国制造业走向扩张。
+
+```{r}
+# 按一定倍率放缩地理障碍 dni-1
+n_points <- 51
+exponent <- seq(from = -5, to = 5, length.out = n_points)
+scale <- 2^exponent # 放缩倍数，从 1/32 到 32
+visible_countries <- c("Belgium", "Denmark", "Germany", "Japan")
+```
+
+```{r, echo=FALSE}
+# 比较各国价格水平的变化
+comparison_mobile_price <- scale %>%
+  map( # 返回的列表的每个元素都是一个经过放缩的 Dni 矩阵
+    ~ (Dni^(-1 / theta)) %>%
+      `-`(1) %>% # dni-1 是贸易障碍
+      `*`(.x) %>% # 放缩倍数
+      `+`(1) %>%
+      `^`(-theta)
+  ) %>%
+  map_dfc(
+    ~ model_mobile(absolute_tech, .x)$p / zero_barrier_mobile$p
+  ) %>%
+  as_tibble() %>%
+  set_colnames(exponent %>% as.character()) %>%
+  mutate(country = country_table$name) %>%
+  pivot_longer(
+    cols = 1:n_points, names_to = "exponent",
+    values_to = "relative_price"
+  ) %>%
+  mutate(barrier_scale = 2^as.numeric(exponent)) %>%
+  as.data.table()
+
+
+country_table$name %>%
+  reduce(
+    .f = function(plot, country_name) {
+      plot %>%
+        add_markers(
+          data = comparison_mobile_price[country == country_name, ],
+          x = ~barrier_scale, y = ~relative_price,
+          name = ~country_name, showlegend = TRUE,
+          visible = ifelse(country_name %in% visible_countries, T, "legendonly"),
+          opacity = 0.8
+        )
+    },
+    .init = canvas
+  ) %>%
+  academic_layout() %>%
+  layout(
+    colorway = topo.colors(19),
+    title = list(text = "<b>FIGURE 3a Relative Price to Zero Barrier: Mobile Situation</b>"),
+    xaxis = list(
+      title = list(text = "scaling factor in geographic barriers: from autarky to zero"),
+      range = c(log(32) / log(10), -log(32) / log(10)),
+      type = "log" # plotly 的对数坐标轴以10为底
+    ),
+    yaxis = list(
+      title = list(text = "relative price")
+    ),
+    legend = list(
+      xanchor = "left",
+      font = list(family = "Times New Roman", size = 14)
+    )
+  )
+```
+
+Figure 3a 显示，随着贸易障碍的下降，日本和德国的中间品价格长期保持稳定，而比利时的中间品价格已经有巨大的下降，相当程度上缓解了成本劣势。
+
+```{r, echo=FALSE}
+# 比较各国制造业劳动占比的变化
+comparison_mobile_labor <- scale %>%
+  map( # 返回的列表的每个元素都是一个经过放缩的 Dni 矩阵
+    ~ (Dni^(-1 / theta)) %>%
+      `-`(1) %>% # dni-1 是贸易障碍
+      `*`(.x) %>% # 放缩倍数
+      `+`(1) %>%
+      `^`(-theta)
+  ) %>%
+  map_dfc(
+    ~ alpha * model_mobile(absolute_tech, .x)$L / autarky_mobile$L
+  ) %>%
+  as_tibble() %>%
+  set_colnames(exponent %>% as.character()) %>%
+  mutate(country = country_table$name) %>%
+  pivot_longer(
+    cols = 1:n_points, names_to = "exponent",
+    values_to = "labor_fraction"
+  ) %>%
+  mutate(barrier_scale = 2^as.numeric(exponent)) %>%
+  as.data.table()
+
+country_table$name %>%
+  reduce(
+    .f = function(plot, country_name) {
+      plot %>%
+        add_markers(
+          data = comparison_mobile_labor[country == country_name, ],
+          x = ~barrier_scale, y = ~labor_fraction,
+          name = ~country_name, showlegend = TRUE,
+          visible = ifelse(country_name %in% visible_countries, T, "legendonly"),
+          opacity = 0.8
+        )
+    },
+    .init = canvas
+  ) %>%
+  academic_layout() %>%
+  layout(
+    colorway = topo.colors(19),
+    title = list(text = "<b>FIGURE 3b Specialization Change from Autarky: Mobile Situation</b>"),
+    xaxis = list(
+      title = list(text = "scaling factor in geographic barriers: from autarky to zero"),
+      range = c(log(32) / log(10), -log(32) / log(10)),
+      type = "log" # plotly 的对数坐标轴以10为底
+    ),
+    yaxis = list(
+      title = list(text = "fraction of labor employed in manufacturing")
+    ),
+    legend = list(
+      xanchor = "left",
+      font = list(family = "Times New Roman", size = 14)
+    )
+  )
+```
+
+Figure 3b 显示，在当前（对贸易障碍的放缩倍数为 $1$）基础上进一步降低贸易障碍时，丹麦、比利时等小国的制造业占比会快速回升（虽然尚未回复到 autarky 水平），德国也会继续上升一段时间，日本则处于最高点，即将开始下降。
+
+#### 事情远比想象的复杂
+
+事实上，由本程序 Section 4 中 (20) 式变形求 $\boldsymbol{L}$ 的表达式知，有三种力量影响制造业就业规模：(1) 贸易障碍 $\boldsymbol{D}$；(2) 各国经济规模 $\boldsymbol{Y}$；(3) 各国竞争力（$\boldsymbol{T}/\boldsymbol{w}^{1+\theta\beta}$）。
+
+其中，(1) 是地理因素，(3) 是技术因素，(2) 是规模因素。这三种因素如何作用，是非常复杂的。虽然不难想象，国家规模更多地影响制造业就业占比波动的幅度，较少影响其波动的形状，但毕竟有影响，该变量波动的形状绝非仅有地理因素或仅有国家规模因素正交地决定，并没有论文所述的那样一种清晰的模式。
+
+```{r, echo=FALSE}
+visible_countries <- c("Canada", "France", "Italy", "United Kingdom")
+
+country_table$name %>%
+  reduce(
+    .f = function(plot, country_name) {
+      plot %>%
+        add_markers(
+          data = comparison_mobile_labor[country == country_name, ],
+          x = ~barrier_scale, y = ~labor_fraction,
+          name = ~country_name, showlegend = TRUE,
+          visible = ifelse(country_name %in% visible_countries, T, "legendonly"),
+          opacity = 0.8
+        )
+    },
+    .init = canvas
+  ) %>%
+  academic_layout() %>%
+  layout(
+    colorway = topo.colors(19),
+    title = list(text = "<b>FIGURE 3c Middle Countries</b>"),
+    xaxis = list(
+      title = list(text = "scaling factor in geographic barriers: from autarky to zero"),
+      range = c(log(32) / log(10), -log(32) / log(10)),
+      type = "log" # plotly 的对数坐标轴以10为底
+    ),
+    yaxis = list(
+      title = list(text = "fraction of labor employed in manufacturing")
+    ),
+    legend = list(
+      xanchor = "left",
+      font = list(family = "Times New Roman", size = 14)
+    )
+  )
+```
+
+由上图可见，英国、法国、意大利、加拿大四个中等国家的制造业就业经历了多轮峰-谷变化，很难给出简单的解释。
+
+### TABLE XI
+
+技术进步改善福利的外溢效果
+
+```{r}
+# 美国技术进步
+tech_US <- inset(rep(1, N), N, 1.2) * absolute_tech
+
+tech_US_mobile <- model_mobile(tech_US, Dni)
+benefits_mobile <- 100 * log(tech_US_mobile$W / baseline_mobile$W)
+normalized_US_mobile <- 100 * benefits_mobile / benefits_mobile[N] # 除以美国
+
+tech_US_immobile <- model_immobile(tech_US, Dni)
+benefits_immobile <- 100 * log(tech_US_immobile$W / baseline_immobile$W)
+normalized_US_immobile <- 100 * benefits_immobile / benefits_immobile[N] # 除以美国
+
+
+# 德国技术进步
+tech_GE <- inset(rep(1, N), 8, 1.2) * absolute_tech
+
+tech_GE_mobile <- model_mobile(tech_GE, Dni)
+benefits_mobile <- 100 * log(tech_GE_mobile$W / baseline_mobile$W)
+normalized_GE_mobile <- 100 * benefits_mobile / benefits_mobile[8] # 除以德国
+
+tech_GE_immobile <- model_immobile(tech_GE, Dni)
+benefits_immobile <- 100 * log(tech_GE_immobile$W / baseline_immobile$W)
+normalized_GE_immobile <- 100 * benefits_immobile / benefits_immobile[8] # 除以德国
+
+
+# TABLE XI
+table11 <- cbind(
+  country_table$name,
+  normalized_US_mobile %>% sprintf("%.1f", .),
+  normalized_US_immobile %>% sprintf("%.1f", .),
+  normalized_GE_mobile %>% sprintf("%.1f", .),
+  normalized_GE_immobile %>% sprintf("%.1f", .)
+) %>%
+  as.data.frame()
+
+
+table11 %>%
+  set_colnames(c(
+    "Country", "Mobile Labor", "Immobile Labor", "Mobile Labor", "Immobile Labor"
+  )) %>%
+  prettify(
+    caption = "TABLE XI \\\n The Benefits of Foreign Technology"
+  ) %>%
+  add_header_above(c(
+    " " = 1, "Higher U.S. State of Technology" = 2,
+    "Higher German State of Technology" = 2
+  )) %>%
+  add_header_above(c(
+    " " = 1, "Welfare Consequences of Improved Technology" = 4
+  )) %>%
+  footnote(
+    general = "All numbers are expressed relative to the percentage welfare gain in the country whose technology expands. Based on a counterfactual 20 percent increase in the state of technology for either the United States or Germany.",
+    general_title = "\n Note: ",
+    footnote_as_chunk = T
+  )
+```
+
+### TABLE XII
+
+building...
