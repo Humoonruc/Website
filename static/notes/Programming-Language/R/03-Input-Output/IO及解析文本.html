@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Humoon" />
+
+<meta name="date" content="2022-07-06" />
+
+<title>IO及解析文本</title>
+
+<script src="libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="libs/navigation-1.1/tabsets.js"></script>
+<script src="libs/navigation-1.1/codefolding.js"></script>
+<script src="libs/navigation-1.1/sourceembed.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; } /* Alert */
+code span.an { color: #008000; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #0000ff; } /* ControlFlow */
+code span.ch { color: #008080; } /* Char */
+code span.cn { } /* Constant */
+code span.co { color: #008000; } /* Comment */
+code span.cv { color: #008000; } /* CommentVar */
+code span.do { color: #008000; } /* Documentation */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.im { } /* Import */
+code span.in { color: #008000; } /* Information */
+code span.kw { color: #0000ff; } /* Keyword */
+code span.op { } /* Operator */
+code span.ot { color: #ff4000; } /* Other */
+code span.pp { color: #ff4000; } /* Preprocessor */
+code span.sc { color: #008080; } /* SpecialChar */
+code span.ss { color: #008080; } /* SpecialString */
+code span.st { color: #008080; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #008080; } /* VerbatimString */
+code span.wa { color: #008000; font-weight: bold; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+<link rel="stylesheet" href="../css/style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">IO及解析文本</h1>
+<h4 class="author">Humoon</h4>
+<h4 class="date">2022-07-06</h4>
+
+</div>
+
+
+<div id="ui-交互" class="section level2">
+<h2>UI 交互</h2>
+<ul>
+<li><code>View(data)</code>, 显示表格化的数据</li>
+<li><code>fix(data)</code>, 显示表格化的数据，且可以编辑数值</li>
+</ul>
+</div>
+<div id="brucerimportexport" class="section level2">
+<h2><code>bruceR::import()/export()</code></h2>
+<p>一站式导入 / 导出任意存储格式的数据表</p>
+<ul>
+<li><p>主要参数</p>
+<ul>
+<li><code>file</code>：带后缀的文件名（包括但不限于
+TXT、CSV、Excel、SPSS、Stata 等），如果不设定，则从剪贴板导入 /
+导出至剪贴板</li>
+<li><code>sheet</code>：如果是 Excel 文件，可以额外指定是哪个 Sheet
+表单（默认是第一个 Sheet）</li>
+<li><code>range</code>：如果是 Excel
+文件，可以额外指定数据的单元格范围（默认是全部单元格）</li>
+<li><code>encoding</code>：字符编码（<code>"UTF-8"</code>、<code>"GBK"</code>、<code>"CP936"</code>
+中的一种），一般用于会出现乱码的使用 UTF-8 编码的带有中文字符的 CSV
+文件（设为 <code>"UTF-8"</code> 即可）</li>
+<li><code>header</code>：导入时是否把第一行作为变量名（导出时是否包含变量名）？默认是
+<code>TRUE</code>，可设为 <code>FALSE</code></li>
+<li><code>as</code>：导入后使用哪种数据框类型？默认是
+<code>"data.frame"</code>，<strong>可设为
+<code>"data.table"</code></strong> 或 <code>"tibble"</code></li>
+</ul></li>
+<li><p>使用示例</p></li>
+</ul>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import() 支持导入 txt、csv、xlsx、rda、rds等</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">&quot;MyData.csv&quot;</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">&quot;MyData.xlsx&quot;</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="st">&quot;MyData.sav&quot;</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>data <span class="ot">&lt;-</span> <span class="fu">import</span>(<span class="at">file =</span> <span class="st">&quot;aaa.csv&quot;</span>, <span class="at">as =</span> <span class="st">&quot;data.table&quot;</span>)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 导出</span></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="fu">export</span>(data, <span class="at">file =</span> <span class="st">&quot;NewData.csv&quot;</span>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="fu">export</span>(data, <span class="at">file =</span> <span class="st">&quot;NewData.xlsx&quot;</span>)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="fu">export</span>(data, <span class="at">file =</span> <span class="st">&quot;NewData.sav&quot;</span>)</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a><span class="co"># 一次同时导出两个数据集到Excel</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a><span class="fu">export</span>(<span class="fu">list</span>(airquality, npk), <span class="at">sheet =</span> <span class="fu">c</span>(<span class="st">&quot;air&quot;</span>, <span class="st">&quot;npk&quot;</span>), <span class="at">file =</span> <span class="st">&quot;Two_Datasets.xlsx&quot;</span>)</span></code></pre></div>
+</div>
+<div id="input" class="section level2">
+<h2>Input</h2>
+<p><a href="../pdf/cheatsheet-data-import.pdf"><strong>import data as
+tidy-style cheatsheet.pdf</strong></a>，内含三个包: readr, readxl,
+googlesheets4</p>
+<object data="../pdf/cheatsheet-data-import.pdf" type="application/pdf" width="100%" height="100%">
+</object>
+<div id="from-console" class="section level3">
+<h3>from Console</h3>
+<div id="c" class="section level4">
+<h4><code>&lt;-c()</code></h4>
+<p>直接输入一个向量</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>y</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;a&quot; &quot;b&quot; &quot;c&quot;</code></pre>
+</div>
+<div id="scan-控制台输入一个向量" class="section level4">
+<h4><code>scan()</code> 控制台输入一个向量</h4>
+<p>以<strong>单次回车或空格</strong>间隔元素，以两次回车结束输入。</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">scan</span>()</span></code></pre></div>
+</div>
+</div>
+<div id="from-package" class="section level3">
+<h3>from Package</h3>
+<ul>
+<li>查看所有预先提供的数据集 <code>data()</code></li>
+<li>查看某个包所有预先提供的数据集 <code>data(package=" ")</code></li>
+<li>读入某个包的数据 <code>data(dataname, package=" ")</code></li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(SemiPar)</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="at">package =</span> <span class="st">&quot;SemiPar&quot;</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(copper, <span class="at">package =</span> <span class="st">&quot;SemiPar&quot;</span>)</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(copper)</span></code></pre></div>
+<pre><code>#&gt;   sample.num    id zone xcoord ycoord zcoord grade core.length
+#&gt; 1          1 BHL01    1    220    625    122  1.34           5
+#&gt; 2          2 BHL01    1    220    625    117  0.98           5
+#&gt; 3          3 BHL01    1    220    625    112  1.29           5
+#&gt; 4          4 BHL01    1    220    625    107  1.18           5
+#&gt; 5          5 BHL01    1    220    625    102  1.10           5
+#&gt; 6          6 BHL01    1    220    625     97  0.46           5</code></pre>
+</div>
+<div id="from-txt" class="section level3">
+<h3>from TXT</h3>
+<p><code>readr::read_lines()</code>
+将文本文件的各行读为字符串向量的各元素</p>
+<p><code>readr::read_table()</code> 读空格分割的文件</p>
+</div>
+<div id="from-json" class="section level3">
+<h3>from JSON</h3>
+<p><code>jsonlite::fromJSON(path)</code></p>
+</div>
+<div id="from-二进制文件" class="section level3">
+<h3>from 二进制文件</h3>
+<div id="rda" class="section level4">
+<h4>.rda</h4>
+<p><code>load('xxx.rda')</code></p>
+</div>
+<div id="rds" class="section level4">
+<h4>.RDS</h4>
+<p><code>readRDS()</code></p>
+</div>
+</div>
+<div id="from-csv" class="section level3">
+<h3>from CSV</h3>
+<div id="data.tablefread" class="section level4">
+<h4><code>data.table::fread()</code></h4>
+<p><strong><span style="color:red;">对 csv 文件优先使用，读为
+data.table</span></strong></p>
+<p>注意两点：</p>
+<ol style="list-style-type: decimal">
+<li>一个是<span style="color:red;">不要将 csv 中的数值型字符串读为
+integer 等数值型变量</span>（如将 “004” 读为 4），用
+<code>colClasses=</code> 规定</li>
+<li>注意文件编码</li>
+</ol>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>ISO3166 <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">&quot;./data/ISO-3166.csv&quot;</span>, <span class="at">colClasses =</span> <span class="fu">list</span>(<span class="at">character =</span> <span class="fu">c</span>(<span class="dv">4</span>, <span class="dv">9</span>, <span class="dv">10</span>, <span class="dv">11</span>)), <span class="at">encoding =</span> <span class="st">&quot;UTF-8&quot;</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(ISO3166)</span></code></pre></div>
+<pre><code>#&gt; Classes &#39;data.table&#39; and &#39;data.frame&#39;:   249 obs. of  11 variables:
+#&gt;  $ name                    : chr  &quot;Afghanistan&quot; &quot;Åland Islands&quot; &quot;Albania&quot; &quot;Algeria&quot; ...
+#&gt;  $ alpha-2                 : chr  &quot;AF&quot; &quot;AX&quot; &quot;AL&quot; &quot;DZ&quot; ...
+#&gt;  $ alpha-3                 : chr  &quot;AFG&quot; &quot;ALA&quot; &quot;ALB&quot; &quot;DZA&quot; ...
+#&gt;  $ country-code            : chr  &quot;004&quot; &quot;248&quot; &quot;008&quot; &quot;012&quot; ...
+#&gt;  $ iso_3166-2              : chr  &quot;ISO 3166-2:AF&quot; &quot;ISO 3166-2:AX&quot; &quot;ISO 3166-2:AL&quot; &quot;ISO 3166-2:DZ&quot; ...
+#&gt;  $ region                  : chr  &quot;Asia&quot; &quot;Europe&quot; &quot;Europe&quot; &quot;Africa&quot; ...
+#&gt;  $ sub-region              : chr  &quot;Southern Asia&quot; &quot;Northern Europe&quot; &quot;Southern Europe&quot; &quot;Northern Africa&quot; ...
+#&gt;  $ intermediate-region     : chr  &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; ...
+#&gt;  $ region-code             : chr  &quot;142&quot; &quot;150&quot; &quot;150&quot; &quot;002&quot; ...
+#&gt;  $ sub-region-code         : chr  &quot;034&quot; &quot;154&quot; &quot;039&quot; &quot;015&quot; ...
+#&gt;  $ intermediate-region-code: chr  &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; ...
+#&gt;  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>ISO3166 <span class="ot">&lt;-</span> <span class="fu">fread</span>(<span class="st">&quot;./data/ISO-3166.csv&quot;</span>, <span class="at">select =</span> <span class="fu">list</span>(<span class="at">character =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">4</span>)), <span class="at">encoding =</span> <span class="st">&quot;UTF-8&quot;</span>)</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str</span>(ISO3166)</span></code></pre></div>
+<pre><code>#&gt; Classes &#39;data.table&#39; and &#39;data.frame&#39;:   249 obs. of  3 variables:
+#&gt;  $ name        : chr  &quot;Afghanistan&quot; &quot;Åland Islands&quot; &quot;Albania&quot; &quot;Algeria&quot; ...
+#&gt;  $ alpha-3     : chr  &quot;AFG&quot; &quot;ALA&quot; &quot;ALB&quot; &quot;DZA&quot; ...
+#&gt;  $ country-code: chr  &quot;004&quot; &quot;248&quot; &quot;008&quot; &quot;012&quot; ...
+#&gt;  - attr(*, &quot;.internal.selfref&quot;)=&lt;externalptr&gt;</code></pre>
+</div>
+<div id="readrread_csv" class="section level4">
+<h4><code>readr::read_csv()</code></h4>
+<ul>
+<li><code>read_csv()</code>将文件读为tibble<br />
+</li>
+<li>不指定列的数据类型时，<code>read_csv()</code>会打印一份数据列说明，给出每个列的名称和它<strong>自动解析的列的类型</strong>。这是readr包的一项重要功能。但强烈建议编程者提供<code>col_types</code>参数</li>
+<li>首行：
+<ul>
+<li><code>col_names = T</code>, 不使用首行作为列名称</li>
+<li><code>col_names = F</code>,
+不使用首行作为列名，函数自动将列标记为X1, X2, …</li>
+<li><code>col_names = 字符串向量</code>，直接赋列名称</li>
+</ul></li>
+<li><code>skip = n</code>, 忽略前n行（通常为MetaData）</li>
+<li><code>comment = '#'</code>, 忽略所有以<code>#</code>开头的行</li>
+<li><code>na =</code>, 设定缺失值，默认各种 white space<a href="#fn1"
+class="footnote-ref" id="fnref1"><sup>1</sup></a>
+和<code>NA</code>都是缺失值</li>
+</ul>
+</div>
+</div>
+<div id="parse_" class="section level3">
+<h3><code>parse_*()</code></h3>
+<div id="readr-解析文本文件的原理" class="section level4">
+<h4>readr 解析文本文件的原理</h4>
+<p>解析依靠函数族<code>parse_*()</code>。这些函数接受一个字符向量，并返回一个特定向量，如逻辑、整数或日期向量。具体来说，重要的解析函数有
+8 种。</p>
+<ul>
+<li>parse_logical()和parse_integer()分别解析逻辑值和整数。这两个解析函数基本不会出现问题</li>
+<li>parse_double()是严格的数值型解析函数，parse_number()则是灵活的数值型解析函数。这两个函数要比你预想的更复杂，因为世界各地书写数值的方式不尽相同<br />
+</li>
+<li>parse_character()似乎太过简单，甚至没必要存在。但一个棘手的问题使得这个函数变得非常重要：字符编码</li>
+<li>parse_factor()函数可以创建因子，R使用这种数据结构来表示分类变量<br />
+</li>
+<li>parse_datetime()、parse_date()和parse_time()函数可以解析不同类型的日期和时间。它们是最复杂的，因为有太多不同的日期书写形式</li>
+</ul>
+<p><strong>所以读取 csv
+远比你想象的复杂，自己造轮子会累死。</strong></p>
+</div>
+<div id="解析数值" class="section level4">
+<h4>解析数值</h4>
+<ol style="list-style-type: decimal">
+<li><code>parse_double()</code>的<code>locale(decimal_mark=)</code>参数定义当地的小数点书写形式。</li>
+</ol>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">parse_double</span>(<span class="st">&quot;3121,23&quot;</span>, <span class="at">locale =</span> <span class="fu">locale</span>(<span class="at">decimal_mark =</span> <span class="st">&quot;,&quot;</span>))</span></code></pre></div>
+<pre><code>#&gt; [1] 3121.23</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li><code>parse_number()</code>可以忽略数值前后的非数值型字符。这个函数特别适合处理货币和百分比，也可以提取嵌在文本中的数值。</li>
+</ol>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">parse_number</span>(<span class="st">&quot;It cost $123.45.&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] 123.45</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">parse_number</span>(<span class="st">&quot;I want 45% of it.&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] 45</code></pre>
+<ol start="3" style="list-style-type: decimal">
+<li><code>parse_number()</code>和<code>locale(grouping_mark=)</code>参数可以忽略位数间隔符(grouping
+mark)</li>
+</ol>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="fu">parse_number</span>(<span class="st">&quot;123.456.789&quot;</span>, <span class="at">locale =</span> <span class="fu">locale</span>(<span class="at">grouping_mark =</span> <span class="st">&quot;.&quot;</span>))</span></code></pre></div>
+<pre><code>#&gt; [1] 123456789</code></pre>
+</div>
+<div id="解析字符串" class="section level4">
+<h4>解析字符串</h4>
+<p>非英文字符的编码方式有许多种，对其解码需要用<code>locale(encoding=)</code>参数设置编码方式，</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>x2 <span class="ot">&lt;-</span> <span class="st">&quot;</span><span class="sc">\x82\xb1\x82\xf1\x82\xc9\x82\xbf\x82\xcd</span><span class="st">&quot;</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">parse_character</span>(x2, <span class="at">locale =</span> <span class="fu">locale</span>(<span class="at">encoding =</span> <span class="st">&quot;Shift-JIS&quot;</span>))</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;こんにちは&quot;</code></pre>
+</div>
+<div id="解析因子" class="section level4">
+<h4>解析因子</h4>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>fruit <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;apple&quot;</span>, <span class="st">&quot;banana&quot;</span>)</span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a><span class="fu">parse_factor</span>(<span class="fu">c</span>(<span class="st">&quot;apple&quot;</span>, <span class="st">&quot;banana&quot;</span>, <span class="st">&quot;bananana&quot;</span>), <span class="at">levels =</span> fruit)</span></code></pre></div>
+<pre><code>#&gt; Warning: 1 parsing failure.
+#&gt; row col           expected   actual
+#&gt;   3  -- value in level set bananana</code></pre>
+<pre><code>#&gt; [1] apple  banana &lt;NA&gt;  
+#&gt; attr(,&quot;problems&quot;)
+#&gt; # A tibble: 1 × 4
+#&gt;     row   col expected           actual  
+#&gt;   &lt;int&gt; &lt;int&gt; &lt;chr&gt;              &lt;chr&gt;   
+#&gt; 1     3    NA value in level set bananana
+#&gt; Levels: apple banana</code></pre>
+</div>
+<div id="解析日期与时间" class="section level4">
+<h4>解析日期与时间</h4>
+<ul>
+<li>parse_datetime() 接受符合 ISO 8601 标准的日期时间。</li>
+</ul>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">parse_datetime</span>(<span class="st">&quot;2010-10-01T2010&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;2010-10-01 20:10:00 UTC&quot;</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 如果时间被省略了，那么它就会被设置为午夜0点0分</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">parse_datetime</span>(<span class="st">&quot;20101010&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;2010-10-10 UTC&quot;</code></pre>
+<ul>
+<li>parse_date()
+接受是四位数的年份+<code>-</code>或<code>/</code>+月+<code>-</code>或<code>/</code>+日</li>
+</ul>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">parse_date</span>(<span class="st">&quot;2010-10-01&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;2010-10-01&quot;</code></pre>
+<ul>
+<li>parse_time()
+接受小时+<code>:</code>+分钟+[<code>:</code>+秒]+[am/pm]</li>
+</ul>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(hms)</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a><span class="fu">parse_time</span>(<span class="st">&quot;01:10 am&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; 01:10:00</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">parse_time</span>(<span class="st">&quot;20:10:01&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; 20:10:01</code></pre>
+<ul>
+<li>自己设定时间格式</li>
+</ul>
+<table>
+<thead>
+<tr class="header">
+<th>符号</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>%Y</td>
+<td>4位数年份</td>
+</tr>
+<tr class="even">
+<td>%y</td>
+<td>2位数年份(00-69 → 2000-2069, 70-99 → 1970-1999)</td>
+</tr>
+<tr class="odd">
+<td>%m</td>
+<td>2位数月份</td>
+</tr>
+<tr class="even">
+<td>%b</td>
+<td>简写月份</td>
+</tr>
+<tr class="odd">
+<td>%B</td>
+<td>月份全称</td>
+</tr>
+<tr class="even">
+<td>%d</td>
+<td>日期，一位数或两位数</td>
+</tr>
+<tr class="odd">
+<td>%e</td>
+<td>两位数日期</td>
+</tr>
+<tr class="even">
+<td>%H</td>
+<td>0-23小时</td>
+</tr>
+<tr class="odd">
+<td>%I%p</td>
+<td>0-12小时，%p表示am/pm</td>
+</tr>
+<tr class="even">
+<td>%M</td>
+<td>分钟</td>
+</tr>
+<tr class="odd">
+<td>%S</td>
+<td>整数秒</td>
+</tr>
+<tr class="even">
+<td>%OS</td>
+<td>实数秒</td>
+</tr>
+<tr class="odd">
+<td>%Z</td>
+<td>时区</td>
+</tr>
+<tr class="even">
+<td>%z</td>
+<td>与国际标准时间的时差</td>
+</tr>
+<tr class="odd">
+<td>%.</td>
+<td>忽略一个非数值字符</td>
+</tr>
+<tr class="even">
+<td>%*</td>
+<td>忽略所有非数值字符</td>
+</tr>
+</tbody>
+</table>
+<p>注意，若对非英语月份名称使用 %b 或
+%B，需要在locale()函数中设置语言参数。</p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">parse_date</span>(<span class="st">&quot;1 janvier 2015&quot;</span>, <span class="st">&quot;%d %B %Y&quot;</span>, <span class="at">locale =</span> <span class="fu">locale</span>(<span class="st">&quot;fr&quot;</span>))</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;2015-01-01&quot;</code></pre>
+</div>
+</div>
+</div>
+<div id="output" class="section level2">
+<h2>Output</h2>
+<div id="to-console" class="section level3">
+<h3>to Console</h3>
+<p><code>cat(... , file = "", sep = " ", fill = FALSE, labels = NULL,  append = FALSE)</code></p>
+<p><a
+href="file:一个文件链接或者文件名，如果不写此参数，表示输出到控制台"
+class="uri">file:一个文件链接或者文件名，如果不写此参数，表示输出到控制台</a>。</p>
+<p>sep:分隔符</p>
+<p>append:是否追加，当且仅当参数file是文件名而非链接时，此参数才有效。</p>
+<p>注意：cat()默认用空格分开各部分，不会以换行作为输出的结尾</p>
+<p><code>print()</code></p>
+<p>区别：print() 输出字符串向量，cat()
+输出字符串的内容，就像显示在网页或打印结果上</p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>r<span class="sc">$</span><span class="er">&gt;</span> <span class="fu">cat</span>(<span class="st">&quot;Hello&quot;</span>)</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>Hello</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>r<span class="sc">$</span><span class="er">&gt;</span> <span class="fu">print</span>(<span class="st">&#39;Hello&#39;</span>)</span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>[<span class="dv">1</span>] <span class="st">&quot;Hello&quot;</span></span></code></pre></div>
+</div>
+<div id="to-txt" class="section level3">
+<h3>to TXT</h3>
+<p><code>readr::write_lines()</code></p>
+<p><code>sink("filename", append=TRUE, split=TRUE)</code>
+文本输出，是否追加，是否同时输出在屏幕上</p>
+<p><code>sink()</code> 取消文本输出到文件</p>
+</div>
+<div id="to-json" class="section level3">
+<h3>to JSON</h3>
+<ol style="list-style-type: decimal">
+<li><code>jsonlite::toJSON()</code>保存为 JSON 字符串</li>
+<li><code>readr::write_lines(data, path)</code> 保存为 json 文件</li>
+</ol>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">dir.create</span>(<span class="st">&quot;./data&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; Warning in dir.create(&quot;./data&quot;): &#39;.\data&#39; already exists</code></pre>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>iris <span class="sc">%&gt;%</span></span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  jsonlite<span class="sc">::</span><span class="fu">toJSON</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  readr<span class="sc">::</span><span class="fu">write_lines</span>(<span class="st">&quot;./data/iris.json&quot;</span>)</span></code></pre></div>
+</div>
+<div id="to-.rda" class="section level3">
+<h3>to .rda</h3>
+<p><code>save(obj, file = 'xxx.rda')</code>
+保存一些变量。第一个参数省略时保存所有对象。</p>
+<p><code>save.image('xxx.rda')</code>
+保存整个工作空间中的所有变量。对于长期连续编程，这非常有用。</p>
+</div>
+<div id="to-.rds" class="section level3">
+<h3>to .RDS</h3>
+<p><code>saveRDS()</code> 保存单个对象到一个RDS文件</p>
+</div>
+<div id="to-csv" class="section level3">
+<h3>to CSV</h3>
+<div id="data.tablefwirte" class="section level4">
+<h4><code>data.table::fwirte()</code></h4>
+</div>
+<div id="readrwrite_csv" class="section level4">
+<h4><code>readr::write_csv()</code></h4>
+<p>这个函数输出的文件能够顺利读取的概率更高，因为：</p>
+<ul>
+<li>它们总是使用UTF-8 对字符串进行编码<br />
+</li>
+<li>它们使用ISO
+8601格式来保存日期和日期时间数据，以便这些数据不论在何种环境下都更容易解析</li>
+</ul>
+<p>注意，当保存为CSV文件时，列的数据类型信息就丢失了：这使得CSV文件在暂存临时结果时有些不可靠——每次加载时都要重建列类型。</p>
+</div>
+</div>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>如<code>\n</code>、<code>\t</code>等特殊字符。<a
+href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIklP5Y+K6Kej5p6Q5paH5pysIg0Kc3VidGl0bGU6ICcnDQphdXRob3I6ICJIdW1vb24iDQpkYXRlOiAiYHIgU3lzLkRhdGUoKWAiDQpvdXRwdXQ6IGh0bWxfZG9jdW1lbnQNCmRvY3VtZW50Y2xhc3M6IGN0ZXhhcnQNCmNsYXNzb3B0aW9uOiBoeXBlcnJlZiwNCi0tLQ0KDQpgYGB7ciBzZXR1cCwgaW5jbHVkZSA9IEZBTFNFfQ0Kc291cmNlKCIuLi9SbWFya2Rvd24tdGVtcGxhdGUvUm1hcmtkb3duX2NvbmZpZy5SIikNCg0KIyMgZ2xvYmFsIG9wdGlvbnMgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCmtuaXRyOjpvcHRzX2NodW5rJHNldCgNCiAgd2lkdGggPSBjb25maWckd2lkdGgsDQogIGZpZy53aWR0aCA9IGNvbmZpZyRmaWcud2lkdGgsDQogIGZpZy5hc3AgPSBjb25maWckZmlnLmFzcCwNCiAgb3V0LndpZHRoID0gY29uZmlnJG91dC53aWR0aCwNCiAgZmlnLmFsaWduID0gY29uZmlnJGZpZy5hbGlnbiwNCiAgZmlnLnBhdGggPSBjb25maWckZmlnLnBhdGgsDQogIGZpZy5zaG93ID0gY29uZmlnJGZpZy5zaG93LA0KICB3YXJuID0gY29uZmlnJHdhcm4sDQogIHdhcm5pbmcgPSBjb25maWckd2FybmluZywNCiAgbWVzc2FnZSA9IGNvbmZpZyRtZXNzYWdlLA0KICBlY2hvID0gY29uZmlnJGVjaG8sDQogIGV2YWwgPSBjb25maWckZXZhbCwNCiAgdGlkeSA9IGNvbmZpZyR0aWR5LA0KICBjb21tZW50ID0gY29uZmlnJGNvbW1lbnQsDQogIGNvbGxhcHNlID0gY29uZmlnJGNvbGxhcHNlLA0KICBjYWNoZSA9IGNvbmZpZyRjYWNoZSwNCiAgY2FjaGUuY29tbWVudHMgPSBjb25maWckY2FjaGUuY29tbWVudHMsDQogIGF1dG9kZXAgPSBjb25maWckYXV0b2RlcA0KKQ0KDQoNCiMjIHVzZSBuZWNlc3NhcnkgcGFja2FnZXMgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQpsaWJyYXJ5KHRpZHl2ZXJzZSkNCmxpYnJhcnkoZGF0YS50YWJsZSkNCmxpYnJhcnkobWFncml0dHIpDQpsaWJyYXJ5KHBsb3RseSkNCmxpYnJhcnkoaHRtbHdpZGdldHMpDQpgYGANCg0KIyMgVUkg5Lqk5LqSDQoNCi0gYFZpZXcoZGF0YSlgLCDmmL7npLrooajmoLzljJbnmoTmlbDmja4NCi0gYGZpeChkYXRhKWAsIOaYvuekuuihqOagvOWMlueahOaVsOaNru+8jOS4lOWPr+S7pee8lui+keaVsOWAvA0KDQojIyBgYnJ1Y2VSOjppbXBvcnQoKS9leHBvcnQoKWANCg0K5LiA56uZ5byP5a+85YWlIC8g5a+85Ye65Lu75oSP5a2Y5YKo5qC85byP55qE5pWw5o2u6KGoDQoNCi0g5Li76KaB5Y+C5pWwDQoNCiAgLSBgZmlsZWDvvJrluKblkI7nvIDnmoTmlofku7blkI3vvIjljIXmi6zkvYbkuI3pmZDkuo4gVFhU44CBQ1NW44CBRXhjZWzjgIFTUFNT44CBU3RhdGEg562J77yJ77yM5aaC5p6c5LiN6K6+5a6a77yM5YiZ5LuO5Ymq6LS05p2/5a+85YWlIC8g5a+85Ye66Iez5Ymq6LS05p2/DQogIC0gYHNoZWV0YO+8muWmguaenOaYryBFeGNlbCDmlofku7bvvIzlj6/ku6Xpop3lpJbmjIflrprmmK/lk6rkuKogU2hlZXQg6KGo5Y2V77yI6buY6K6k5piv56ys5LiA5LiqIFNoZWV077yJDQogIC0gYHJhbmdlYO+8muWmguaenOaYryBFeGNlbCDmlofku7bvvIzlj6/ku6Xpop3lpJbmjIflrprmlbDmja7nmoTljZXlhYPmoLzojIPlm7TvvIjpu5jorqTmmK/lhajpg6jljZXlhYPmoLzvvIkNCiAgLSBgZW5jb2Rpbmdg77ya5a2X56ym57yW56CB77yIYCJVVEYtOCJg44CBYCJHQksiYOOAgWAiQ1A5MzYiYCDkuK3nmoTkuIDnp43vvInvvIzkuIDoiKznlKjkuo7kvJrlh7rnjrDkubHnoIHnmoTkvb/nlKggVVRGLTgg57yW56CB55qE5bim5pyJ5Lit5paH5a2X56ym55qEIENTViDmlofku7bvvIjorr7kuLogYCJVVEYtOCJgIOWNs+WPr++8iQ0KICAtIGBoZWFkZXJg77ya5a+85YWl5pe25piv5ZCm5oqK56ys5LiA6KGM5L2c5Li65Y+Y6YeP5ZCN77yI5a+85Ye65pe25piv5ZCm5YyF5ZCr5Y+Y6YeP5ZCN77yJ77yf6buY6K6k5pivIGBUUlVFYO+8jOWPr+iuvuS4uiBgRkFMU0VgDQogIC0gYGFzYO+8muWvvOWFpeWQjuS9v+eUqOWTquenjeaVsOaNruahhuexu+Wei++8n+m7mOiupOaYryBgImRhdGEuZnJhbWUiYO+8jCoq5Y+v6K6+5Li6IGAiZGF0YS50YWJsZSJgKiog5oiWIGAidGliYmxlImANCg0KLSDkvb/nlKjnpLrkvosNCg0KYGBge3IsIGV2YWw9RkFMU0V9DQojIGltcG9ydCgpIOaUr+aMgeWvvOWFpSB0eHTjgIFjc3bjgIF4bHN444CBcmRh44CBcmRz562JDQpkYXRhIDwtIGltcG9ydCgiTXlEYXRhLmNzdiIpDQpkYXRhIDwtIGltcG9ydCgiTXlEYXRhLnhsc3giKQ0KZGF0YSA8LSBpbXBvcnQoIk15RGF0YS5zYXYiKQ0KZGF0YSA8LSBpbXBvcnQoZmlsZSA9ICJhYWEuY3N2IiwgYXMgPSAiZGF0YS50YWJsZSIpDQoNCiMg5a+85Ye6DQpleHBvcnQoZGF0YSwgZmlsZSA9ICJOZXdEYXRhLmNzdiIpDQpleHBvcnQoZGF0YSwgZmlsZSA9ICJOZXdEYXRhLnhsc3giKQ0KZXhwb3J0KGRhdGEsIGZpbGUgPSAiTmV3RGF0YS5zYXYiKQ0KDQojIOS4gOasoeWQjOaXtuWvvOWHuuS4pOS4quaVsOaNrumbhuWIsEV4Y2VsDQpleHBvcnQobGlzdChhaXJxdWFsaXR5LCBucGspLCBzaGVldCA9IGMoImFpciIsICJucGsiKSwgZmlsZSA9ICJUd29fRGF0YXNldHMueGxzeCIpDQpgYGANCg0KIyMgSW5wdXQNCg0KPGEgaHJlZj0iLi4vcGRmL2NoZWF0c2hlZXQtZGF0YS1pbXBvcnQucGRmIj48c3Ryb25nPmltcG9ydCBkYXRhIGFzICB0aWR5LXN0eWxlIGNoZWF0c2hlZXQucGRmPC9zdHJvbmc+PC9hPu+8jOWGheWQq+S4ieS4quWMhTogcmVhZHIsIHJlYWR4bCwgZ29vZ2xlc2hlZXRzNA0KDQo8b2JqZWN0IGRhdGE9Ii4uL3BkZi9jaGVhdHNoZWV0LWRhdGEtaW1wb3J0LnBkZiIgdHlwZT0iYXBwbGljYXRpb24vcGRmIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIj48L29iamVjdD4NCg0KDQojIyMgZnJvbSBDb25zb2xlDQoNCiMjIyMgYDwtYygpYA0KDQrnm7TmjqXovpPlhaXkuIDkuKrlkJHph48NCg0KYGBge3J9DQp5IDwtIGMoImEiLCAiYiIsICJjIikNCnkNCmBgYA0KDQojIyMjIGBzY2FuKClgIOaOp+WItuWPsOi+k+WFpeS4gOS4quWQkemHjw0KDQrku6UqKuWNleasoeWbnui9puaIluepuuagvCoq6Ze06ZqU5YWD57Sg77yM5Lul5Lik5qyh5Zue6L2m57uT5p2f6L6T5YWl44CCDQpgYGB7ciwgZXZhbD1GQUxTRX0NCnggPC0gc2NhbigpDQpgYGANCg0KIyMjIGZyb20gUGFja2FnZQ0KDQoqIOafpeeci+aJgOaciemihOWFiOaPkOS+m+eahOaVsOaNrumbhiBgZGF0YSgpYA0KKiDmn6XnnIvmn5DkuKrljIXmiYDmnInpooTlhYjmj5DkvpvnmoTmlbDmja7pm4YgYGRhdGEocGFja2FnZT0iICIpYA0KKiDor7vlhaXmn5DkuKrljIXnmoTmlbDmja4gYGRhdGEoZGF0YW5hbWUsIHBhY2thZ2U9IiAiKWANCg0KYGBge3J9DQpsaWJyYXJ5KFNlbWlQYXIpDQpkYXRhKHBhY2thZ2UgPSAiU2VtaVBhciIpDQpkYXRhKGNvcHBlciwgcGFja2FnZSA9ICJTZW1pUGFyIikNCmhlYWQoY29wcGVyKQ0KYGBgDQoNCiMjIyBmcm9tIFRYVA0KDQpgcmVhZHI6OnJlYWRfbGluZXMoKWAg5bCG5paH5pys5paH5Lu255qE5ZCE6KGM6K+75Li65a2X56ym5Liy5ZCR6YeP55qE5ZCE5YWD57SgDQoNCmByZWFkcjo6cmVhZF90YWJsZSgpYCDor7vnqbrmoLzliIblibLnmoTmlofku7YNCg0KIyMjIGZyb20gSlNPTg0KDQpganNvbmxpdGU6OmZyb21KU09OKHBhdGgpYA0KDQojIyMgZnJvbSDkuozov5vliLbmlofku7YNCg0KIyMjIyAucmRhDQoNCmBsb2FkKCd4eHgucmRhJylgDQoNCiMjIyMgLlJEUw0KDQpgcmVhZFJEUygpYA0KDQojIyMgZnJvbSBDU1YNCg0KIyMjIyBgZGF0YS50YWJsZTo6ZnJlYWQoKWANCg0KKio8c3BhbiBzdHlsZT0iY29sb3I6cmVkOyI+5a+5IGNzdiDmlofku7bkvJjlhYjkvb/nlKjvvIzor7vkuLogZGF0YS50YWJsZTwvc3Bhbj4qKg0KDQrms6jmhI/kuKTngrnvvJoNCg0KMS4g5LiA5Liq5pivPHNwYW4gc3R5bGU9ImNvbG9yOnJlZDsiPuS4jeimgeWwhiBjc3Yg5Lit55qE5pWw5YC85Z6L5a2X56ym5Liy6K+75Li6IGludGVnZXIg562J5pWw5YC85Z6L5Y+Y6YePPC9zcGFuPu+8iOWmguWwhiAiMDA0IiDor7vkuLogNO+8ie+8jOeUqCBgY29sQ2xhc3Nlcz1gIOinhOWumg0KMi4g5rOo5oSP5paH5Lu257yW56CBDQoNCmBgYHtyfQ0KSVNPMzE2NiA8LSBmcmVhZCgiLi9kYXRhL0lTTy0zMTY2LmNzdiIsIGNvbENsYXNzZXMgPSBsaXN0KGNoYXJhY3RlciA9IGMoNCwgOSwgMTAsIDExKSksIGVuY29kaW5nID0gIlVURi04IikNCnN0cihJU08zMTY2KQ0KYGBgDQoNCmBgYHtyfQ0KSVNPMzE2NiA8LSBmcmVhZCgiLi9kYXRhL0lTTy0zMTY2LmNzdiIsIHNlbGVjdCA9IGxpc3QoY2hhcmFjdGVyID0gYygxLCAzLCA0KSksIGVuY29kaW5nID0gIlVURi04IikNCnN0cihJU08zMTY2KQ0KYGBgDQoNCiMjIyMgYHJlYWRyOjpyZWFkX2NzdigpYA0KDQotIGByZWFkX2NzdigpYOWwhuaWh+S7tuivu+S4unRpYmJsZSAgICANCi0g5LiN5oyH5a6a5YiX55qE5pWw5o2u57G75Z6L5pe277yMYHJlYWRfY3N2KClg5Lya5omT5Y2w5LiA5Lu95pWw5o2u5YiX6K+05piO77yM57uZ5Ye65q+P5Liq5YiX55qE5ZCN56ew5ZKM5a6DKiroh6rliqjop6PmnpDnmoTliJfnmoTnsbvlnosqKuOAgui/meaYr3JlYWRy5YyF55qE5LiA6aG56YeN6KaB5Yqf6IO944CC5L2G5by654OI5bu66K6u57yW56iL6ICF5o+Q5L6bYGNvbF90eXBlc2Dlj4LmlbANCi0g6aaW6KGM77yaDQogIC0gYGNvbF9uYW1lcyA9IFRgLCDkuI3kvb/nlKjpppbooYzkvZzkuLrliJflkI3np7ANCiAgLSBgY29sX25hbWVzID0gRmAsIOS4jeS9v+eUqOmmluihjOS9nOS4uuWIl+WQje+8jOWHveaVsOiHquWKqOWwhuWIl+agh+iusOS4ulgxLCBYMiwgLi4uDQogIC0gYGNvbF9uYW1lcyA9IOWtl+espuS4suWQkemHj2DvvIznm7TmjqXotYvliJflkI3np7ANCi0gYHNraXAgPSBuYCwg5b+955Wl5YmNbuihjO+8iOmAmuW4uOS4uk1ldGFEYXRh77yJDQotIGBjb21tZW50ID0gJyMnYCwg5b+955Wl5omA5pyJ5LulYCNg5byA5aS055qE6KGMDQotIGBuYSA9IGAsIOiuvuWumue8uuWkseWAvO+8jOm7mOiupOWQhOenjSB3aGl0ZSBzcGFjZVted2hpdGVTcGFjZV0g5ZKMYE5BYOmDveaYr+e8uuWkseWAvA0KDQpbXndoaXRlU3BhY2VdOiDlpoJgXG5g44CBYFx0YOetieeJueauiuWtl+espuOAgg0KDQoNCiMjIyBgcGFyc2VfKigpYA0KDQojIyMjIHJlYWRyIOino+aekOaWh+acrOaWh+S7tueahOWOn+eQhg0KDQrop6PmnpDkvp3pnaDlh73mlbDml49gcGFyc2VfKigpYOOAgui/meS6m+WHveaVsOaOpeWPl+S4gOS4quWtl+espuWQkemHj++8jOW5tui/lOWbnuS4gOS4queJueWumuWQkemHj++8jOWmgumAu+i+keOAgeaVtOaVsOaIluaXpeacn+WQkemHj+OAguWFt+S9k+adpeivtO+8jOmHjeimgeeahOino+aekOWHveaVsOaciSA4IOenjeOAgg0KDQoqIHBhcnNlX2xvZ2ljYWwoKeWSjHBhcnNlX2ludGVnZXIoKeWIhuWIq+ino+aekOmAu+i+keWAvOWSjOaVtOaVsOOAgui/meS4pOS4quino+aekOWHveaVsOWfuuacrOS4jeS8muWHuueOsOmXrumimA0KKiBwYXJzZV9kb3VibGUoKeaYr+S4peagvOeahOaVsOWAvOWei+ino+aekOWHveaVsO+8jHBhcnNlX251bWJlcigp5YiZ5piv54G15rS755qE5pWw5YC85Z6L6Kej5p6Q5Ye95pWw44CC6L+Z5Lik5Liq5Ye95pWw6KaB5q+U5L2g6aKE5oOz55qE5pu05aSN5p2C77yM5Zug5Li65LiW55WM5ZCE5Zyw5Lmm5YaZ5pWw5YC855qE5pa55byP5LiN5bC955u45ZCMICANCiogcGFyc2VfY2hhcmFjdGVyKCnkvLzkuY7lpKrov4fnroDljZXvvIznlJroh7PmsqHlv4XopoHlrZjlnKjjgILkvYbkuIDkuKrmo5jmiYvnmoTpl67popjkvb/lvpfov5nkuKrlh73mlbDlj5jlvpfpnZ7luLjph43opoHvvJrlrZfnrKbnvJbnoIENCiogcGFyc2VfZmFjdG9yKCnlh73mlbDlj6/ku6XliJvlu7rlm6DlrZDvvIxS5L2/55So6L+Z56eN5pWw5o2u57uT5p6E5p2l6KGo56S65YiG57G75Y+Y6YePICAgDQoqIHBhcnNlX2RhdGV0aW1lKCnjgIFwYXJzZV9kYXRlKCnlkoxwYXJzZV90aW1lKCnlh73mlbDlj6/ku6Xop6PmnpDkuI3lkIznsbvlnovnmoTml6XmnJ/lkozml7bpl7TjgILlroPku6zmmK/mnIDlpI3mnYLnmoTvvIzlm6DkuLrmnInlpKrlpJrkuI3lkIznmoTml6XmnJ/kuablhpnlvaLlvI8NCg0KKirmiYDku6Xor7vlj5YgY3N2IOi/nOavlOS9oOaDs+ixoeeahOWkjeadgu+8jOiHquW3semAoOi9ruWtkOS8mue0r+atu+OAgioqDQoNCiMjIyMg6Kej5p6Q5pWw5YC8DQoNCjEuIGBwYXJzZV9kb3VibGUoKWDnmoRgbG9jYWxlKGRlY2ltYWxfbWFyaz0pYOWPguaVsOWumuS5ieW9k+WcsOeahOWwj+aVsOeCueS5puWGmeW9ouW8j+OAgg0KYGBge3J9DQpwYXJzZV9kb3VibGUoIjMxMjEsMjMiLCBsb2NhbGUgPSBsb2NhbGUoZGVjaW1hbF9tYXJrID0gIiwiKSkNCmBgYA0KDQoNCjIuIGBwYXJzZV9udW1iZXIoKWDlj6/ku6Xlv73nlaXmlbDlgLzliY3lkI7nmoTpnZ7mlbDlgLzlnovlrZfnrKbjgILov5nkuKrlh73mlbDnibnliKvpgILlkIjlpITnkIbotKfluIHlkoznmb7liIbmr5TvvIzkuZ/lj6/ku6Xmj5Dlj5bltYzlnKjmlofmnKzkuK3nmoTmlbDlgLzjgIINCmBgYHtyfQ0KcGFyc2VfbnVtYmVyKCJJdCBjb3N0ICQxMjMuNDUuIikNCnBhcnNlX251bWJlcigiSSB3YW50IDQ1JSBvZiBpdC4iKQ0KYGBgDQoNCjMuIGBwYXJzZV9udW1iZXIoKWDlkoxgbG9jYWxlKGdyb3VwaW5nX21hcms9KWDlj4LmlbDlj6/ku6Xlv73nlaXkvY3mlbDpl7TpmpTnrKYoZ3JvdXBpbmcgbWFyaykNCmBgYHtyfQ0KcGFyc2VfbnVtYmVyKCIxMjMuNDU2Ljc4OSIsIGxvY2FsZSA9IGxvY2FsZShncm91cGluZ19tYXJrID0gIi4iKSkNCmBgYA0KDQojIyMjIOino+aekOWtl+espuS4sg0KDQrpnZ7oi7HmloflrZfnrKbnmoTnvJbnoIHmlrnlvI/mnInorrjlpJrnp43vvIzlr7nlhbbop6PnoIHpnIDopoHnlKhgbG9jYWxlKGVuY29kaW5nPSlg5Y+C5pWw6K6+572u57yW56CB5pa55byP77yMDQpgYGB7cn0NCngyIDwtICJceDgyXHhiMVx4ODJceGYxXHg4Mlx4YzlceDgyXHhiZlx4ODJceGNkIg0KcGFyc2VfY2hhcmFjdGVyKHgyLCBsb2NhbGUgPSBsb2NhbGUoZW5jb2RpbmcgPSAiU2hpZnQtSklTIikpDQpgYGANCg0KIyMjIyDop6PmnpDlm6DlrZANCmBgYHtyfQ0KZnJ1aXQgPC0gYygiYXBwbGUiLCAiYmFuYW5hIikNCnBhcnNlX2ZhY3RvcihjKCJhcHBsZSIsICJiYW5hbmEiLCAiYmFuYW5hbmEiKSwgbGV2ZWxzID0gZnJ1aXQpDQpgYGANCg0KIyMjIyAg6Kej5p6Q5pel5pyf5LiO5pe26Ze0DQoNCiogcGFyc2VfZGF0ZXRpbWUoKSDmjqXlj5fnrKblkIggSVNPIDg2MDEg5qCH5YeG55qE5pel5pyf5pe26Ze044CCDQoNCmBgYHtyfQ0KcGFyc2VfZGF0ZXRpbWUoIjIwMTAtMTAtMDFUMjAxMCIpDQoNCiMg5aaC5p6c5pe26Ze06KKr55yB55Wl5LqG77yM6YKj5LmI5a6D5bCx5Lya6KKr6K6+572u5Li65Y2I5aScMOeCuTDliIYNCnBhcnNlX2RhdGV0aW1lKCIyMDEwMTAxMCIpDQpgYGANCg0KKiBwYXJzZV9kYXRlKCkg5o6l5Y+X5piv5Zub5L2N5pWw55qE5bm05Lu9K2AtYOaIlmAvYCvmnIgrYC1g5oiWYC9gK+aXpQ0KYGBge3J9DQpwYXJzZV9kYXRlKCIyMDEwLTEwLTAxIikNCmBgYA0KDQoqIHBhcnNlX3RpbWUoKSDmjqXlj5flsI/ml7YrYDpgK+WIhumSnytbYDpgK+enkl0rW2FtL3BtXQ0KYGBge3J9DQpsaWJyYXJ5KGhtcykNCnBhcnNlX3RpbWUoIjAxOjEwIGFtIikNCnBhcnNlX3RpbWUoIjIwOjEwOjAxIikNCmBgYA0KDQoqIOiHquW3seiuvuWumuaXtumXtOagvOW8jw0KDQrnrKblj7d85ZCr5LmJICAgIA0KLS0tLXwtLS0tDQolWXw05L2N5pWw5bm05Lu9DQoleXwy5L2N5pWw5bm05Lu9KDAwLTY5IOKGkiAyMDAwLTIwNjksIDcwLTk5IOKGkiAxOTcwLTE5OTkpDQolbXwy5L2N5pWw5pyI5Lu9DQolYnznroDlhpnmnIjku70NCiVCfOaciOS7veWFqOensA0KJWR85pel5pyf77yM5LiA5L2N5pWw5oiW5Lik5L2N5pWwDQolZXzkuKTkvY3mlbDml6XmnJ8NCiVIfDAtMjPlsI/ml7YNCiVJJXB8MC0xMuWwj+aXtu+8jCVw6KGo56S6YW0vcG0NCiVNfOWIhumSnw0KJVN85pW05pWw56eSDQolT1N85a6e5pWw56eSDQolWnzml7bljLoNCiV6fOS4juWbvemZheagh+WHhuaXtumXtOeahOaXtuW3rg0KJS585b+955Wl5LiA5Liq6Z2e5pWw5YC85a2X56ymDQolKnzlv73nlaXmiYDmnInpnZ7mlbDlgLzlrZfnrKYNCg0K5rOo5oSP77yM6Iul5a+56Z2e6Iux6K+t5pyI5Lu95ZCN56ew5L2/55SoICViIOaIliAlQu+8jOmcgOimgeWcqGxvY2FsZSgp5Ye95pWw5Lit6K6+572u6K+t6KiA5Y+C5pWw44CCDQpgYGB7cn0NCnBhcnNlX2RhdGUoIjEgamFudmllciAyMDE1IiwgIiVkICVCICVZIiwgbG9jYWxlID0gbG9jYWxlKCJmciIpKQ0KYGBgDQoNCiMjIE91dHB1dA0KDQojIyMgdG8gQ29uc29sZQ0KDQpgY2F0KC4uLiAsIGZpbGUgPSAiIiwgc2VwID0gIiAiLCBmaWxsID0gRkFMU0UsIGxhYmVscyA9IE5VTEwsICBhcHBlbmQgPSBGQUxTRSlgCQ0KDQpmaWxlOuS4gOS4quaWh+S7tumTvuaOpeaIluiAheaWh+S7tuWQje+8jOWmguaenOS4jeWGmeatpOWPguaVsO+8jOihqOekuui+k+WHuuWIsOaOp+WItuWPsOOAgg0KDQpzZXA65YiG6ZqU56ymDQoNCmFwcGVuZDrmmK/lkKbov73liqDvvIzlvZPkuJTku4XlvZPlj4LmlbBmaWxl5piv5paH5Lu25ZCN6ICM6Z2e6ZO+5o6l5pe277yM5q2k5Y+C5pWw5omN5pyJ5pWI44CCCQ0KDQrms6jmhI/vvJpjYXQoKem7mOiupOeUqOepuuagvOWIhuW8gOWQhOmDqOWIhu+8jOS4jeS8muS7peaNouihjOS9nOS4uui+k+WHuueahOe7k+Wwvg0KDQoNCmBwcmludCgpYA0KDQrljLrliKvvvJpwcmludCgpIOi+k+WHuuWtl+espuS4suWQkemHj++8jGNhdCgpIOi+k+WHuuWtl+espuS4sueahOWGheWuue+8jOWwseWDj+aYvuekuuWcqOe9kemhteaIluaJk+WNsOe7k+aenOS4ig0KDQpgYGBSDQpyJD4gY2F0KCJIZWxsbyIpDQpIZWxsbw0KciQ+IHByaW50KCdIZWxsbycpDQpbMV0gIkhlbGxvIg0KYGBgDQoNCg0KIyMjIHRvIFRYVA0KDQpgcmVhZHI6OndyaXRlX2xpbmVzKClgDQoNCmBzaW5rKCJmaWxlbmFtZSIsIGFwcGVuZD1UUlVFLCBzcGxpdD1UUlVFKWAg5paH5pys6L6T5Ye677yM5piv5ZCm6L+95Yqg77yM5piv5ZCm5ZCM5pe26L6T5Ye65Zyo5bGP5bmV5LiKCQ0KDQpgc2luaygpYCDlj5bmtojmlofmnKzovpPlh7rliLDmlofku7YNCg0KDQojIyMgdG8gSlNPTg0KDQoxLiBganNvbmxpdGU6OnRvSlNPTigpYOS/neWtmOS4uiBKU09OIOWtl+espuS4sg0KMi4gYHJlYWRyOjp3cml0ZV9saW5lcyhkYXRhLCBwYXRoKWAg5L+d5a2Y5Li6IGpzb24g5paH5Lu2DQoNCmBgYHtyfQ0KZGlyLmNyZWF0ZSgiLi9kYXRhIikNCg0KaXJpcyAlPiUNCiAgaGVhZCgpICU+JQ0KICBqc29ubGl0ZTo6dG9KU09OKCkgJT4lDQogIHJlYWRyOjp3cml0ZV9saW5lcygiLi9kYXRhL2lyaXMuanNvbiIpDQpgYGANCg0KIyMjIHRvIC5yZGENCg0KYHNhdmUob2JqLCBmaWxlID0gJ3h4eC5yZGEnKWAg5L+d5a2Y5LiA5Lqb5Y+Y6YeP44CC56ys5LiA5Liq5Y+C5pWw55yB55Wl5pe25L+d5a2Y5omA5pyJ5a+56LGh44CCDQoNCmBzYXZlLmltYWdlKCd4eHgucmRhJylgIOS/neWtmOaVtOS4quW3peS9nOepuumXtOS4reeahOaJgOacieWPmOmHj+OAguWvueS6jumVv+acn+i/nue7ree8lueoi++8jOi/memdnuW4uOacieeUqOOAgg0KDQojIyMgdG8gLlJEUw0KDQpgc2F2ZVJEUygpYAnkv53lrZjljZXkuKrlr7nosaHliLDkuIDkuKpSRFPmlofku7YNCg0KIyMjIHRvIENTVg0KDQojIyMjIGBkYXRhLnRhYmxlOjpmd2lydGUoKWANCg0KIyMjIyBgcmVhZHI6OndyaXRlX2NzdigpYA0KDQrov5nkuKrlh73mlbDovpPlh7rnmoTmlofku7bog73lpJ/pobrliKnor7vlj5bnmoTmpoLnjofmm7Tpq5jvvIzlm6DkuLrvvJogIA0KDQoqIOWug+S7rOaAu+aYr+S9v+eUqFVURi04IOWvueWtl+espuS4sui/m+ihjOe8lueggSAgIA0KKiDlroPku6zkvb/nlKhJU08gODYwMeagvOW8j+adpeS/neWtmOaXpeacn+WSjOaXpeacn+aXtumXtOaVsOaNru+8jOS7peS+v+i/meS6m+aVsOaNruS4jeiuuuWcqOS9leenjeeOr+Wig+S4i+mDveabtOWuueaYk+ino+aekA0KDQrms6jmhI/vvIzlvZPkv53lrZjkuLpDU1bmlofku7bml7bvvIzliJfnmoTmlbDmja7nsbvlnovkv6Hmga/lsLHkuKLlpLHkuobvvJrov5nkvb/lvpdDU1bmlofku7blnKjmmoLlrZjkuLTml7bnu5Pmnpzml7bmnInkupvkuI3lj6/pnaDigJTigJTmr4/mrKHliqDovb3ml7bpg73opoHph43lu7rliJfnsbvlnovjgIINCg==</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("IO及解析文本.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

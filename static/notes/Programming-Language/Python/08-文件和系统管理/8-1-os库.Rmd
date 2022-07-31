@@ -1,0 +1,449 @@
+---
+title: "8-1 os库"
+subtitle: ''
+author: "Humoon"
+date: "`r Sys.Date()`"
+output:
+  html_document: 
+    code_download: true
+    fig_caption: yes
+    theme: united
+    highlight: haddock
+    number_sections: yes
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: yes
+      smooth_scroll: yes
+  rticles::ctex:
+    df_print: default
+    fig_caption: yes
+    number_sections: false
+  word_document:
+    fig_caption: yes
+    toc: yes
+    toc_depth: 3
+    reference_docx: 
+  pdf_document: 
+    toc: yes
+    toc_depth: 2
+    latex_engine: xelatex
+documentclass: ctexart
+classoption: hyperref,
+---
+
+```{css, echo=FALSE}
+/* 除了直接在Rmd中写css，还可以在 yaml 头部加入 css:"style.css" 来使用外部css文件 */
+  
+  
+/* 全局 */
+
+body {
+    font-size: 16px;
+    color: #333333;
+    font-family: sans-serif, 'Segoe UI', Tahoma, Geneva, Verdana, SimSun;
+}
+
+p,
+blockquote,
+ul,
+ol,
+dl,
+table {
+    margin: 0.8em 0;
+}
+
+
+/* 多级标题 */
+
+h1 {
+    font-size: 32px;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    color: red;
+    font-weight: bold;
+}
+
+h2 {
+    font-size: 28px;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    color: purple;
+    font-weight: bold;
+}
+
+h3 {
+    color: darkslateblue;
+    font-size: 24px;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    font-weight: bold;
+}
+
+h4 {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+h1.title,
+h3.subtitle,
+h4.author,
+h4.date {
+    margin-top: 0.5em;
+    margin-bottom: 0em;
+}
+
+h4.date {
+  margin-bottom: 2em;
+}
+
+/* 链接 */
+
+a {
+  color: blue;
+}
+
+/* 代码 */
+
+code,
+.md-fences {
+  color: darkred;
+  font-family: Courier;
+  font-weight: bold;
+}
+
+div.sourceCode code {
+  font-size: 14px;
+  color: black;
+  font-family: Consolas;
+  font-weight: normal;
+}
+
+div.sourceCode code.sourceCode span.fu {
+  color: #F75000;
+}
+
+div.sourceCode code.sourceCode span.sc {
+  color: blue;
+}
+
+div.sourceCode code.sourceCode span.st {
+  color: green;
+}
+
+div.sourceCode code.sourceCode span.co {
+  color: grey;
+}
+
+div.sourceCode code.sourceCode span.dv {
+  color: BlueViolet;
+}
+
+div.sourceCode code.sourceCode span.cn {
+  color: darkcyan;
+}
+
+div.sourceCode code.sourceCode span.at {
+  color: royalblue;
+}
+
+/* 粗体 */
+strong {
+  font-family: 'Microsoft YaHei';
+}
+
+/* 列表项 */
+
+ul,
+ol {
+    margin: 0 0 1.5em 0.5em;
+}
+
+h3+ul,
+h4+ul,
+h5+ul,
+h6+ul,
+h3+ol,
+h4+ol,
+h5+ol,
+h6+ol {
+    margin-top: 0.5em;
+}
+
+p+ul,
+p+ol {
+    margin-top: 0.5em;
+}
+
+li>ul,
+li>ol {
+    margin-top: inherit;
+    margin-bottom: 0;
+    margin-left: 0.5em;
+}
+
+ul>li {
+    list-style-type: disc;
+    list-style-position: outside;
+}
+
+li ul>li {
+    list-style-type: circle;
+}
+
+ol>li {
+    list-style-type: decimal;
+    list-style-position: outside;
+}
+
+li ol>li {
+    list-style-type: upper-alpha;
+}
+
+li li ol>li {
+    list-style-type: lower-greek;
+}
+
+
+/* 首行缩进 */
+
+p {
+    text-indent: 0em;
+}
+
+
+/* 表格 */
+  
+div.pagedtable{
+  font-size:12px;
+}
+
+table {
+    padding: 0;
+    word-break: initial;
+}
+
+table tr {
+    border-top: 1px solid #dfe2e5;
+    margin: 0;
+    padding: 0;
+}
+
+table tr:nth-child(2n),
+thead {
+    background-color: #fafafa;
+}
+
+table tr th {
+    font-weight: bold;
+    border: 1px solid #dfe2e5;
+    border-bottom: 0;
+    text-align: left;
+    margin: 0;
+    padding: 6px 13px;
+}
+
+table tr td {
+    border: 1px solid #dfe2e5;
+    text-align: left;
+    margin: 0;
+    padding: 6px 13px;
+}
+
+table tr th:first-child,
+table tr td:first-child {
+    margin-top: 0;
+}
+
+table tr th:last-child,
+table tr td:last-child {
+    margin-bottom: 0;
+}
+
+
+/* 侧边栏 */
+div.col-lg-3 {
+  width: 25%;
+  max-width: 250px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 200px;
+  max-height: 90%;
+  font-size: 16px;
+}
+
+div.toc-content {
+  padding-left: 0px;
+  padding-right: 40px;
+}
+```
+
+```{r setup, include = FALSE}
+## global options
+knitr::opts_chunk$set(
+  fig.width = 7,
+  fig.asp = 0.618,
+  out.width = "90%",
+  fig.align = "center",
+  fig.path = 'Figures/',
+  fig.show = "hold",
+  warn = 1,
+  warning = FALSE,
+  message = FALSE,
+  echo = TRUE, # 是否显示代码
+  eval = TRUE, # 是否运行代码块
+  tidy = TRUE, # 代码排版
+  comment = '>>>',
+  collapse = F, # 代码与结果是否显示在同一代码块
+  cache = T,
+  cache.comments = F,
+  autodep = TRUE
+)
+
+## use necessary packages
+library('pacman')
+p_load(
+  # data processing
+  tidyverse, lubridate, data.table, magrittr,
+  # visualization
+  ggthemes, showtext, gridExtra, r2d3, 
+  # 可交互表格 DT::datatable()
+  DT,
+  # I/O 
+  sqldf,
+  # web crawler
+  rvest, httr, reticulate
+  )
+
+## database engine
+options(sqldf.driver = "SQLite")
+
+# d3绘图的前景色和背景色
+options(r2d3.theme = list(background = "white", foreground = "royalblack"))
+
+## plotting
+pdf.options(family = "GB1")
+# 包含图的代码块需要fig.showtext = TRUE选项
+showtext_auto(enable = TRUE)
+
+
+## 自定义图形主题
+# common template
+mytheme <- theme_economist_white() +
+  theme(
+    text = element_text(family = 'YaHei'),
+    plot.title = element_text(face = 'bold', size = 14),
+    plot.subtitle = element_text(size = 12),
+    plot.caption = element_text(
+      hjust = 0,
+      size = 10,
+      margin = margin(2, 0, 0, 0, 'pt')
+    ),
+    plot.margin = margin(12, 10, 12, 0, 'pt'),
+    legend.position = 'top',
+    legend.justification = 'left',
+    legend.margin = margin(4, 0, 0, 0, 'pt'),
+    legend.key.size = unit(1, 'lines'),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 10, margin = margin(0, 0, 0, 0, 'pt')),
+    axis.text = element_text(size = 10, margin = margin(2, 0, 2, 0, 'pt')),
+    axis.ticks.length = unit(-4, 'pt')
+  )
+# histogram template
+theme_bar <- theme_economist_white() +
+  theme(
+    text = element_text(family = 'YaHei'),
+    plot.title = element_text(face = 'bold', size = 14),
+    plot.subtitle = element_text(size = 12),
+    plot.caption = element_text(
+      hjust = 0,
+      size = 10,
+      margin = margin(0, 0, 0, 0, 'pt')
+    ),
+    plot.margin = margin(12, 0, 12, 10, 'pt'),
+    legend.position = 'top',
+    legend.justification = 'left',
+    legend.margin = margin(4, 0, 0, 0, 'pt'),
+    legend.key.size = unit(0.7, 'lines'),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 10, margin = margin(0, 8, 0, 4, 'pt')),
+    axis.text = element_text(size = 10),
+    axis.ticks.length = unit(0, 'pt') # 不要坐标轴须
+  )
+```
+
+
+# 路径操作：处理文件路径及信息
+
+路径操作|描述
+--|--
+**路径**|
+os.getcwd()|返回程序当前路径
+os.chdir(path)|修改当前程序操作的路径
+os.path.join(path, *paths)|组合 path 和 paths，返回一个路径字符串
+os.path.normpath(path)|归一化 path 的表示形式，统一转化为`\\`分隔
+os.path.abspath(path)|返回 path 的绝对路径
+os.path.isabs(path)|判断一个路径是否为绝对路径
+os.path.relpath(path, start=os.getcwd())|返回从start路径（默认为当前工作路径）到path路径之间的相对路径^[单个的句点是“这个目录”的缩写。两个句点是父文件夹。相对路径开始处的`.\`是可选的]
+**从路径中提取目录或文件字符串**|
+os.path.dirname(path)|返回 path 参数最后一个斜杠之前的内容（path 所在的目录名称）
+os.path.basename(path)|返回 path 参数最后一个斜杠之后的内容（最后一级文件名或目录名）。注意，这个路径最后一级的文件名或目录名可能是不存在的）
+os.path.split(path)|分割一个路径，将前两个函数所得组成一个元组并返回
+**目录操作**|
+os.markdirs(path)|创建新文件夹
+os.listdir(path)|返回path中每个文件名的列表
+**判断**|
+os.path.exists(path)|目录或文件是否存在，T/F
+os.path.isfile(path)|是否为已存在文件
+os.path.isdir(path)|是否为已存在的目录
+**其他**|
+os.path.getatime(path)|返回上一次的访问时间
+os.path.getmtime(path)|返回上一次的修改时间
+os.path.getctime(path)|返回创建时间
+os.path.getsize(path)|返回path文件的字节数
+os.walk(文件夹的路径)|os.walk() 返回一个生成器，其中 root 是当前正在遍历的这个文件夹的绝对路径，dirs 是该文件夹中所有的目录名(不包括子孙目录)，files 是该文件夹中所有的文件名(不包括子目录中的文件)
+
+```{python}
+import os
+
+os.getcwd() # 当前目录
+myFiles = ['accounts.txt', 'details.csv', 'invite.docx'] 
+for filename in myFiles: 
+    print(os.path.join('C:\\Users\\asweigart', filename)) # 粘合路径
+
+os.path.abspath('.\\.Rhistory') # 绝对路径
+os.path.relpath('.\\.Rhistory', r'C:\Users\humoo\OneDrive\2019Autumn\python') # 从第二个参数到第一个参数的相对路径
+
+os.path.dirname(r'C:\Users\humoo\OneDrive\ICT\Website\static\notes\Python_notes\.Rhistory') 
+os.path.basename(r'C:\Users\humoo\OneDrive\ICT\Website\static\notes\Python_notes\.Rhistory')
+os.path.split(r'C:\Users\humoo\OneDrive\ICT\Website\static\notes\Python_notes\.Rhistory') # 分割文件夹路径和文件名
+r'C:\Users\humoo\OneDrive\ICT\Website\static\notes\Python_notes\.Rhistory'.split('\\')
+
+os.listdir(os.getcwd()) # 获得目录下的所有文件名
+
+totalSize = 0 
+for filename in os.listdir(os.getcwd()):
+    totalSize = totalSize + os.path.getsize(os.path.join(os.getcwd(), filename))
+print( totalSize) # 统计目录下所有文件字节数之和
+```
+
+
+# 进程管理：启动系统中其他程序！
+
+`os.system(command)` 在 python 中启动系统命令行
+
+```{python}
+import os
+os.system("C:\\Windows\\System32\\calc.exe")
+os.system("C:\\Windows\\System32\\mspaint.exe C:\\Users\\humoo\\OneDrive\\2019Autumn\\python\\第7周\\pywordcloud2.png") # 用画图程序打开一个 png 文件
+```
+
+# 环境参数
+
+函数|描述
+--|--
+os.getlogin()|当前系统用户名称
+os.cpu_count()|CPU 数量
+os.urandom(n)|获得 n 个字节长度的随机字符串，通常用语加解密运算

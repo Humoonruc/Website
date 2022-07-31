@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Humoon" />
+
+<meta name="date" content="2022-07-15" />
+
+<title>Control Flows</title>
+
+<script src="libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="libs/navigation-1.1/tabsets.js"></script>
+<script src="libs/navigation-1.1/codefolding.js"></script>
+<script src="libs/navigation-1.1/sourceembed.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; } /* Alert */
+code span.an { color: #008000; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #0000ff; } /* ControlFlow */
+code span.ch { color: #008080; } /* Char */
+code span.cn { } /* Constant */
+code span.co { color: #008000; } /* Comment */
+code span.cv { color: #008000; } /* CommentVar */
+code span.do { color: #008000; } /* Documentation */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.im { } /* Import */
+code span.in { color: #008000; } /* Information */
+code span.kw { color: #0000ff; } /* Keyword */
+code span.op { } /* Operator */
+code span.ot { color: #ff4000; } /* Other */
+code span.pp { color: #ff4000; } /* Preprocessor */
+code span.sc { color: #008080; } /* SpecialChar */
+code span.ss { color: #008080; } /* SpecialString */
+code span.st { color: #008080; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #008080; } /* VerbatimString */
+code span.wa { color: #008000; font-weight: bold; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+<link rel="stylesheet" href="../css/style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Control Flows</h1>
+<h4 class="author">Humoon</h4>
+<h4 class="date">2022-07-15</h4>
+
+</div>
+
+
+<div id="选择-choice" class="section level2">
+<h2>选择 Choice</h2>
+<div id="if...else-if...else..." class="section level3">
+<h3><code>if...else if...else...</code></h3>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> (condition1) {</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>  ...</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> <span class="cf">if</span> (condition2) {</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  ...</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  ...</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<p>注意：</p>
+<ol style="list-style-type: decimal">
+<li>其中条件的长度应为1，长度大于1时报错！对于长度大于 1
+的逻辑向量，要用<code>any(bool_vector)</code>和<code>all(bool_vector)</code>获得一个长度为
+1 的 Boolean 向量（一个 bool
+值），再配合<code>if(){}</code>和<code>else if(){}</code>使用。</li>
+<li>虽然 <code>NA</code> 是长度为 1 的 logical 向量，但
+<code>if(NA)</code> 也会报错，要注意防止这一点。
+<ol style="list-style-type: decimal">
+<li>可以充分利用<code>any()</code>和<code>all()</code>的 na.rm
+参数，令其为 TRUE</li>
+<li>也可以使用
+<code>if(isTRUE(condition))</code>，<code>isTRUE()</code>会在内部调用
+<code>identical(TRUE,x)</code>，只有 x 是长度为1的 TRUE，才能返回
+TRUE</li>
+</ol></li>
+</ol>
+</div>
+<div id="向量化形式ifelse" class="section level3">
+<h3>向量化形式：<code>ifelse()</code></h3>
+<p>三元选择函数<code>ifelse(condition, statement1, statement2)</code>中的三个参数可以是任意长度的向量，按各自分量执行向量化操作</p>
+<blockquote>
+<p>R 中这个函数是向量化的，使用起来要慎之又慎！！！</p>
+</blockquote>
+</div>
+<div id="switchstatement-list" class="section level3">
+<h3><code>switch(statement, list)</code></h3>
+<p>list 是一组键值对，statement 是一个键，返回 list
+中与该键对应的值。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="cf">switch</span>(x,</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">a =</span> <span class="st">&quot;option 1&quot;</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">b =</span> <span class="st">&quot;option 2&quot;</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">c =</span> <span class="st">&quot;option 3&quot;</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">stop</span>(<span class="st">&quot;Invalid `x` value&quot;</span>)</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>result1 <span class="ot">&lt;-</span> <span class="cf">switch</span>(<span class="st">&quot;fruit&quot;</span>,</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">meat =</span> <span class="st">&quot;chicken&quot;</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fruit =</span> <span class="st">&quot;apple&quot;</span>,</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">vegetable =</span> <span class="st">&quot;cucumber&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;soup&quot;</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>result1</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;apple&quot;</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>result2 <span class="ot">&lt;-</span> <span class="cf">switch</span>(<span class="st">&quot;final&quot;</span>,</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">meat =</span> <span class="st">&quot;chicken&quot;</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fruit =</span> <span class="st">&quot;apple&quot;</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">vegetable =</span> <span class="st">&quot;cucumber&quot;</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;soup&quot;</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>result2 <span class="co"># 都不匹配时，返回无key的值</span></span></code></pre></div>
+<pre><code>#&gt; [1] &quot;soup&quot;</code></pre>
+<div id="简化形式" class="section level4">
+<h4>简化形式</h4>
+<p><code>switch(k, para1, para2, ..., paran)</code>，根据整数 k 返回第 k
+个参数值。k 在 1:n 的范围之外时，返回 NULL</p>
+</div>
+</div>
+</div>
+<div id="循环-loop" class="section level2">
+<h2>循环 Loop</h2>
+<p><strong>能不用显式循环就不用，多用高阶函数实现迭代！</strong></p>
+<div id="repeat" class="section level3">
+<h3><code>repeat {}</code></h3>
+<p>必须手动指定 break 条件，否则无限循环。这在创建交互式 app
+时很有用。</p>
+</div>
+<div id="while-condition" class="section level3">
+<h3><code>while (condition) {}</code></h3>
+<p>只要 condition 取值为 TRUE，就继续循环；取值为 FALSE 时，离开循环</p>
+<p>实践中， while
+循环通常使用在迭代次数未知的情况下。例如从数据库的查询中分块地获取结果，相应的代码可能如下所示</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">dbSendQuery</span>(con, <span class="st">&quot;SELECT * FROM table1 WHERE type = 1&quot;</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="cf">while</span> (<span class="sc">!</span><span class="fu">dbHasCompleted</span>(res)) {</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  chunk <span class="ot">&lt;-</span> <span class="fu">dbFetch</span>(res, <span class="dv">10000</span>)</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">process</span>(chunk)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 一小块一小块地处理查询结果，避免将一个（也许是巨大的）数据框读取到内存中</span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co"># 这样，仅需占用很小的内存空间就可以处理大量的数据</span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 不过，前提条件是 process( ) 算法必须支持这种数据处理方式</span></span></code></pre></div>
+</div>
+<div id="foriterator-in-sequence" class="section level3">
+<h3><code>for(iterator in sequence) {}</code></h3>
+</div>
+<div id="break-关键字" class="section level3">
+<h3><code>break</code> 关键字</h3>
+<p>离开循环</p>
+</div>
+<div id="next-关键字" class="section level3">
+<h3><code>next</code> 关键字</h3>
+<p>离开本轮循环，从下一轮循环开始</p>
+</div>
+<div id="提高循环速度预先分配空间" class="section level3">
+<h3>提高循环速度：预先分配空间</h3>
+<p>R 中如果对对象的 size
+做了改动（如添加一个元素），要把整个数据结构都重新拷贝一份，这非常慢。如果在每次循环中都有这种语句，时间复杂度会是<span
+class="math inline">\(\mathrm{O}\left(\mathrm{n}^{2}\right)\)</span>级的。</p>
+<p>所以最好在开始循环前，预先声明一个空向量/列表（<code>out &lt;- vector("list", length(x))</code>），为输出结果分配足够的空间，避免频繁拷贝。循环结束后，可能需要打散并重组为我们需要的对象：对于向量用<code>unlist()</code>，数据框用<code>dplyr::bind_rows()</code></p>
+<p>参考 JS 语法:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode js"><code class="sourceCode javascript"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="kw">const</span> arr <span class="op">=</span> []<span class="op">;</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (<span class="kw">let</span> i <span class="op">=</span> <span class="dv">0</span><span class="op">;</span> i <span class="op">&lt;</span> <span class="dv">6</span><span class="op">;</span> i<span class="op">++</span>) {</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  arr<span class="op">.</span><span class="fu">push</span>(i <span class="op">^</span> <span class="dv">2</span> <span class="op">%</span> <span class="dv">11</span>)<span class="op">;</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a><span class="bu">console</span><span class="op">.</span><span class="fu">log</span>(arr)<span class="op">;</span></span></code></pre></div>
+<script type="text/javascript">
+const arr = [];
+for (let i = 0; i < 6; i++) {
+  arr.push(i ^ 2 % 11);
+}
+console.log(arr);
+</script>
+<p>例：</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">a =</span> <span class="fu">rnorm</span>(<span class="dv">10</span>),</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">b =</span> <span class="fu">rnorm</span>(<span class="dv">10</span>),</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">c =</span> <span class="fu">rnorm</span>(<span class="dv">10</span>),</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">d =</span> <span class="fu">rnorm</span>(<span class="dv">10</span>)</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 求df各列的中位数，先为输出分配空间，长度为ncol(df)的向量</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>output <span class="ot">&lt;-</span> <span class="fu">numeric</span>(<span class="fu">ncol</span>(df))</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">ncol</span>(df)) {</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>  output[[i]] <span class="ot">&lt;-</span> <span class="fu">median</span>(df[[i]])</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>output</span></code></pre></div>
+<pre><code>#&gt; [1] -0.38994378  0.24621722 -0.01565543  0.06217146</code></pre>
+</div>
+<div id="循环取元素通常会剥离属性" class="section level3">
+<h3>循环取元素通常会剥离属性</h3>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>xs <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="fu">c</span>(<span class="st">&quot;2020-01-01&quot;</span>, <span class="st">&quot;2010-01-01&quot;</span>))</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (x <span class="cf">in</span> xs) { <span class="co"># 直接取元素，剥离 class 属性</span></span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">str_c</span>(x, x <span class="sc">%&gt;%</span> <span class="fu">class</span>(), <span class="at">sep =</span> <span class="st">&#39;, &#39;</span>) <span class="sc">%&gt;%</span> <span class="fu">print</span>()</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;18262, numeric&quot;
+#&gt; [1] &quot;14610, numeric&quot;</code></pre>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(xs)) {</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">str_c</span>(xs[[i]], xs[[i]] <span class="sc">%&gt;%</span> <span class="fu">class</span>(), <span class="at">sep =</span> <span class="st">&#39;, &#39;</span>) <span class="sc">%&gt;%</span> <span class="fu">print</span>()</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;2020-01-01, Date&quot;
+#&gt; [1] &quot;2010-01-01, Date&quot;</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 还是 purrr 包的高阶函数安全</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>xs <span class="sc">%&gt;%</span> <span class="fu">walk</span>(<span class="cf">function</span>(x){</span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">str_c</span>(x, x <span class="sc">%&gt;%</span> <span class="fu">class</span>(), <span class="at">sep =</span> <span class="st">&#39;, &#39;</span>) <span class="sc">%&gt;%</span> <span class="fu">print</span>()</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;2020-01-01, Date&quot;
+#&gt; [1] &quot;2010-01-01, Date&quot;</code></pre>
+</div>
+</div>
+<div id="条件系统-condition" class="section level2">
+<h2>条件系统 Condition</h2>
+</div>
+
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkNvbnRyb2wgRmxvd3MiDQpzdWJ0aXRsZTogIiINCmF1dGhvcjogIkh1bW9vbiINCmRhdGU6ICJgciBTeXMuRGF0ZSgpYCINCm91dHB1dDogaHRtbF9kb2N1bWVudA0KZG9jdW1lbnRjbGFzczogY3RleGFydA0KY2xhc3NvcHRpb246IGh5cGVycmVmLA0KLS0tDQoNCmBgYHtyIHNldHVwLCBpbmNsdWRlID0gRkFMU0V9DQpzb3VyY2UoIi4uL1JtYXJrZG93bi10ZW1wbGF0ZS9SbWFya2Rvd25fY29uZmlnLlIiKQ0KDQojIyBnbG9iYWwgb3B0aW9ucyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0Ka25pdHI6Om9wdHNfY2h1bmskc2V0KA0KICB3aWR0aCA9IGNvbmZpZyR3aWR0aCwNCiAgZmlnLndpZHRoID0gY29uZmlnJGZpZy53aWR0aCwNCiAgZmlnLmFzcCA9IGNvbmZpZyRmaWcuYXNwLA0KICBvdXQud2lkdGggPSBjb25maWckb3V0LndpZHRoLA0KICBmaWcuYWxpZ24gPSBjb25maWckZmlnLmFsaWduLA0KICBmaWcucGF0aCA9IGNvbmZpZyRmaWcucGF0aCwNCiAgZmlnLnNob3cgPSBjb25maWckZmlnLnNob3csDQogIHdhcm4gPSBjb25maWckd2FybiwNCiAgd2FybmluZyA9IGNvbmZpZyR3YXJuaW5nLA0KICBtZXNzYWdlID0gY29uZmlnJG1lc3NhZ2UsDQogIGVjaG8gPSBjb25maWckZWNobywNCiAgZXZhbCA9IGNvbmZpZyRldmFsLA0KICB0aWR5ID0gY29uZmlnJHRpZHksDQogIGNvbW1lbnQgPSBjb25maWckY29tbWVudCwNCiAgY29sbGFwc2UgPSBjb25maWckY29sbGFwc2UsDQogIGNhY2hlID0gY29uZmlnJGNhY2hlLA0KICBjYWNoZS5jb21tZW50cyA9IGNvbmZpZyRjYWNoZS5jb21tZW50cywNCiAgYXV0b2RlcCA9IGNvbmZpZyRhdXRvZGVwDQopDQpgYGANCg0KIyMg6YCJ5oupIENob2ljZQ0KDQojIyMgYGlmLi4uZWxzZSBpZi4uLmVsc2UuLi5gDQoNCmBgYHtyLCBldmFsPUZBTFNFfQ0KaWYgKGNvbmRpdGlvbjEpIHsNCiAgLi4uDQp9IGVsc2UgaWYgKGNvbmRpdGlvbjIpIHsNCiAgLi4uDQp9IGVsc2Ugew0KICAuLi4NCn0NCmBgYA0KDQrms6jmhI/vvJoNCg0KMS4gIOWFtuS4readoeS7tueahOmVv+W6puW6lOS4ujHvvIzplb/luqblpKfkuo4x5pe25oql6ZSZ77yB5a+55LqO6ZW/5bqm5aSn5LqOIDEg55qE6YC76L6R5ZCR6YeP77yM6KaB55SoYGFueShib29sX3ZlY3Rvcilg5ZKMYGFsbChib29sX3ZlY3Rvcilg6I635b6X5LiA5Liq6ZW/5bqm5Li6IDEg55qEIEJvb2xlYW4g5ZCR6YeP77yI5LiA5LiqIGJvb2wg5YC877yJ77yM5YaN6YWN5ZCIYGlmKCl7fWDlkoxgZWxzZSBpZigpe31g5L2/55So44CCDQoyLiAg6Jm954S2IGBOQWAg5piv6ZW/5bqm5Li6IDEg55qEIGxvZ2ljYWwg5ZCR6YeP77yM5L2GIGBpZihOQSlgIOS5n+S8muaKpemUme+8jOimgeazqOaEj+mYsuatoui/meS4gOeCueOAgg0KICAgIDEuICDlj6/ku6XlhYXliIbliKnnlKhgYW55KClg5ZKMYGFsbCgpYOeahCBuYS5ybSDlj4LmlbDvvIzku6TlhbbkuLogVFJVRQ0KICAgIDIuICDkuZ/lj6/ku6Xkvb/nlKggYGlmKGlzVFJVRShjb25kaXRpb24pKWDvvIxgaXNUUlVFKClg5Lya5Zyo5YaF6YOo6LCD55SoIGBpZGVudGljYWwoVFJVRSx4KWDvvIzlj6rmnIkgeCDmmK/plb/luqbkuLox55qEIFRSVUXvvIzmiY3og73ov5Tlm54gVFJVRQ0KDQojIyMg5ZCR6YeP5YyW5b2i5byP77yaYGlmZWxzZSgpYA0KDQoNCuS4ieWFg+mAieaLqeWHveaVsGBpZmVsc2UoY29uZGl0aW9uLCBzdGF0ZW1lbnQxLCBzdGF0ZW1lbnQyKWDkuK3nmoTkuInkuKrlj4LmlbDlj6/ku6XmmK/ku7vmhI/plb/luqbnmoTlkJHph4/vvIzmjInlkIToh6rliIbph4/miafooYzlkJHph4/ljJbmk43kvZwNCg0KPiBSIOS4rei/meS4quWHveaVsOaYr+WQkemHj+WMlueahO+8jOS9v+eUqOi1t+adpeimgeaFjuS5i+WPiOaFju+8ge+8ge+8gQ0KDQojIyMgYHN3aXRjaChzdGF0ZW1lbnQsIGxpc3QpYA0KDQpsaXN0IOaYr+S4gOe7hOmUruWAvOWvue+8jHN0YXRlbWVudCDmmK/kuIDkuKrplK7vvIzov5Tlm54gbGlzdCDkuK3kuI7or6XplK7lr7nlupTnmoTlgLzjgIINCg0KYGBge3IsIGV2YWw9RkFMU0V9DQpzd2l0Y2goeCwNCiAgYSA9ICJvcHRpb24gMSIsDQogIGIgPSAib3B0aW9uIDIiLA0KICBjID0gIm9wdGlvbiAzIiwNCiAgc3RvcCgiSW52YWxpZCBgeGAgdmFsdWUiKQ0KKQ0KYGBgDQoNCmBgYHtyfQ0KcmVzdWx0MSA8LSBzd2l0Y2goImZydWl0IiwNCiAgbWVhdCA9ICJjaGlja2VuIiwNCiAgZnJ1aXQgPSAiYXBwbGUiLA0KICB2ZWdldGFibGUgPSAiY3VjdW1iZXIiLA0KICAic291cCINCikNCnJlc3VsdDENCg0KDQpyZXN1bHQyIDwtIHN3aXRjaCgiZmluYWwiLA0KICBtZWF0ID0gImNoaWNrZW4iLA0KICBmcnVpdCA9ICJhcHBsZSIsDQogIHZlZ2V0YWJsZSA9ICJjdWN1bWJlciIsDQogICJzb3VwIg0KKQ0KcmVzdWx0MiAjIOmDveS4jeWMuemFjeaXtu+8jOi/lOWbnuaXoGtleeeahOWAvA0KYGBgDQoNCiMjIyMg566A5YyW5b2i5byPDQoNCmBzd2l0Y2goaywgcGFyYTEsIHBhcmEyLCAuLi4sIHBhcmFuKWDvvIzmoLnmja7mlbTmlbAgayDov5Tlm57nrKwgayDkuKrlj4LmlbDlgLzjgIJrIOWcqCAxOm4g55qE6IyD5Zu05LmL5aSW5pe277yM6L+U5ZueIE5VTEwNCg0KIyMg5b6q546vIExvb3ANCg0KKirog73kuI3nlKjmmL7lvI/lvqrnjq/lsLHkuI3nlKjvvIzlpJrnlKjpq5jpmLblh73mlbDlrp7njrDov63ku6PvvIEqKg0KDQojIyMgYHJlcGVhdCB7fWANCg0K5b+F6aG75omL5Yqo5oyH5a6aIGJyZWFrIOadoeS7tu+8jOWQpuWImeaXoOmZkOW+queOr+OAgui/meWcqOWIm+W7uuS6pOS6kuW8jyBhcHAg5pe25b6I5pyJ55So44CCDQoNCiMjIyBgd2hpbGUgKGNvbmRpdGlvbikge31gDQoNCuWPquimgSBjb25kaXRpb24g5Y+W5YC85Li6IFRSVUXvvIzlsLHnu6fnu63lvqrnjq/vvJvlj5blgLzkuLogRkFMU0Ug5pe277yM56a75byA5b6q546vDQoNCuWunui3teS4re+8jCB3aGlsZSDlvqrnjq/pgJrluLjkvb/nlKjlnKjov63ku6PmrKHmlbDmnKrnn6XnmoTmg4XlhrXkuIvjgILkvovlpoLku47mlbDmja7lupPnmoTmn6Xor6LkuK3liIblnZflnLDojrflj5bnu5PmnpzvvIznm7jlupTnmoTku6PnoIHlj6/og73lpoLkuIvmiYDnpLoNCg0KYGBge3IsIGV2YWw9RkFMU0V9DQpyZXMgPC0gZGJTZW5kUXVlcnkoY29uLCAiU0VMRUNUICogRlJPTSB0YWJsZTEgV0hFUkUgdHlwZSA9IDEiKQ0Kd2hpbGUgKCFkYkhhc0NvbXBsZXRlZChyZXMpKSB7DQogIGNodW5rIDwtIGRiRmV0Y2gocmVzLCAxMDAwMCkNCiAgcHJvY2VzcyhjaHVuaykNCn0NCiMg5LiA5bCP5Z2X5LiA5bCP5Z2X5Zyw5aSE55CG5p+l6K+i57uT5p6c77yM6YG/5YWN5bCG5LiA5Liq77yI5Lmf6K645piv5beo5aSn55qE77yJ5pWw5o2u5qGG6K+75Y+W5Yiw5YaF5a2Y5LitDQojIOi/meagt++8jOS7hemcgOWNoOeUqOW+iOWwj+eahOWGheWtmOepuumXtOWwseWPr+S7peWkhOeQhuWkp+mHj+eahOaVsOaNrg0KIyDkuI3ov4fvvIzliY3mj5DmnaHku7bmmK8gcHJvY2VzcyggKSDnrpfms5Xlv4XpobvmlK/mjIHov5nnp43mlbDmja7lpITnkIbmlrnlvI8NCmBgYA0KDQojIyMgYGZvcihpdGVyYXRvciBpbiBzZXF1ZW5jZSkge31gDQoNCiMjIyBgYnJlYWtgIOWFs+mUruWtlw0KDQrnprvlvIDlvqrnjq8NCg0KIyMjIGBuZXh0YCDlhbPplK7lrZcNCg0K56a75byA5pys6L2u5b6q546v77yM5LuO5LiL5LiA6L2u5b6q546v5byA5aeLDQoNCiMjIyDmj5Dpq5jlvqrnjq/pgJ/luqbvvJrpooTlhYjliIbphY3nqbrpl7QNCg0KUiDkuK3lpoLmnpzlr7nlr7nosaHnmoQgc2l6ZSDlgZrkuobmlLnliqjvvIjlpoLmt7vliqDkuIDkuKrlhYPntKDvvInvvIzopoHmiormlbTkuKrmlbDmja7nu5PmnoTpg73ph43mlrDmi7fotJ3kuIDku73vvIzov5npnZ7luLjmhaLjgILlpoLmnpzlnKjmr4/mrKHlvqrnjq/kuK3pg73mnInov5nnp43or63lj6XvvIzml7bpl7TlpI3mnYLluqbkvJrmmK8kXG1hdGhybXtPfVxsZWZ0KFxtYXRocm17bn1eezJ9XHJpZ2h0KSTnuqfnmoTjgIINCg0K5omA5Lul5pyA5aW95Zyo5byA5aeL5b6q546v5YmN77yM6aKE5YWI5aOw5piO5LiA5Liq56m65ZCR6YePL+WIl+ihqO+8iGBvdXQgPC0gdmVjdG9yKCJsaXN0IiwgbGVuZ3RoKHgpKWDvvInvvIzkuLrovpPlh7rnu5PmnpzliIbphY3otrPlpJ/nmoTnqbrpl7TvvIzpgb/lhY3popHnuYHmi7fotJ3jgILlvqrnjq/nu5PmnZ/lkI7vvIzlj6/og73pnIDopoHmiZPmlaPlubbph43nu4TkuLrmiJHku6zpnIDopoHnmoTlr7nosaHvvJrlr7nkuo7lkJHph4/nlKhgdW5saXN0KClg77yM5pWw5o2u5qGG55SoYGRwbHlyOjpiaW5kX3Jvd3MoKWANCg0K5Y+C6ICDIEpTIOivreazlToNCg0KYGBge2pzfQ0KY29uc3QgYXJyID0gW107DQpmb3IgKGxldCBpID0gMDsgaSA8IDY7IGkrKykgew0KICBhcnIucHVzaChpIF4gMiAlIDExKTsNCn0NCmNvbnNvbGUubG9nKGFycik7DQpgYGANCg0K5L6L77yaDQoNCmBgYHtyfQ0KZGYgPC0gdGliYmxlKA0KICBhID0gcm5vcm0oMTApLA0KICBiID0gcm5vcm0oMTApLA0KICBjID0gcm5vcm0oMTApLA0KICBkID0gcm5vcm0oMTApDQopDQoNCiMg5rGCZGblkITliJfnmoTkuK3kvY3mlbDvvIzlhYjkuLrovpPlh7rliIbphY3nqbrpl7TvvIzplb/luqbkuLpuY29sKGRmKeeahOWQkemHjw0Kb3V0cHV0IDwtIG51bWVyaWMobmNvbChkZikpDQpmb3IgKGkgaW4gMTpuY29sKGRmKSkgew0KICBvdXRwdXRbW2ldXSA8LSBtZWRpYW4oZGZbW2ldXSkNCn0NCm91dHB1dA0KYGBgDQoNCiMjIyDlvqrnjq/lj5blhYPntKDpgJrluLjkvJrliaXnprvlsZ7mgKcNCg0KYGBge3J9DQp4cyA8LSBhcy5EYXRlKGMoIjIwMjAtMDEtMDEiLCAiMjAxMC0wMS0wMSIpKQ0KDQpmb3IgKHggaW4geHMpIHsgIyDnm7TmjqXlj5blhYPntKDvvIzliaXnprsgY2xhc3Mg5bGe5oCnDQogIHN0cl9jKHgsIHggJT4lIGNsYXNzKCksIHNlcCA9ICcsICcpICU+JSBwcmludCgpDQp9DQoNCmZvciAoaSBpbiBzZXFfYWxvbmcoeHMpKSB7DQogIHN0cl9jKHhzW1tpXV0sIHhzW1tpXV0gJT4lIGNsYXNzKCksIHNlcCA9ICcsICcpICU+JSBwcmludCgpDQp9DQoNCiMg6L+Y5pivIHB1cnJyIOWMheeahOmrmOmYtuWHveaVsOWuieWFqA0KeHMgJT4lIHdhbGsoZnVuY3Rpb24oeCl7DQogIHN0cl9jKHgsIHggJT4lIGNsYXNzKCksIHNlcCA9ICcsICcpICU+JSBwcmludCgpDQp9KQ0KYGBgDQoNCiMjIOadoeS7tuezu+e7nyBDb25kaXRpb24NCg==</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("Control-Flows.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

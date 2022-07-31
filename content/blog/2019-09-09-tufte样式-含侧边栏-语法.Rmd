@@ -1,0 +1,74 @@
+---
+title: tufte样式（含侧边栏）语法
+author: Humoon
+date: '2019-09-09'
+slug: tufte样式-含侧边栏-语法
+categories:
+  - R
+tags:
+  - 排版
+---
+
+
+```{r setup, include=FALSE}
+library(tufte)
+# tufte版本变化之后更新knitr缓存
+knitr::opts_chunk$set(tidy = FALSE, cache.extra = packageVersion('tufte'))
+options(htmltools.dir.version = FALSE)
+```
+
+## 一、使用
+
+新建R Markdown文件 - from template - tufte包之Tufte Handout
+
+## 二、语法
+
+### 1 标题
+
+建议最多两层
+
+### 2 任意边栏内容
+
+放在```` ```{marginfigure} ``` ````格式的中间
+
+### 3 注释
+
+脚注形如`^[]`，自动转换为带编号的边栏附注。
+
+不带编号的边栏附注需要用tufte包中的margin_note()在**行内代码**中生成。格式如：
+
+`反引号` r margin_note("无编号边栏附注。") `反引号`
+
+### 4 参考文献
+
+html输出中：YAML元数据中设置`link-citations: yes`，则参考文献出现在边栏；YAML元数据中设置`link-citations: no`，则参考文献出现在末尾。
+
+pdf输出中，参考文献都在末尾。
+
+### 5 引文
+
+`>`生成的引文，可以在最后用**行内代码**加`quote_footer()`函数注明引文来源，例如：
+
+````
+> "多亏了我的律师，要不然我现在还在牢里。两个人一起挖确实比一个人快很多啊。"
+>
+> 反引号 r quote_footer('--- Joe Martin') 反引号
+````
+
+### 6 图
+
+#### (1) 边栏图
+
+使用**knitr**代码段选项`fig.margin = TRUE`即可将图放置在边栏中。
+
+添加选项`fig.cap = "xxx"`、`fig.width=3.5`、`fig.height=3.5`可以设定图的标题和长宽。
+
+#### (2) 全宽插图
+
+代码段选项`fig.fullwidth = TRUE`可以使得一幅图占用全部页宽
+
+#### (3) 主栏插图
+
+默认情况下，R代码段生成的图形放置在主栏里，但其标题放在边栏中。
+
+

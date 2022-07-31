@@ -1,0 +1,1360 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+  <meta name="author" content="Humoon" />
+
+  <meta name="date" content="2022-06-27" />
+
+  <title>函数</title>
+
+  <script src="libs/header-attrs-2.14/header-attrs.js"></script>
+  <script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+  <script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+  <script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+  <script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+  <style>
+    h1 {
+      font-size: 34px;
+    }
+
+    h1.title {
+      font-size: 38px;
+    }
+
+    h2 {
+      font-size: 30px;
+    }
+
+    h3 {
+      font-size: 24px;
+    }
+
+    h4 {
+      font-size: 18px;
+    }
+
+    h5 {
+      font-size: 16px;
+    }
+
+    h6 {
+      font-size: 12px;
+    }
+
+    code {
+      color: inherit;
+      background-color: rgba(0, 0, 0, 0.04);
+    }
+
+    pre:not([class]) {
+      background-color: white
+    }
+  </style>
+  <script src="libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+  <link href="libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+  <script src="libs/tocify-1.9.1/jquery.tocify.js"></script>
+  <script src="libs/navigation-1.1/tabsets.js"></script>
+  <script src="libs/navigation-1.1/codefolding.js"></script>
+  <script src="libs/navigation-1.1/sourceembed.js"></script>
+
+  <style type="text/css">
+    code {
+      white-space: pre-wrap;
+    }
+
+    span.smallcaps {
+      font-variant: small-caps;
+    }
+
+    span.underline {
+      text-decoration: underline;
+    }
+
+    div.column {
+      display: inline-block;
+      vertical-align: top;
+      width: 50%;
+    }
+
+    div.hanging-indent {
+      margin-left: 1.5em;
+      text-indent: -1.5em;
+    }
+
+    ul.task-list {
+      list-style: none;
+    }
+  </style>
+
+
+
+  <style type="text/css">
+    code {
+      white-space: pre;
+    }
+
+    .sourceCode {
+      overflow: visible;
+    }
+  </style>
+  <style type="text/css" data-origin="pandoc">
+    pre>code.sourceCode {
+      white-space: pre;
+      position: relative;
+    }
+
+    pre>code.sourceCode>span {
+      display: inline-block;
+      line-height: 1.25;
+    }
+
+    pre>code.sourceCode>span:empty {
+      height: 1.2em;
+    }
+
+    .sourceCode {
+      overflow: visible;
+    }
+
+    code.sourceCode>span {
+      color: inherit;
+      text-decoration: inherit;
+    }
+
+    div.sourceCode {
+      margin: 1em 0;
+    }
+
+    pre.sourceCode {
+      margin: 0;
+    }
+
+    @media screen {
+      div.sourceCode {
+        overflow: auto;
+      }
+    }
+
+    @media print {
+      pre>code.sourceCode {
+        white-space: pre-wrap;
+      }
+
+      pre>code.sourceCode>span {
+        text-indent: -5em;
+        padding-left: 5em;
+      }
+    }
+
+    pre.numberSource code {
+      counter-reset: source-line 0;
+    }
+
+    pre.numberSource code>span {
+      position: relative;
+      left: -4em;
+      counter-increment: source-line;
+    }
+
+    pre.numberSource code>span>a:first-child::before {
+      content: counter(source-line);
+      position: relative;
+      left: -1em;
+      text-align: right;
+      vertical-align: baseline;
+      border: none;
+      display: inline-block;
+      -webkit-touch-callout: none;
+      -webkit-user-select: none;
+      -khtml-user-select: none;
+      -moz-user-select: none;
+      -ms-user-select: none;
+      user-select: none;
+      padding: 0 4px;
+      width: 4em;
+      color: #aaaaaa;
+    }
+
+    pre.numberSource {
+      margin-left: 3em;
+      border-left: 1px solid #aaaaaa;
+      padding-left: 4px;
+    }
+
+    div.sourceCode {}
+
+    @media screen {
+      pre>code.sourceCode>span>a:first-child::before {
+        text-decoration: underline;
+      }
+    }
+
+    code span.al {
+      color: #ff0000;
+    }
+
+    /* Alert */
+    code span.an {
+      color: #008000;
+    }
+
+    /* Annotation */
+    code span.at {}
+
+    /* Attribute */
+    code span.bu {}
+
+    /* BuiltIn */
+    code span.cf {
+      color: #0000ff;
+    }
+
+    /* ControlFlow */
+    code span.ch {
+      color: #008080;
+    }
+
+    /* Char */
+    code span.cn {}
+
+    /* Constant */
+    code span.co {
+      color: #008000;
+    }
+
+    /* Comment */
+    code span.cv {
+      color: #008000;
+    }
+
+    /* CommentVar */
+    code span.do {
+      color: #008000;
+    }
+
+    /* Documentation */
+    code span.er {
+      color: #ff0000;
+      font-weight: bold;
+    }
+
+    /* Error */
+    code span.ex {}
+
+    /* Extension */
+    code span.im {}
+
+    /* Import */
+    code span.in {
+      color: #008000;
+    }
+
+    /* Information */
+    code span.kw {
+      color: #0000ff;
+    }
+
+    /* Keyword */
+    code span.op {}
+
+    /* Operator */
+    code span.ot {
+      color: #ff4000;
+    }
+
+    /* Other */
+    code span.pp {
+      color: #ff4000;
+    }
+
+    /* Preprocessor */
+    code span.sc {
+      color: #008080;
+    }
+
+    /* SpecialChar */
+    code span.ss {
+      color: #008080;
+    }
+
+    /* SpecialString */
+    code span.st {
+      color: #008080;
+    }
+
+    /* String */
+    code span.va {}
+
+    /* Variable */
+    code span.vs {
+      color: #008080;
+    }
+
+    /* VerbatimString */
+    code span.wa {
+      color: #008000;
+      font-weight: bold;
+    }
+
+    /* Warning */
+
+    .sourceCode .row {
+      width: 100%;
+    }
+
+    .sourceCode {
+      overflow-x: auto;
+    }
+
+    .code-folding-btn {
+      margin-right: -30px;
+    }
+  </style>
+  <script>
+    // apply pandoc div.sourceCode style to pre.sourceCode instead
+    (function () {
+      var sheets = document.styleSheets;
+      for (var i = 0; i < sheets.length; i++) {
+        if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+        try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+        for (var j = 0; j < rules.length; j++) {
+          var rule = rules[j];
+          // check if there is a div.sourceCode rule
+          if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+          var style = rule.style.cssText;
+          // check if color or background-color is set
+          if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+          // replace div.sourceCode by a pre.sourceCode rule
+          sheets[i].deleteRule(j);
+          sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+        }
+      }
+    })();
+  </script>
+
+
+  <style type="text/css">
+    #rmd-source-code {
+      display: none;
+    }
+  </style>
+
+
+  <link rel="stylesheet" href="../css/style.css" type="text/css" />
+
+
+
+  <style type="text/css">
+    .main-container {
+      max-width: 940px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    img {
+      max-width: 100%;
+    }
+
+    .tabbed-pane {
+      padding-top: 12px;
+    }
+
+    .html-widget {
+      margin-bottom: 20px;
+    }
+
+    button.code-folding-btn:focus {
+      outline: none;
+    }
+
+    summary {
+      display: list-item;
+    }
+
+    details>summary>p:only-child {
+      display: inline;
+    }
+
+    pre code {
+      padding: 0;
+    }
+  </style>
+
+
+
+  <!-- tabsets -->
+
+  <style type="text/css">
+    .tabset-dropdown>.nav-tabs {
+      display: inline-table;
+      max-height: 500px;
+      min-height: 44px;
+      overflow-y: auto;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+    }
+
+    .tabset-dropdown>.nav-tabs>li.active:before {
+      content: "";
+      font-family: 'Glyphicons Halflings';
+      display: inline-block;
+      padding: 10px;
+      border-right: 1px solid #ddd;
+    }
+
+    .tabset-dropdown>.nav-tabs.nav-tabs-open>li.active:before {
+      content: "&#xe258;";
+      border: none;
+    }
+
+    .tabset-dropdown>.nav-tabs.nav-tabs-open:before {
+      content: "";
+      font-family: 'Glyphicons Halflings';
+      display: inline-block;
+      padding: 10px;
+      border-right: 1px solid #ddd;
+    }
+
+    .tabset-dropdown>.nav-tabs>li.active {
+      display: block;
+    }
+
+    .tabset-dropdown>.nav-tabs>li>a,
+    .tabset-dropdown>.nav-tabs>li>a:focus,
+    .tabset-dropdown>.nav-tabs>li>a:hover {
+      border: none;
+      display: inline-block;
+      border-radius: 4px;
+      background-color: transparent;
+    }
+
+    .tabset-dropdown>.nav-tabs.nav-tabs-open>li {
+      display: block;
+      float: none;
+    }
+
+    .tabset-dropdown>.nav-tabs>li {
+      display: none;
+    }
+  </style>
+
+  <!-- code folding -->
+  <style type="text/css">
+    .code-folding-btn {
+      margin-bottom: 4px;
+    }
+  </style>
+
+
+
+  <style type="text/css">
+    #TOC {
+      margin: 25px 0px 20px 0px;
+    }
+
+    @media (max-width: 768px) {
+      #TOC {
+        position: relative;
+        width: 100%;
+      }
+    }
+
+    @media print {
+      .toc-content {
+        /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+        float: right;
+      }
+    }
+
+    .toc-content {
+      padding-left: 30px;
+      padding-right: 40px;
+    }
+
+    div.main-container {
+      max-width: 1200px;
+    }
+
+    div.tocify {
+      width: 20%;
+      max-width: 260px;
+      max-height: 85%;
+    }
+
+    @media (min-width: 768px) and (max-width: 991px) {
+      div.tocify {
+        width: 25%;
+      }
+    }
+
+    @media (max-width: 767px) {
+      div.tocify {
+        width: 100%;
+        max-width: none;
+      }
+    }
+
+    .tocify ul,
+    .tocify li {
+      line-height: 20px;
+    }
+
+    .tocify-subheader .tocify-item {
+      font-size: 0.90em;
+    }
+
+    .tocify .list-group-item {
+      border-radius: 0px;
+    }
+  </style>
+
+
+
+</head>
+
+<body>
+
+
+  <div class="container-fluid main-container">
+
+
+    <!-- setup 3col/9col grid for toc_float and main content  -->
+    <div class="row">
+      <div class="col-xs-12 col-sm-4 col-md-3">
+        <div id="TOC" class="tocify">
+        </div>
+      </div>
+
+      <div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+        <div id="header">
+
+          <div class="btn-group pull-right float-right">
+            <button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle"
+              data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
+              aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+            <ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+              <li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+              <li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+              <li role="separator" class="divider"></li>
+              <li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+            </ul>
+          </div>
+
+
+
+          <h1 class="title toc-ignore">函数</h1>
+          <h4 class="author">Humoon</h4>
+          <h4 class="date">2022-06-27</h4>
+
+        </div>
+
+
+        <div id="function" class="section level2">
+          <h2>Function</h2>
+          <div id="first-class-function" class="section level3">
+            <h3>first-class function</h3>
+            <p>R
+              中所有的函数都是对象，可以将其赋值给变量、作为参数传递给其他函数、作为函数的返回值。</p>
+            <div class="sourceCode" id="cb1">
+              <pre
+                class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @title 求和函数</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param a number</span></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&#39; @param b number</span></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>add <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b) {</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  a <span class="sc">+</span> b <span class="co"># only apply for numbers</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>add <span class="sc">%&gt;%</span> <span class="fu">class</span>()</span></code></pre>
+            </div>
+            <pre><code>#&gt; [1] &quot;function&quot;</code></pre>
+            <div class="sourceCode" id="cb3">
+              <pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 查看函数</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>add</span></code></pre>
+            </div>
+            <pre><code>#&gt; function(a, b) {
+#&gt;   a + b # only apply for numbers
+#&gt; }</code></pre>
+            <div class="sourceCode" id="cb5">
+              <pre
+                class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 调用函数</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="fu">add</span>(<span class="dv">1</span>, <span class="dv">3</span>)</span></code></pre>
+            </div>
+            <pre><code>#&gt; [1] 4</code></pre>
+            <div class="sourceCode" id="cb7">
+              <pre
+                class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 判断是否是函数</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">is.function</span>(add)</span></code></pre>
+            </div>
+            <pre><code>#&gt; [1] TRUE</code></pre>
+            <div class="sourceCode" id="cb9">
+              <pre
+                class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 判断是否是 primitive functions，即 R base 中一些用 C 写的函数</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="fu">is.primitive</span>(add)</span></code></pre>
+            </div>
+            <pre><code>#&gt; [1] FALSE</code></pre>
+          </div>
+          <div id="函数三要素" class="section level3">
+            <h3>函数三要素</h3>
+            <ol style="list-style-type: decimal">
+              <li>参数列表 <code>formals()</code></li>
+              <li>函数体 <code>body()</code></li>
+              <li>环境 <code>environment()</code>，根据定义函数的位置隐式指定
+                <ol style="list-style-type: decimal">
+                  <li>primitive functions
+                    和全局环境中定义的函数，在打印时不会打印环境信息；其他函数会打印。</li>
+                </ol>
+              </li>
+            </ol>
+            <div class="sourceCode" id="cb11">
+              <pre
+                class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">formals</span>(add)</span></code></pre>
+            </div>
+            <pre><code>#&gt; $a
+#&gt; 
+#&gt; 
+#&gt; $b</code></pre>
+            <div class="sourceCode" id="cb13">
+              <pre
+                class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">body</span>(add)</span></code></pre>
+            </div>
+            <pre><code>#&gt; {
+#&gt;     a + b
+#&gt; }</code></pre>
+            <div class="sourceCode" id="cb15">
+              <pre
+                class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="fu">environment</span>(add)</span></code></pre>
+            </div>
+            <pre><code>#&gt; &lt;environment: R_GlobalEnv&gt;</code></pre>
+            <div class="sourceCode" id="cb17">
+              <pre
+                class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 函数都有一个 srcref 属性，保存着函数的源代码</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a><span class="fu">attributes</span>(add)</span></code></pre>
+            </div>
+            <pre><code>#&gt; $srcref
+#&gt; function(a, b) {
+#&gt;   a + b # only apply for numbers
+#&gt; }</code></pre>
+          </div>
+          <div id="操作符皆函数" class="section level3">
+            <h3>操作符皆函数</h3>
+            <table>
+              <colgroup>
+                <col width="68%" />
+                <col width="31%" />
+              </colgroup>
+              <thead>
+                <tr class="header">
+                  <th><code>magrittr::</code> 等价函数</th>
+                  <th>操作符<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a></th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr class="odd">
+                  <td><code>extract(x, index or 'col_name')</code></td>
+                  <td><code>[</code>，即<code>[</code>(x, index/‘col_name’)</td>
+                </tr>
+                <tr class="even">
+                  <td><code>extract2(x, index or 'col_name')</code></td>
+                  <td><code>[[</code>，即<code>[[</code>(x, index’col_name’)</td>
+                </tr>
+                <tr class="odd">
+                  <td><code>inset()</code></td>
+                  <td><code>[&lt;-</code></td>
+                </tr>
+                <tr class="even">
+                  <td><code>inset2()</code></td>
+                  <td><code>[[&lt;-</code></td>
+                </tr>
+                <tr class="odd">
+                  <td><code>set_colnames()</code></td>
+                  <td><code>colnames()&lt;-</code></td>
+                </tr>
+                <tr class="even">
+                  <td><code>set_rownames()</code></td>
+                  <td><code>rownames()&lt;-</code></td>
+                </tr>
+                <tr class="odd">
+                  <td><code>magrittr::use_series()</code>（可用于list）,
+                    <code>dplyr::pull()</code>（不适用于list）
+                  </td>
+                  <td><code>$</code></td>
+                </tr>
+                <tr class="even">
+                  <td>add</td>
+                  <td><code>+</code></td>
+                </tr>
+                <tr class="odd">
+                  <td>subtract</td>
+                  <td><code>-</code></td>
+                </tr>
+                <tr class="even">
+                  <td>multiply_by</td>
+                  <td><code>*</code></td>
+                </tr>
+                <tr class="odd">
+                  <td>raise_to_power</td>
+                  <td><code>^</code></td>
+                </tr>
+                <tr class="even">
+                  <td>multiply_by_matrix</td>
+                  <td><code>%*%</code></td>
+                </tr>
+                <tr class="odd">
+                  <td>divide_by</td>
+                  <td><code>/</code></td>
+                </tr>
+                <tr class="even">
+                  <td>divide_by_int</td>
+                  <td><code>%/%</code></td>
+                </tr>
+                <tr class="odd">
+                  <td>mod</td>
+                  <td><code>%%</code></td>
+                </tr>
+                <tr class="even">
+                  <td><code>is_in()</code></td>
+                  <td><code>%in%</code></td>
+                </tr>
+                <tr class="odd">
+                  <td>and</td>
+                  <td><code>&amp;</code></td>
+                </tr>
+                <tr class="even">
+                  <td>or</td>
+                  <td><code>|</code></td>
+                </tr>
+                <tr class="odd">
+                  <td>equals</td>
+                  <td><code>==</code></td>
+                </tr>
+                <tr class="even">
+                  <td>is_greater_than</td>
+                  <td><code>&gt;</code></td>
+                </tr>
+                <tr class="odd">
+                  <td>is_weakly_greater_than</td>
+                  <td><code>&gt;=</code></td>
+                </tr>
+                <tr class="even">
+                  <td>is_less_than</td>
+                  <td><code>&lt;</code></td>
+                </tr>
+                <tr class="odd">
+                  <td>is_weakly_less_than</td>
+                  <td><code>&lt;=</code></td>
+                </tr>
+                <tr class="even">
+                  <td>not</td>
+                  <td><code>!</code></td>
+                </tr>
+                <tr class="odd">
+                  <td><code>set_names()</code></td>
+                  <td><code>names()&lt;-</code></td>
+                </tr>
+              </tbody>
+            </table>
+            <div class="sourceCode" id="cb19">
+              <pre
+                class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(iris)</span></code></pre>
+            </div>
+            <pre><code>#&gt;   Sepal.Length Sepal.Width Petal.Length Petal.Width Species
+#&gt; 1          5.1         3.5          1.4         0.2  setosa
+#&gt; 2          4.9         3.0          1.4         0.2  setosa
+#&gt; 3          4.7         3.2          1.3         0.2  setosa
+#&gt; 4          4.6         3.1          1.5         0.2  setosa
+#&gt; 5          5.0         3.6          1.4         0.2  setosa
+#&gt; 6          5.4         3.9          1.7         0.4  setosa</code></pre>
+            <div class="sourceCode" id="cb21">
+              <pre
+                class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">[</span><span class="st">`</span>(<span class="fu">head</span>(iris), <span class="dv">2</span>) <span class="co"># 数据框的本质是各列向量组成的list，筛选第二个元素，还是一个list</span></span></code></pre>
+            </div>
+            <pre><code>#&gt;   Sepal.Width
+#&gt; 1         3.5
+#&gt; 2         3.0
+#&gt; 3         3.2
+#&gt; 4         3.1
+#&gt; 5         3.6
+#&gt; 6         3.9</code></pre>
+            <div class="sourceCode" id="cb23">
+              <pre
+                class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">[[</span><span class="st">`</span>(<span class="fu">head</span>(iris), <span class="dv">2</span>) <span class="co"># 提取第二个元素，是一个vector</span></span></code></pre>
+            </div>
+            <pre><code>#&gt; [1] 3.5 3.0 3.2 3.1 3.6 3.9</code></pre>
+            <div class="sourceCode" id="cb25">
+              <pre
+                class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">2</span><span class="sc">:</span><span class="dv">4</span></span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">[&lt;-</span><span class="st">`</span>(a, <span class="dv">2</span>, <span class="dv">10</span>) <span class="co"># a[2] &lt;- 10; a</span></span></code></pre>
+            </div>
+            <pre><code>#&gt; [1]  2 10  4</code></pre>
+            <div id="常用操作符" class="section level4">
+              <h4>常用操作符</h4>
+              <p>加、减、乘(<code>*</code>)、除(<code>/</code>)、幂<code>^</code>,
+                除法取整（<code>%/%</code>）、除法取余（<code>%%</code>）</p>
+            </div>
+            <div id="自定义二元运算符" class="section level4">
+              <h4>自定义二元运算符</h4>
+              <p>必须用反引号和百分号引起来</p>
+              <div class="sourceCode" id="cb27">
+                <pre
+                  class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">%myop%</span><span class="st">`</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(a, b) {</span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>  <span class="dv">2</span> <span class="sc">*</span> a <span class="sc">+</span> <span class="dv">3</span> <span class="sc">*</span> b</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">%myop%</span> <span class="dv">1</span></span></code></pre>
+              </div>
+              <pre><code>#&gt; [1] 5</code></pre>
+              <div class="sourceCode" id="cb29">
+                <pre
+                  class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="sc">%myop%</span> <span class="dv">2</span></span></code></pre>
+              </div>
+              <pre><code>#&gt; [1] 8</code></pre>
+            </div>
+          </div>
+          <div id="匿名函数" class="section level3">
+            <h3>匿名函数</h3>
+            <p>为了节省变量名，很多时候可以使用匿名函数。</p>
+            <p>匿名函数有几种写法，以 <code>purrr::map2()</code> 中为例：</p>
+            <div class="sourceCode" id="cb31">
+              <pre
+                class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 写法1，关键字 function 不缺，只省略了函数名的定义</span></span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a><span class="fu">map2_dbl</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">11</span><span class="sc">:</span><span class="dv">20</span>, <span class="cf">function</span>(x, y) y <span class="sc">-</span> x)</span></code></pre>
+            </div>
+            <pre><code>#&gt;  [1] 10 10 10 10 10 10 10 10 10 10</code></pre>
+            <div class="sourceCode" id="cb33">
+              <pre
+                class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 写法2，将关键字 function 简写为\</span></span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a><span class="fu">map2_dbl</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">11</span><span class="sc">:</span><span class="dv">20</span>, \(x, y) y <span class="sc">-</span> x)</span></code></pre>
+            </div>
+            <pre><code>#&gt;  [1] 10 10 10 10 10 10 10 10 10 10</code></pre>
+            <div class="sourceCode" id="cb35">
+              <pre
+                class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 写法3，用~代表匿名函数，.x(或.), .y代表自变量</span></span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a><span class="fu">map2_dbl</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">11</span><span class="sc">:</span><span class="dv">20</span>, <span class="sc">~</span> .y <span class="sc">-</span> .x)</span></code></pre>
+            </div>
+            <pre><code>#&gt;  [1] 10 10 10 10 10 10 10 10 10 10</code></pre>
+            <div class="sourceCode" id="cb37">
+              <pre
+                class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a><span class="fu">map2_dbl</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="dv">11</span><span class="sc">:</span><span class="dv">20</span>, <span class="sc">~</span> .y <span class="sc">-</span> .)</span></code></pre>
+            </div>
+            <pre><code>#&gt;  [1] 10 10 10 10 10 10 10 10 10 10</code></pre>
+            <p><strong>不建议使用 <code>~ .x</code>
+                的写法</strong>，因为这种写法有两个缺陷：</p>
+            <ol style="list-style-type: decimal">
+              <li>匿名函数最多有两个自变量，<code>.z</code>是不被认可的</li>
+              <li>配合动态参数<code>...</code>一起使用时，<strong>存在bug</strong>，<code>...</code>会连写明的<code>.x</code>一起捕获</li>
+            </ol>
+          </div>
+          <div id="参数" class="section level3">
+            <h3>参数</h3>
+            <div class="sourceCode" id="cb39">
+              <pre
+                class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a><span class="fu">add</span>(<span class="fu">as.Date</span>(<span class="st">&quot;2020-02-02&quot;</span>), <span class="dv">2</span>)</span></code></pre>
+            </div>
+            <pre><code>#&gt; [1] &quot;2020-02-04&quot;</code></pre>
+            <div id="参数无定义" class="section level4">
+              <h4>参数无定义</h4>
+              <p>若函数的某个参数没有传递值，<code>missing(parameter)</code> 返回
+                TRUE</p>
+              <div class="sourceCode" id="cb41">
+                <pre
+                  class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>myplot <span class="ot">&lt;-</span> <span class="cf">function</span>(x, y) {</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (<span class="fu">missing</span>(y)) {</span>
+<span id="cb41-3"><a href="#cb41-3" aria-hidden="true" tabindex="-1"></a>    y <span class="ot">&lt;-</span> x</span>
+<span id="cb41-4"><a href="#cb41-4" aria-hidden="true" tabindex="-1"></a>    x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="fu">length</span>(y)</span>
+<span id="cb41-5"><a href="#cb41-5" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb41-6"><a href="#cb41-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">plot</span>(x, y)</span>
+<span id="cb41-7"><a href="#cb41-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb41-8"><a href="#cb41-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb41-9"><a href="#cb41-9" aria-hidden="true" tabindex="-1"></a><span class="fu">myplot</span>(<span class="fu">c</span>(<span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">8</span>))</span></code></pre>
+              </div>
+              <p><img src="../img/unnamed-chunk-7-1.png" width="90%" style="display: block; margin: auto;" /></p>
+            </div>
+            <div id="可选参数的默认值" class="section level4">
+              <h4>可选参数的默认值</h4>
+              <p>默认值可以是一个值，也可以是一个表达式，其中包含了其前面定义的其他参数</p>
+              <div class="sourceCode" id="cb42">
+                <pre
+                  class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>m <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a>test3 <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">n =</span> <span class="fu">floor</span>(<span class="fu">length</span>(m) <span class="sc">/</span> <span class="dv">2</span>)) {</span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>  x[<span class="dv">1</span><span class="sc">:</span>n]</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a><span class="fu">test3</span>(letters)</span></code></pre>
+              </div>
+              <pre><code>#&gt; [1] &quot;a&quot; &quot;b&quot;</code></pre>
+            </div>
+            <div id="参数封装为列表" class="section level4">
+              <h4>参数封装为列表</h4>
+              <p><code>do.call(函数名, 参数列表)</code></p>
+              <div class="sourceCode" id="cb44">
+                <pre
+                  class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a>args <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a><span class="fu">do.call</span>(mean, args) <span class="co"># 等价于 mean(1:10, na.rm = TRUE)</span></span></code></pre>
+              </div>
+              <pre><code>#&gt; [1] 5.5</code></pre>
+            </div>
+            <div id="动态参数" class="section level4">
+              <h4>动态参数</h4>
+              <p><code>...</code>能捕获任意数量的未匹配参数</p>
+              <div id="用法一由一般函数特化而来的特殊函数" class="section level5">
+                <h5>用法一：由一般函数特化而来的特殊函数</h5>
+                <div class="sourceCode" id="cb46">
+                  <pre
+                    class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 最具一般性的函数，参数最完整，包含大量默认值</span></span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="cf">function</span>(x, t, <span class="at">u =</span> <span class="dv">0</span>, <span class="at">v =</span> <span class="dv">0</span>) {</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (t <span class="sc">==</span> <span class="dv">1</span>) {</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(x <span class="sc">+</span> u <span class="sc">+</span> v)</span>
+<span id="cb46-5"><a href="#cb46-5" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb46-6"><a href="#cb46-6" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (t <span class="sc">==</span> <span class="dv">2</span>) {</span>
+<span id="cb46-7"><a href="#cb46-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">return</span>(x<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> u <span class="sc">+</span> v)</span>
+<span id="cb46-8"><a href="#cb46-8" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb46-9"><a href="#cb46-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb46-10"><a href="#cb46-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb46-11"><a href="#cb46-11" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="dv">5</span>, <span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">2</span>)</span></code></pre>
+                </div>
+                <pre><code>#&gt; [1] 10</code></pre>
+                <div class="sourceCode" id="cb48">
+                  <pre
+                    class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="dv">5</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">2</span>)</span></code></pre>
+                </div>
+                <pre><code>#&gt; [1] 30</code></pre>
+                <div class="sourceCode" id="cb50">
+                  <pre
+                    class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="dv">5</span>, <span class="dv">1</span>)</span></code></pre>
+                </div>
+                <pre><code>#&gt; [1] 5</code></pre>
+                <div class="sourceCode" id="cb52">
+                  <pre
+                    class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a><span class="fu">f</span>(<span class="dv">5</span>, <span class="dv">2</span>)</span></code></pre>
+                </div>
+                <pre><code>#&gt; [1] 25</code></pre>
+                <div class="sourceCode" id="cb54">
+                  <pre
+                    class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 通过对一部分参数（t）的特化，实现一般基础上的特殊函数</span></span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 为了简便，可以省略大量已有默认值的参数</span></span>
+<span id="cb54-3"><a href="#cb54-3" aria-hidden="true" tabindex="-1"></a>g <span class="ot">&lt;-</span> <span class="cf">function</span>(x, ...) {</span>
+<span id="cb54-4"><a href="#cb54-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">f</span>(x, <span class="dv">1</span>, ...)</span>
+<span id="cb54-5"><a href="#cb54-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb54-6"><a href="#cb54-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-7"><a href="#cb54-7" aria-hidden="true" tabindex="-1"></a>h <span class="ot">&lt;-</span> <span class="cf">function</span>(x, ...) {</span>
+<span id="cb54-8"><a href="#cb54-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">f</span>(x, <span class="dv">2</span>, ...)</span>
+<span id="cb54-9"><a href="#cb54-9" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb54-10"><a href="#cb54-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb54-11"><a href="#cb54-11" aria-hidden="true" tabindex="-1"></a><span class="fu">g</span>(<span class="dv">5</span>, <span class="dv">3</span>, <span class="dv">2</span>)</span></code></pre>
+                </div>
+                <pre><code>#&gt; [1] 10</code></pre>
+                <div class="sourceCode" id="cb56">
+                  <pre
+                    class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a><span class="fu">h</span>(<span class="dv">5</span>, <span class="dv">3</span>, <span class="dv">2</span>)</span></code></pre>
+                </div>
+                <pre><code>#&gt; [1] 30</code></pre>
+                <div class="sourceCode" id="cb58">
+                  <pre
+                    class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a><span class="fu">g</span>(<span class="dv">5</span>)</span></code></pre>
+                </div>
+                <pre><code>#&gt; [1] 5</code></pre>
+                <div class="sourceCode" id="cb60">
+                  <pre
+                    class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="fu">h</span>(<span class="dv">5</span>)</span></code></pre>
+                </div>
+                <pre><code>#&gt; [1] 25</code></pre>
+              </div>
+              <div id="用法二捕获未知个数的参数" class="section level5">
+                <h5>用法二：捕获未知个数的参数</h5>
+                <p>在函数内部，可以直接用<code>str_c()</code>将<code>...</code>合并为字符串（长度为1）</p>
+                <p>但也可以用<code>list(...)</code>将其转化为列表（长度一般大于1）再处理</p>
+                <div class="sourceCode" id="cb62">
+                  <pre
+                    class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 合并为字符串</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>rule <span class="ot">&lt;-</span> <span class="cf">function</span>(..., <span class="at">pad =</span> <span class="st">&quot;=&quot;</span>) {</span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">str_c</span>(..., <span class="at">sep =</span> <span class="st">&quot; &quot;</span>))</span>
+<span id="cb62-4"><a href="#cb62-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">length</span>(<span class="fu">str_c</span>(..., <span class="at">sep =</span> <span class="st">&quot; &quot;</span>)))</span>
+<span id="cb62-5"><a href="#cb62-5" aria-hidden="true" tabindex="-1"></a>  args <span class="ot">&lt;-</span> <span class="fu">list</span>(...)</span>
+<span id="cb62-6"><a href="#cb62-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(args)</span>
+<span id="cb62-7"><a href="#cb62-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">length</span>(args))</span>
+<span id="cb62-8"><a href="#cb62-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">str_c</span>(args, <span class="at">sep =</span> <span class="st">&quot; &quot;</span>))</span>
+<span id="cb62-9"><a href="#cb62-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">print</span>(<span class="fu">length</span>(<span class="fu">str_c</span>(args, <span class="at">sep =</span> <span class="st">&quot; &quot;</span>)))</span>
+<span id="cb62-10"><a href="#cb62-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-11"><a href="#cb62-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb62-12"><a href="#cb62-12" aria-hidden="true" tabindex="-1"></a>  title <span class="ot">&lt;-</span> <span class="fu">str_c</span>(..., <span class="at">sep =</span> <span class="st">&quot; &quot;</span>)</span>
+<span id="cb62-13"><a href="#cb62-13" aria-hidden="true" tabindex="-1"></a>  width <span class="ot">&lt;-</span> <span class="fu">getOption</span>(<span class="st">&quot;width&quot;</span>) <span class="sc">-</span> <span class="fu">nchar</span>(title) <span class="sc">-</span> <span class="dv">5</span></span>
+<span id="cb62-14"><a href="#cb62-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(title, <span class="st">&quot; &quot;</span>, stringr<span class="sc">::</span><span class="fu">str_dup</span>(pad, width), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb62-15"><a href="#cb62-15" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb62-16"><a href="#cb62-16" aria-hidden="true" tabindex="-1"></a><span class="fu">rule</span>(<span class="st">&quot;Important&quot;</span>, <span class="st">&quot;output&quot;</span>)</span></code></pre>
+                </div>
+                <pre><code>#&gt; [1] &quot;Important output&quot;
+#&gt; [1] 1
+#&gt; [[1]]
+#&gt; [1] &quot;Important&quot;
+#&gt; 
+#&gt; [[2]]
+#&gt; [1] &quot;output&quot;
+#&gt; 
+#&gt; [1] 2
+#&gt; [1] &quot;Important&quot; &quot;output&quot;   
+#&gt; [1] 2
+#&gt; Important output   ===========================================================</code></pre>
+                <div class="sourceCode" id="cb64">
+                  <pre
+                    class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 读取为list</span></span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a>multip <span class="ot">&lt;-</span> <span class="cf">function</span>(x, ...) {</span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>  args <span class="ot">&lt;-</span> <span class="fu">list</span>(...) <span class="do">## 获取所有参数</span></span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>  x <span class="sc">+</span> args[[<span class="dv">1</span>]] <span class="sc">-</span> args[[<span class="dv">2</span>]]</span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a><span class="fu">multip</span>(<span class="dv">3</span>, <span class="dv">2</span>, <span class="dv">3</span>)</span></code></pre>
+                </div>
+                <pre><code>#&gt; [1] 2</code></pre>
+              </div>
+            </div>
+            <div id="惰性求值" class="section level4">
+              <h4>惰性求值</h4>
+              <p>在函数调用时，参数的值只有被实际用到时才会被执行。这样可以避免不必要的计算，节省时间。</p>
+              <div class="sourceCode" id="cb66">
+                <pre
+                  class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>test0 <span class="ot">&lt;-</span> <span class="cf">function</span>(x, y) {</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">if</span> (x <span class="sc">&gt;</span> <span class="dv">0</span>) {</span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>    x</span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>  } <span class="cf">else</span> {</span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>    y</span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb66-9"><a href="#cb66-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 生成大量随机数的耗时</span></span>
+<span id="cb66-10"><a href="#cb66-10" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(<span class="fu">rnorm</span>(<span class="dv">10000000</span>))</span></code></pre>
+              </div>
+              <pre><code>#&gt;    user  system elapsed 
+#&gt;    0.58    0.00    0.58</code></pre>
+              <div class="sourceCode" id="cb68">
+                <pre
+                  class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 惰性求值，第二个参数并未执行</span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="fu">system.time</span>(<span class="fu">test0</span>(<span class="dv">1</span>, <span class="fu">rnorm</span>(<span class="dv">10000000</span>)))</span></code></pre>
+              </div>
+              <pre><code>#&gt;    user  system elapsed 
+#&gt;       0       0       0</code></pre>
+              <p>惰性求值允许在一个参数的表达式中使用另一个参数</p>
+              <div class="sourceCode" id="cb70">
+                <pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a>test2 <span class="ot">&lt;-</span> <span class="cf">function</span>(x, <span class="at">n =</span> <span class="fu">floor</span>(<span class="fu">length</span>(x) <span class="sc">/</span> <span class="dv">2</span>)) {</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a>  x[<span class="dv">1</span><span class="sc">:</span>n]</span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a>}</span></code></pre>
+              </div>
+            </div>
+          </div>
+          <div id="返回值" class="section level3">
+            <h3>返回值</h3>
+            <p>若无<code>return()</code>, 默认返回最后一个表达式的值</p>
+            <p><strong>R 风格的代码，通常省略 <code>return()</code></strong></p>
+            <p>希望返回多个值时，一般用 list 或 dataframe 封装（就像 js
+              中用对象封装）</p>
+          </div>
+          <div id="泛型函数" class="section level3">
+            <h3>泛型函数</h3>
+            <p>根据传入的参数，进行不同的操作</p>
+            <p>好处是函数具有一般性，以适用于各种各样的场景。这样就可以轻松地使用它来解决相
+              似的问题，而无需为每个问题编写过多的专用函数</p>
+            <div class="sourceCode" id="cb71">
+              <pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a>calc <span class="ot">&lt;-</span></span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>(x, y, type) {</span>
+<span id="cb71-3"><a href="#cb71-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">length</span>(type <span class="sc">&gt;</span> 1L)) {</span>
+<span id="cb71-4"><a href="#cb71-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="st">&quot; Only a single type is accepted&quot;</span>)</span>
+<span id="cb71-5"><a href="#cb71-5" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb71-6"><a href="#cb71-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb71-7"><a href="#cb71-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (type <span class="sc">==</span> <span class="st">&quot;add&quot;</span>) {</span>
+<span id="cb71-8"><a href="#cb71-8" aria-hidden="true" tabindex="-1"></a>      x <span class="sc">+</span> y</span>
+<span id="cb71-9"><a href="#cb71-9" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (type <span class="sc">==</span> <span class="st">&quot;minus&quot;</span>) {</span>
+<span id="cb71-10"><a href="#cb71-10" aria-hidden="true" tabindex="-1"></a>      x <span class="sc">-</span> y</span>
+<span id="cb71-11"><a href="#cb71-11" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (type <span class="sc">==</span> <span class="st">&quot;multiply&quot;</span>) {</span>
+<span id="cb71-12"><a href="#cb71-12" aria-hidden="true" tabindex="-1"></a>      x <span class="sc">*</span> y</span>
+<span id="cb71-13"><a href="#cb71-13" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> <span class="cf">if</span> (type <span class="sc">==</span> <span class="st">&quot;divide&quot;</span>) {</span>
+<span id="cb71-14"><a href="#cb71-14" aria-hidden="true" tabindex="-1"></a>      x <span class="sc">/</span> y</span>
+<span id="cb71-15"><a href="#cb71-15" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb71-16"><a href="#cb71-16" aria-hidden="true" tabindex="-1"></a>      <span class="fu">stop</span>(<span class="st">&quot; Unknown type of operation&quot;</span>)</span>
+<span id="cb71-17"><a href="#cb71-17" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb71-18"><a href="#cb71-18" aria-hidden="true" tabindex="-1"></a>  }</span></code></pre>
+            </div>
+          </div>
+          <div id="查看函数的源代码" class="section level3">
+            <h3>查看函数的源代码</h3>
+            <div id="rstudio" class="section level4">
+              <h4>Rstudio</h4>
+              <p>在 Rstudio 里面，把光标放在函数名上按 F2，Rstudio
+                会打开一个新的窗口来显示源代码</p>
+            </div>
+            <div id="console" class="section level4">
+              <h4>Console</h4>
+              <ol style="list-style-type: decimal">
+                <li>直接键入函数
+                  (不加括号)，如<code>expand.grid</code>，大部分函数源代码就可以直接显现出来</li>
+                <li><code>page(expand.grid)</code>，生成一个源代码临时文件，用文本编辑器打开</li>
+                <li><code>my_expand_grid &lt;- edit(expand.grid)</code>
+                  修改已有函数的源代码，定义自己的新函数</li>
+                <li>泛型函数
+                  <ol style="list-style-type: decimal">
+                    <li>很多函数的主体是
+                      <code>UseMethod("foo")</code>，表明很多类都定义了这个方法，要查看某个类此方法的源代码，首先要用
+                      <code>methods(foo)</code> 查找只适用一个类的该函数，再查看源代码。
+                    </li>
+                    <li>但是，<code>methods(foo)</code>
+                      的查找结果中，带星号的函数的源代码无法直接查看，可以试试<code>getAnywhere()</code></li>
+                  </ol>
+                </li>
+              </ol>
+              <div class="sourceCode" id="cb72">
+                <pre
+                  class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="fu">methods</span>(mean)</span></code></pre>
+              </div>
+              <pre><code>#&gt;  [1] mean,ANY-method          mean,Matrix-method       mean,sparseMatrix-method
+#&gt;  [4] mean,sparseVector-method mean.Date                mean.default            
+#&gt;  [7] mean.difftime            mean.IDate*              mean.ITime*             
+#&gt; [10] mean.POSIXct             mean.POSIXlt             mean.quosure*           
+#&gt; [13] mean.vctrs_vctr*         mean.yearmon*            mean.yearqtr*           
+#&gt; [16] mean.zoo*               
+#&gt; see &#39;?methods&#39; for accessing help and source code</code></pre>
+              <div class="sourceCode" id="cb74">
+                <pre
+                  class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a>mean.default</span></code></pre>
+              </div>
+              <pre><code>#&gt; function (x, trim = 0, na.rm = FALSE, ...) 
+#&gt; {
+#&gt;     if (!is.numeric(x) &amp;&amp; !is.complex(x) &amp;&amp; !is.logical(x)) {
+#&gt;         warning(&quot;argument is not numeric or logical: returning NA&quot;)
+#&gt;         return(NA_real_)
+#&gt;     }
+#&gt;     if (isTRUE(na.rm)) 
+#&gt;         x &lt;- x[!is.na(x)]
+#&gt;     if (!is.numeric(trim) || length(trim) != 1L) 
+#&gt;         stop(&quot;&#39;trim&#39; must be numeric of length one&quot;)
+#&gt;     n &lt;- length(x)
+#&gt;     if (trim &gt; 0 &amp;&amp; n) {
+#&gt;         if (is.complex(x)) 
+#&gt;             stop(&quot;trimmed means are not defined for complex data&quot;)
+#&gt;         if (anyNA(x)) 
+#&gt;             return(NA_real_)
+#&gt;         if (trim &gt;= 0.5) 
+#&gt;             return(stats::median(x, na.rm = FALSE))
+#&gt;         lo &lt;- floor(n * trim) + 1
+#&gt;         hi &lt;- n + 1 - lo
+#&gt;         x &lt;- sort.int(x, partial = unique(c(lo, hi)))[lo:hi]
+#&gt;     }
+#&gt;     .Internal(mean(x))
+#&gt; }
+#&gt; &lt;bytecode: 0x00000294cc22d378&gt;
+#&gt; &lt;environment: namespace:base&gt;</code></pre>
+              <div class="sourceCode" id="cb76">
+                <pre
+                  class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a><span class="fu">methods</span>(predict)</span></code></pre>
+              </div>
+              <pre><code>#&gt;  [1] predict.ar*                  predict.Arima*              
+#&gt;  [3] predict.arima0*              predict.bs*                 
+#&gt;  [5] predict.bSpline*             predict.cluster_analysis*   
+#&gt;  [7] predict.coxph*               predict.coxph.penal*        
+#&gt;  [9] predict.coxphms*             predict.emmGrid*            
+#&gt; [11] predict.glm                  predict.glmmPQL*            
+#&gt; [13] predict.gls*                 predict.gnls*               
+#&gt; [15] predict.HoltWinters*         predict.ivreg*              
+#&gt; [17] predict.kmeans*              predict.lda*                
+#&gt; [19] predict.lm                   predict.lme*                
+#&gt; [21] predict.lmList*              predict.lmList4*            
+#&gt; [23] predict.loess*               predict.lqs*                
+#&gt; [25] predict.mca*                 predict.merMod*             
+#&gt; [27] predict.mlm*                 predict.nbSpline*           
+#&gt; [29] predict.nlme*                predict.nls*                
+#&gt; [31] predict.npolySpline*         predict.ns*                 
+#&gt; [33] predict.parameters_clusters* predict.parameters_efa*     
+#&gt; [35] predict.parameters_pca*      predict.parameters_sem*     
+#&gt; [37] predict.pbSpline*            predict.polr*               
+#&gt; [39] predict.poly*                predict.polySpline*         
+#&gt; [41] predict.ppolySpline*         predict.ppr*                
+#&gt; [43] predict.prcomp*              predict.princomp*           
+#&gt; [45] predict.pspline*             predict.qda*                
+#&gt; [47] predict.rlm*                 predict.smooth.spline*      
+#&gt; [49] predict.smooth.spline.fit*   predict.StructTS*           
+#&gt; [51] predict.survreg*             predict.survreg.penal*      
+#&gt; see &#39;?methods&#39; for accessing help and source code</code></pre>
+              <div class="sourceCode" id="cb78">
+                <pre
+                  class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="fu">getAnywhere</span>(predict.Arima)</span></code></pre>
+              </div>
+              <pre><code>#&gt; A single object matching &#39;predict.Arima&#39; was found
+#&gt; It was found in the following places
+#&gt;   registered S3 method for predict from namespace stats
+#&gt;   namespace:stats
+#&gt; with value
+#&gt; 
+#&gt; function (object, n.ahead = 1L, newxreg = NULL, se.fit = TRUE, 
+#&gt;     ...) 
+#&gt; {
+#&gt;     myNCOL &lt;- function(x) if (is.null(x)) 
+#&gt;         0
+#&gt;     else NCOL(x)
+#&gt;     rsd &lt;- object$residuals
+#&gt;     xr &lt;- object$call$xreg
+#&gt;     xreg &lt;- if (!is.null(xr)) 
+#&gt;         eval.parent(xr)
+#&gt;     else NULL
+#&gt;     ncxreg &lt;- myNCOL(xreg)
+#&gt;     if (myNCOL(newxreg) != ncxreg) 
+#&gt;         stop(&quot;&#39;xreg&#39; and &#39;newxreg&#39; have different numbers of columns&quot;)
+#&gt;     xtsp &lt;- tsp(rsd)
+#&gt;     n &lt;- length(rsd)
+#&gt;     arma &lt;- object$arma
+#&gt;     coefs &lt;- object$coef
+#&gt;     narma &lt;- sum(arma[1L:4L])
+#&gt;     if (length(coefs) &gt; narma) {
+#&gt;         if (names(coefs)[narma + 1L] == &quot;intercept&quot;) {
+#&gt;             newxreg &lt;- cbind(intercept = rep(1, n.ahead), newxreg)
+#&gt;             ncxreg &lt;- ncxreg + 1L
+#&gt;         }
+#&gt;         xm &lt;- if (narma == 0) 
+#&gt;             drop(as.matrix(newxreg) %*% coefs)
+#&gt;         else drop(as.matrix(newxreg) %*% coefs[-(1L:narma)])
+#&gt;     }
+#&gt;     else xm &lt;- 0
+#&gt;     if (arma[2L] &gt; 0L) {
+#&gt;         ma &lt;- coefs[arma[1L] + 1L:arma[2L]]
+#&gt;         if (any(Mod(polyroot(c(1, ma))) &lt; 1)) 
+#&gt;             warning(&quot;MA part of model is not invertible&quot;)
+#&gt;     }
+#&gt;     if (arma[4L] &gt; 0L) {
+#&gt;         ma &lt;- coefs[sum(arma[1L:3L]) + 1L:arma[4L]]
+#&gt;         if (any(Mod(polyroot(c(1, ma))) &lt; 1)) 
+#&gt;             warning(&quot;seasonal MA part of model is not invertible&quot;)
+#&gt;     }
+#&gt;     z &lt;- KalmanForecast(n.ahead, object$model)
+#&gt;     pred &lt;- ts(z[[1L]] + xm, start = xtsp[2L] + deltat(rsd), 
+#&gt;         frequency = xtsp[3L])
+#&gt;     if (se.fit) {
+#&gt;         se &lt;- ts(sqrt(z[[2L]] * object$sigma2), start = xtsp[2L] + 
+#&gt;             deltat(rsd), frequency = xtsp[3L])
+#&gt;         list(pred = pred, se = se)
+#&gt;     }
+#&gt;     else pred
+#&gt; }
+#&gt; &lt;bytecode: 0x00000294d6f5b618&gt;
+#&gt; &lt;environment: namespace:stats&gt;</code></pre>
+            </div>
+            <div id="下载源代码包" class="section level4">
+              <h4>下载源代码包</h4>
+              <ol style="list-style-type: decimal">
+                <li>在 <a href="https://cran.r-project.org/mirrors.html"
+                    class="uri">https://cran.r-project.org/mirrors.html</a>
+                  选一个镜像，如中科大镜像 <a href="https://mirrors.ustc.edu.cn/CRAN/"
+                    class="uri">https://mirrors.ustc.edu.cn/CRAN/</a></li>
+                <li>选择左边栏的【packages】-【Table of available packages, sorted by
+                  name】，选择一个包，如 r2d3 包的主页 <a href="https://mirrors.ustc.edu.cn/CRAN/"
+                    class="uri">https://mirrors.ustc.edu.cn/CRAN/</a></li>
+                <li>可以下载 Package source 压缩而成的 .tar.gz 文件，解压后即可见包的
+                  data、logo、源代码等资源。源代码存放在 R 文件夹中。</li>
+              </ol>
+            </div>
+          </div>
+        </div>
+        <div class="footnotes footnotes-end-of-document">
+          <hr />
+          <ol>
+            <li id="fn1">
+              <p>R
+                中的操作符其实都是函数，只不过是写法上特殊一点的无括号函数。所以在管道操作中，左边函数对右边运算符的替换并不是必须的，因为管道也可以和操作符直接配合，只不过都要用反引号将操作符括起来，显式指明这是一个函数。<a
+                  href="#fnref1" class="footnote-back">↩︎</a></p>
+            </li>
+          </ol>
+        </div>
+
+        <div id="rmd-source-code">
+          LS0tDQp0aXRsZTogIuWHveaVsCINCnN1YnRpdGxlOiAnJw0KYXV0aG9yOiAiSHVtb29uIg0KZGF0ZTogImByIFN5cy5EYXRlKClgIg0Kb3V0cHV0OiBodG1sX2RvY3VtZW50DQpkb2N1bWVudGNsYXNzOiBjdGV4YXJ0DQpjbGFzc29wdGlvbjogaHlwZXJyZWYsDQotLS0NCg0KYGBge3Igc2V0dXAsIGluY2x1ZGUgPSBGQUxTRX0NCnNvdXJjZSgiLi4vUm1hcmtkb3duLXRlbXBsYXRlL1JtYXJrZG93bl9jb25maWcuUiIpDQoNCiMjIGdsb2JhbCBvcHRpb25zID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQprbml0cjo6b3B0c19jaHVuayRzZXQoDQogIHdpZHRoID0gY29uZmlnJHdpZHRoLA0KICBmaWcud2lkdGggPSBjb25maWckZmlnLndpZHRoLA0KICBmaWcuYXNwID0gY29uZmlnJGZpZy5hc3AsDQogIG91dC53aWR0aCA9IGNvbmZpZyRvdXQud2lkdGgsDQogIGZpZy5hbGlnbiA9IGNvbmZpZyRmaWcuYWxpZ24sDQogIGZpZy5wYXRoID0gY29uZmlnJGZpZy5wYXRoLA0KICBmaWcuc2hvdyA9IGNvbmZpZyRmaWcuc2hvdywNCiAgd2FybiA9IGNvbmZpZyR3YXJuLA0KICB3YXJuaW5nID0gY29uZmlnJHdhcm5pbmcsDQogIG1lc3NhZ2UgPSBjb25maWckbWVzc2FnZSwNCiAgZWNobyA9IGNvbmZpZyRlY2hvLA0KICBldmFsID0gY29uZmlnJGV2YWwsDQogIHRpZHkgPSBjb25maWckdGlkeSwNCiAgY29tbWVudCA9IGNvbmZpZyRjb21tZW50LA0KICBjb2xsYXBzZSA9IGNvbmZpZyRjb2xsYXBzZSwNCiAgY2FjaGUgPSBjb25maWckY2FjaGUsDQogIGNhY2hlLmNvbW1lbnRzID0gY29uZmlnJGNhY2hlLmNvbW1lbnRzLA0KICBhdXRvZGVwID0gY29uZmlnJGF1dG9kZXANCikNCmBgYA0KDQojIyBGdW5jdGlvbg0KDQojIyMgZmlyc3QtY2xhc3MgZnVuY3Rpb24NCg0KUiDkuK3miYDmnInnmoTlh73mlbDpg73mmK/lr7nosaHvvIzlj6/ku6XlsIblhbbotYvlgLznu5nlj5jph4/jgIHkvZzkuLrlj4LmlbDkvKDpgJLnu5nlhbbku5blh73mlbDjgIHkvZzkuLrlh73mlbDnmoTov5Tlm57lgLzjgIINCg0KYGBge3J9DQojJyBAdGl0bGUg5rGC5ZKM5Ye95pWwDQojJyBAcGFyYW0gYSBudW1iZXINCiMnIEBwYXJhbSBiIG51bWJlcg0KYWRkIDwtIGZ1bmN0aW9uKGEsIGIpIHsNCiAgYSArIGIgIyBvbmx5IGFwcGx5IGZvciBudW1iZXJzDQp9DQphZGQgJT4lIGNsYXNzKCkNCg0KIyDmn6XnnIvlh73mlbANCmFkZA0KDQojIOiwg+eUqOWHveaVsA0KYWRkKDEsIDMpDQoNCiMg5Yik5pat5piv5ZCm5piv5Ye95pWwDQppcy5mdW5jdGlvbihhZGQpDQoNCiMg5Yik5pat5piv5ZCm5pivIHByaW1pdGl2ZSBmdW5jdGlvbnPvvIzljbMgUiBiYXNlIOS4reS4gOS6m+eUqCBDIOWGmeeahOWHveaVsA0KaXMucHJpbWl0aXZlKGFkZCkNCmBgYA0KDQojIyMg5Ye95pWw5LiJ6KaB57SgDQoNCjEuIOWPguaVsOWIl+ihqCBgZm9ybWFscygpYA0KMi4g5Ye95pWw5L2TIGBib2R5KClgDQozLiDnjq/looMgYGVudmlyb25tZW50KClg77yM5qC55o2u5a6a5LmJ5Ye95pWw55qE5L2N572u6ZqQ5byP5oyH5a6aDQogICAxLiBwcmltaXRpdmUgZnVuY3Rpb25zIOWSjOWFqOWxgOeOr+Wig+S4reWumuS5ieeahOWHveaVsO+8jOWcqOaJk+WNsOaXtuS4jeS8muaJk+WNsOeOr+Wig+S/oeaBr++8m+WFtuS7luWHveaVsOS8muaJk+WNsOOAgg0KDQpgYGB7cn0NCmZvcm1hbHMoYWRkKQ0KYm9keShhZGQpDQplbnZpcm9ubWVudChhZGQpDQoNCiMg5Ye95pWw6YO95pyJ5LiA5LiqIHNyY3JlZiDlsZ7mgKfvvIzkv53lrZjnnYDlh73mlbDnmoTmupDku6PnoIENCmF0dHJpYnV0ZXMoYWRkKQ0KYGBgDQoNCiMjIyDmk43kvZznrKbnmoblh73mlbANCg0KDQp8IGBtYWdyaXR0cjo6YCDnrYnku7flh73mlbAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IOaTjeS9nOesplteMl0gICAgICAgICAgICAgICAgICAgICB8DQp8LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLXwtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfA0KfCBgZXh0cmFjdCh4LCBpbmRleCBvciAnY29sX25hbWUnKWAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IGBbYO+8jOWNs2BbYCh4LCBpbmRleC8nY29sX25hbWUnKSAgfA0KfCBgZXh0cmFjdDIoeCwgaW5kZXggb3IgJ2NvbF9uYW1lJylgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IGBbW2DvvIzljbNgW1tgKHgsIGluZGV4J2NvbF9uYW1lJykgfA0KfCBgaW5zZXQoKWAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IGBbPC1gICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwgYGluc2V0MigpYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBgW1s8LWAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IGBzZXRfY29sbmFtZXMoKWAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgYGNvbG5hbWVzKCk8LWAgICAgICAgICAgICAgICAgICAgfA0KfCBgc2V0X3Jvd25hbWVzKClgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IGByb3duYW1lcygpPC1gICAgICAgICAgICAgICAgICAgIHwNCnwgYG1hZ3JpdHRyOjp1c2Vfc2VyaWVzKClg77yI5Y+v55So5LqObGlzdO+8iSwgYGRwbHlyOjpwdWxsKClg77yI5LiN6YCC55So5LqObGlzdO+8iSB8IGAkYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwgYWRkICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBgK2AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IHN1YnRyYWN0ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgYC1gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KfCBtdWx0aXBseV9ieSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IGAqYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwgcmFpc2VfdG9fcG93ZXIgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBgXmAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IG11bHRpcGx5X2J5X21hdHJpeCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgYCUqJWAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KfCBkaXZpZGVfYnkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IGAvYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwgZGl2aWRlX2J5X2ludCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBgJS8lYCAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IG1vZCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgYCUlYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KfCBgaXNfaW4oKWAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IGAlaW4lYCAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwgYW5kICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBgJmAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IG9yICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgYHxgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KfCBlcXVhbHMgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IGA9PWAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwgaXNfZ3JlYXRlcl90aGFuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBgPmAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IGlzX3dlYWtseV9ncmVhdGVyX3RoYW4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgYD49YCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KfCBpc19sZXNzX3RoYW4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IGA8YCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwgaXNfd2Vha2x5X2xlc3NfdGhhbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBgPD1gICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IG5vdCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgYCFgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KfCBgc2V0X25hbWVzKClgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IGBuYW1lcygpPC1gICAgICAgICAgICAgICAgICAgICAgIHwNCg0KW14yXTogUiDkuK3nmoTmk43kvZznrKblhbblrp7pg73mmK/lh73mlbDvvIzlj6rkuI3ov4fmmK/lhpnms5XkuIrnibnmrorkuIDngrnnmoTml6Dmi6zlj7flh73mlbDjgILmiYDku6XlnKjnrqHpgZPmk43kvZzkuK3vvIzlt6bovrnlh73mlbDlr7nlj7Povrnov5DnrpfnrKbnmoTmm7/mjaLlubbkuI3mmK/lv4XpobvnmoTvvIzlm6DkuLrnrqHpgZPkuZ/lj6/ku6Xlkozmk43kvZznrKbnm7TmjqXphY3lkIjvvIzlj6rkuI3ov4fpg73opoHnlKjlj43lvJXlj7flsIbmk43kvZznrKbmi6zotbfmnaXvvIzmmL7lvI/mjIfmmI7ov5nmmK/kuIDkuKrlh73mlbDjgIINCg0KDQoNCmBgYHtyfQ0KaGVhZChpcmlzKQ0KYFtgKGhlYWQoaXJpcyksIDIpICMg5pWw5o2u5qGG55qE5pys6LSo5piv5ZCE5YiX5ZCR6YeP57uE5oiQ55qEbGlzdO+8jOetm+mAieesrOS6jOS4quWFg+e0oO+8jOi/mOaYr+S4gOS4qmxpc3QNCmBbW2AoaGVhZChpcmlzKSwgMikgIyDmj5Dlj5bnrKzkuozkuKrlhYPntKDvvIzmmK/kuIDkuKp2ZWN0b3INCg0KYSA8LSAyOjQNCmBbPC1gKGEsIDIsIDEwKSAjIGFbMl0gPC0gMTA7IGENCmBgYA0KDQojIyMjIOW4uOeUqOaTjeS9nOespg0KDQrliqDjgIHlh4/jgIHkuZgoYCpgKeOAgemZpChgL2Ap44CB5bmCYF5gLCDpmaTms5Xlj5bmlbTvvIhgJS8lYO+8ieOAgemZpOazleWPluS9me+8iGAlJWDvvIkNCg0KIyMjIyDoh6rlrprkuYnkuozlhYPov5DnrpfnrKYNCg0K5b+F6aG755So5Y+N5byV5Y+35ZKM55m+5YiG5Y+35byV6LW35p2lDQoNCmBgYHtyfQ0KYCVteW9wJWAgPC0gZnVuY3Rpb24oYSwgYikgew0KICAyICogYSArIDMgKiBiDQp9DQoxICVteW9wJSAxDQoxICVteW9wJSAyDQpgYGANCg0KIyMjIOWMv+WQjeWHveaVsA0KDQrkuLrkuoboioLnnIHlj5jph4/lkI3vvIzlvojlpJrml7blgJnlj6/ku6Xkvb/nlKjljL/lkI3lh73mlbDjgIINCg0K5Yy/5ZCN5Ye95pWw5pyJ5Yeg56eN5YaZ5rOV77yM5LulIGBwdXJycjo6bWFwMigpYCDkuK3kuLrkvovvvJoNCg0KYGBge3J9DQojIOWGmeazlTHvvIzlhbPplK7lrZcgZnVuY3Rpb24g5LiN57y677yM5Y+q55yB55Wl5LqG5Ye95pWw5ZCN55qE5a6a5LmJDQptYXAyX2RibCgxOjEwLCAxMToyMCwgZnVuY3Rpb24oeCwgeSkgeSAtIHgpDQoNCiMg5YaZ5rOVMu+8jOWwhuWFs+mUruWtlyBmdW5jdGlvbiDnroDlhpnkuLpcDQptYXAyX2RibCgxOjEwLCAxMToyMCwgXCh4LCB5KSB5IC0geCkNCg0KIyDlhpnms5Uz77yM55SofuS7o+ihqOWMv+WQjeWHveaVsO+8jC54KOaIli4pLCAueeS7o+ihqOiHquWPmOmHjw0KbWFwMl9kYmwoMToxMCwgMTE6MjAsIH4gLnkgLSAueCkNCm1hcDJfZGJsKDE6MTAsIDExOjIwLCB+IC55IC0gLikNCmBgYA0KDQoqKuS4jeW7uuiuruS9v+eUqCBgfiAueGAg55qE5YaZ5rOVKirvvIzlm6DkuLrov5nnp43lhpnms5XmnInkuKTkuKrnvLrpmbfvvJoNCg0KMS4g5Yy/5ZCN5Ye95pWw5pyA5aSa5pyJ5Lik5Liq6Ieq5Y+Y6YeP77yMYC56YOaYr+S4jeiiq+iupOWPr+eahA0KMi4g6YWN5ZCI5Yqo5oCB5Y+C5pWwYC4uLmDkuIDotbfkvb/nlKjml7bvvIwqKuWtmOWcqGJ1Zyoq77yMYC4uLmDkvJrov57lhpnmmI7nmoRgLnhg5LiA6LW35o2V6I63DQoNCg0KIyMjIOWPguaVsA0KDQpgYGB7cn0NCmFkZChhcy5EYXRlKCIyMDIwLTAyLTAyIiksIDIpDQpgYGANCg0KIyMjIyDlj4LmlbDml6DlrprkuYkNCg0K6Iul5Ye95pWw55qE5p+Q5Liq5Y+C5pWw5rKh5pyJ5Lyg6YCS5YC877yMYG1pc3NpbmcocGFyYW1ldGVyKWAg6L+U5ZueIFRSVUUNCg0KYGBge3J9DQpteXBsb3QgPC0gZnVuY3Rpb24oeCwgeSkgew0KICBpZiAobWlzc2luZyh5KSkgew0KICAgIHkgPC0geA0KICAgIHggPC0gMTpsZW5ndGgoeSkNCiAgfQ0KICBwbG90KHgsIHkpDQp9DQoNCm15cGxvdChjKDYsIDcsIDgpKQ0KYGBgDQoNCiMjIyMg5Y+v6YCJ5Y+C5pWw55qE6buY6K6k5YC8DQoNCum7mOiupOWAvOWPr+S7peaYr+S4gOS4quWAvO+8jOS5n+WPr+S7peaYr+S4gOS4quihqOi+vuW8j++8jOWFtuS4reWMheWQq+S6huWFtuWJjemdouWumuS5ieeahOWFtuS7luWPguaVsA0KDQpgYGB7cn0NCm0gPC0gMTo1DQp0ZXN0MyA8LSBmdW5jdGlvbih4LCBuID0gZmxvb3IobGVuZ3RoKG0pIC8gMikpIHsNCiAgeFsxOm5dDQp9DQp0ZXN0MyhsZXR0ZXJzKQ0KYGBgDQoNCiMjIyMg5Y+C5pWw5bCB6KOF5Li65YiX6KGoDQoNCmBkby5jYWxsKOWHveaVsOWQjSwg5Y+C5pWw5YiX6KGoKWANCg0KYGBge3J9DQphcmdzIDwtIGxpc3QoMToxMCwgbmEucm0gPSBUUlVFKQ0KZG8uY2FsbChtZWFuLCBhcmdzKSAjIOetieS7t+S6jiBtZWFuKDE6MTAsIG5hLnJtID0gVFJVRSkNCmBgYA0KDQoNCiMjIyMg5Yqo5oCB5Y+C5pWwDQoNCmAuLi5g6IO95o2V6I635Lu75oSP5pWw6YeP55qE5pyq5Yy56YWN5Y+C5pWwDQoNCiMjIyMjIOeUqOazleS4gO+8mueUseS4gOiIrOWHveaVsOeJueWMluiAjOadpeeahOeJueauiuWHveaVsA0KDQpgYGB7cn0NCiMg5pyA5YW35LiA6Iis5oCn55qE5Ye95pWw77yM5Y+C5pWw5pyA5a6M5pW077yM5YyF5ZCr5aSn6YeP6buY6K6k5YC8DQpmIDwtIGZ1bmN0aW9uKHgsIHQsIHUgPSAwLCB2ID0gMCkgew0KICBpZiAodCA9PSAxKSB7DQogICAgcmV0dXJuKHggKyB1ICsgdikNCiAgfQ0KICBpZiAodCA9PSAyKSB7DQogICAgcmV0dXJuKHheMiArIHUgKyB2KQ0KICB9DQp9DQoNCmYoNSwgMSwgMywgMikNCmYoNSwgMiwgMywgMikNCmYoNSwgMSkNCmYoNSwgMikNCg0KIyDpgJrov4flr7nkuIDpg6jliIblj4LmlbDvvIh077yJ55qE54m55YyW77yM5a6e546w5LiA6Iis5Z+656GA5LiK55qE54m55q6K5Ye95pWwDQojIOS4uuS6hueugOS+v++8jOWPr+S7peecgeeVpeWkp+mHj+W3suaciem7mOiupOWAvOeahOWPguaVsA0KZyA8LSBmdW5jdGlvbih4LCAuLi4pIHsNCiAgZih4LCAxLCAuLi4pDQp9DQoNCmggPC0gZnVuY3Rpb24oeCwgLi4uKSB7DQogIGYoeCwgMiwgLi4uKQ0KfQ0KDQpnKDUsIDMsIDIpDQpoKDUsIDMsIDIpDQpnKDUpDQpoKDUpDQpgYGANCg0KDQojIyMjIyDnlKjms5XkuozvvJrmjZXojrfmnKrnn6XkuKrmlbDnmoTlj4LmlbANCg0K5Zyo5Ye95pWw5YaF6YOo77yM5Y+v5Lul55u05o6l55SoYHN0cl9jKClg5bCGYC4uLmDlkIjlubbkuLrlrZfnrKbkuLLvvIjplb/luqbkuLox77yJDQoNCuS9huS5n+WPr+S7peeUqGBsaXN0KC4uLilg5bCG5YW26L2s5YyW5Li65YiX6KGo77yI6ZW/5bqm5LiA6Iis5aSn5LqOMe+8ieWGjeWkhOeQhg0KDQpgYGB7cn0NCiMg5ZCI5bm25Li65a2X56ym5LiyDQpydWxlIDwtIGZ1bmN0aW9uKC4uLiwgcGFkID0gIj0iKSB7DQogIHByaW50KHN0cl9jKC4uLiwgc2VwID0gIiAiKSkNCiAgcHJpbnQobGVuZ3RoKHN0cl9jKC4uLiwgc2VwID0gIiAiKSkpDQogIGFyZ3MgPC0gbGlzdCguLi4pDQogIHByaW50KGFyZ3MpDQogIHByaW50KGxlbmd0aChhcmdzKSkNCiAgcHJpbnQoc3RyX2MoYXJncywgc2VwID0gIiAiKSkNCiAgcHJpbnQobGVuZ3RoKHN0cl9jKGFyZ3MsIHNlcCA9ICIgIikpKQ0KDQoNCiAgdGl0bGUgPC0gc3RyX2MoLi4uLCBzZXAgPSAiICIpDQogIHdpZHRoIDwtIGdldE9wdGlvbigid2lkdGgiKSAtIG5jaGFyKHRpdGxlKSAtIDUNCiAgY2F0KHRpdGxlLCAiICIsIHN0cmluZ3I6OnN0cl9kdXAocGFkLCB3aWR0aCksICJcbiIpDQp9DQpydWxlKCJJbXBvcnRhbnQiLCAib3V0cHV0IikNCg0KDQojIOivu+WPluS4umxpc3QNCm11bHRpcCA8LSBmdW5jdGlvbih4LCAuLi4pIHsNCiAgYXJncyA8LSBsaXN0KC4uLikgIyMg6I635Y+W5omA5pyJ5Y+C5pWwDQogIHggKyBhcmdzW1sxXV0gLSBhcmdzW1syXV0NCn0NCm11bHRpcCgzLCAyLCAzKQ0KYGBgDQoNCiMjIyMg5oOw5oCn5rGC5YC8DQoNCuWcqOWHveaVsOiwg+eUqOaXtu+8jOWPguaVsOeahOWAvOWPquacieiiq+WunumZheeUqOWIsOaXtuaJjeS8muiiq+aJp+ihjOOAgui/meagt+WPr+S7pemBv+WFjeS4jeW/heimgeeahOiuoeeul++8jOiKguecgeaXtumXtOOAgg0KDQpgYGB7cn0NCnRlc3QwIDwtIGZ1bmN0aW9uKHgsIHkpIHsNCiAgaWYgKHggPiAwKSB7DQogICAgeA0KICB9IGVsc2Ugew0KICAgIHkNCiAgfQ0KfQ0KDQojIOeUn+aIkOWkp+mHj+maj+acuuaVsOeahOiAl+aXtg0Kc3lzdGVtLnRpbWUocm5vcm0oMTAwMDAwMDApKQ0KDQojIOaDsOaAp+axguWAvO+8jOesrOS6jOS4quWPguaVsOW5tuacquaJp+ihjA0Kc3lzdGVtLnRpbWUodGVzdDAoMSwgcm5vcm0oMTAwMDAwMDApKSkNCmBgYA0KDQrmg7DmgKfmsYLlgLzlhYHorrjlnKjkuIDkuKrlj4LmlbDnmoTooajovr7lvI/kuK3kvb/nlKjlj6bkuIDkuKrlj4LmlbANCg0KYGBge3J9DQp0ZXN0MiA8LSBmdW5jdGlvbih4LCBuID0gZmxvb3IobGVuZ3RoKHgpIC8gMikpIHsNCiAgeFsxOm5dDQp9DQpgYGANCg0KDQojIyMg6L+U5Zue5YC8DQoNCuiLpeaXoGByZXR1cm4oKWAsIOm7mOiupOi/lOWbnuacgOWQjuS4gOS4quihqOi+vuW8j+eahOWAvA0KDQoqKlIg6aOO5qC855qE5Luj56CB77yM6YCa5bi455yB55WlIGByZXR1cm4oKWAqKg0KDQrluIzmnJvov5Tlm57lpJrkuKrlgLzml7bvvIzkuIDoiKznlKggbGlzdCDmiJYgZGF0YWZyYW1lIOWwgeijhe+8iOWwseWDjyBqcyDkuK3nlKjlr7nosaHlsIHoo4XvvIkNCg0KIyMjIOazm+Wei+WHveaVsA0KDQrmoLnmja7kvKDlhaXnmoTlj4LmlbDvvIzov5vooYzkuI3lkIznmoTmk43kvZwNCg0K5aW95aSE5piv5Ye95pWw5YW35pyJ5LiA6Iis5oCn77yM5Lul6YCC55So5LqO5ZCE56eN5ZCE5qC355qE5Zy65pmv44CC6L+Z5qC35bCx5Y+v5Lul6L275p2+5Zyw5L2/55So5a6D5p2l6Kej5Yaz55u4DQrkvLznmoTpl67popjvvIzogIzml6DpnIDkuLrmr4/kuKrpl67popjnvJblhpnov4flpJrnmoTkuJPnlKjlh73mlbANCg0KYGBge3J9DQpjYWxjIDwtDQogIGZ1bmN0aW9uKHgsIHksIHR5cGUpIHsNCiAgICBpZiAobGVuZ3RoKHR5cGUgPiAxTCkpIHsNCiAgICAgIHN0b3AoIiBPbmx5IGEgc2luZ2xlIHR5cGUgaXMgYWNjZXB0ZWQiKQ0KICAgIH0NCg0KICAgIGlmICh0eXBlID09ICJhZGQiKSB7DQogICAgICB4ICsgeQ0KICAgIH0gZWxzZSBpZiAodHlwZSA9PSAibWludXMiKSB7DQogICAgICB4IC0geQ0KICAgIH0gZWxzZSBpZiAodHlwZSA9PSAibXVsdGlwbHkiKSB7DQogICAgICB4ICogeQ0KICAgIH0gZWxzZSBpZiAodHlwZSA9PSAiZGl2aWRlIikgew0KICAgICAgeCAvIHkNCiAgICB9IGVsc2Ugew0KICAgICAgc3RvcCgiIFVua25vd24gdHlwZSBvZiBvcGVyYXRpb24iKQ0KICAgIH0NCiAgfQ0KYGBgDQoNCg0KIyMjIOafpeeci+WHveaVsOeahOa6kOS7o+eggQ0KDQojIyMjIFJzdHVkaW8NCuWcqCBSc3R1ZGlvIOmHjOmdou+8jOaKiuWFieagh+aUvuWcqOWHveaVsOWQjeS4iuaMiSBGMu+8jFJzdHVkaW8g5Lya5omT5byA5LiA5Liq5paw55qE56qX5Y+j5p2l5pi+56S65rqQ5Luj56CBDQoNCiMjIyMgQ29uc29sZQ0KDQoxLiDnm7TmjqXplK7lhaXlh73mlbAgKOS4jeWKoOaLrOWPtynvvIzlpoJgZXhwYW5kLmdyaWRg77yM5aSn6YOo5YiG5Ye95pWw5rqQ5Luj56CB5bCx5Y+v5Lul55u05o6l5pi+546w5Ye65p2lDQoyLiBgcGFnZShleHBhbmQuZ3JpZClg77yM55Sf5oiQ5LiA5Liq5rqQ5Luj56CB5Li05pe25paH5Lu277yM55So5paH5pys57yW6L6R5Zmo5omT5byADQozLiBgbXlfZXhwYW5kX2dyaWQgPC0gZWRpdChleHBhbmQuZ3JpZClgIOS/ruaUueW3suacieWHveaVsOeahOa6kOS7o+egge+8jOWumuS5ieiHquW3seeahOaWsOWHveaVsA0KNC4g5rOb5Z6L5Ye95pWwDQogICAxLiDlvojlpJrlh73mlbDnmoTkuLvkvZPmmK8gYFVzZU1ldGhvZCgiZm9vIilg77yM6KGo5piO5b6I5aSa57G76YO95a6a5LmJ5LqG6L+Z5Liq5pa55rOV77yM6KaB5p+l55yL5p+Q5Liq57G75q2k5pa55rOV55qE5rqQ5Luj56CB77yM6aaW5YWI6KaB55SoIGBtZXRob2RzKGZvbylgIOafpeaJvuWPqumAgueUqOS4gOS4quexu+eahOivpeWHveaVsO+8jOWGjeafpeeci+a6kOS7o+eggeOAgg0KICAgMi4g5L2G5piv77yMYG1ldGhvZHMoZm9vKWAg55qE5p+l5om+57uT5p6c5Lit77yM5bim5pif5Y+355qE5Ye95pWw55qE5rqQ5Luj56CB5peg5rOV55u05o6l5p+l55yL77yM5Y+v5Lul6K+V6K+VYGdldEFueXdoZXJlKClgDQoNCmBgYHtyfQ0KbWV0aG9kcyhtZWFuKQ0KbWVhbi5kZWZhdWx0DQoNCm1ldGhvZHMocHJlZGljdCkNCmdldEFueXdoZXJlKHByZWRpY3QuQXJpbWEpDQpgYGANCg0KIyMjIyDkuIvovb3mupDku6PnoIHljIUNCg0KMS4g5ZyoIGh0dHBzOi8vY3Jhbi5yLXByb2plY3Qub3JnL21pcnJvcnMuaHRtbCDpgInkuIDkuKrplZzlg4/vvIzlpoLkuK3np5HlpKfplZzlg48gaHR0cHM6Ly9taXJyb3JzLnVzdGMuZWR1LmNuL0NSQU4vDQoyLiDpgInmi6nlt6bovrnmoI/nmoTjgJBwYWNrYWdlc+OAkS3jgJBUYWJsZSBvZiBhdmFpbGFibGUgcGFja2FnZXMsIHNvcnRlZCBieSBuYW1l44CR77yM6YCJ5oup5LiA5Liq5YyF77yM5aaCIHIyZDMg5YyF55qE5Li76aG1IGh0dHBzOi8vbWlycm9ycy51c3RjLmVkdS5jbi9DUkFOLw0KMy4g5Y+v5Lul5LiL6L29IFBhY2thZ2Ugc291cmNlIOWOi+e8qeiAjOaIkOeahCAudGFyLmd6IOaWh+S7tu+8jOino+WOi+WQjuWNs+WPr+ingeWMheeahCBkYXRh44CBbG9nb+OAgea6kOS7o+eggeetiei1hOa6kOOAgua6kOS7o+eggeWtmOaUvuWcqCBSIOaWh+S7tuWkueS4reOAgg0K
+        </div>
+
+
+      </div>
+    </div>
+
+  </div>
+
+  <script>
+
+    // add bootstrap table styles to pandoc tables
+    function bootstrapStylePandocTables() {
+      $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+    }
+    $(document).ready(function () {
+      bootstrapStylePandocTables();
+    });
+
+
+  </script>
+
+  <!-- tabsets -->
+
+  <script>
+    $(document).ready(function () {
+      window.buildTabsets("TOC");
+    });
+
+    $(document).ready(function () {
+      $('.tabset-dropdown > .nav-tabs > li').click(function () {
+        $(this).parent().toggleClass('nav-tabs-open');
+      });
+    });
+  </script>
+
+  <!-- code folding -->
+  <script>
+    $(document).ready(function () {
+      window.initializeSourceEmbed("function.Rmd");
+      window.initializeCodeFolding("show" === "show");
+    });
+  </script>
+
+  <script>
+    $(document).ready(function () {
+
+      // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+      $('.unlisted.unnumbered').addClass('toc-ignore');
+
+      // move toc-ignore selectors from section div to header
+      $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+      // establish options
+      var options = {
+        selectors: "h1,h2,h3,h4",
+        theme: "bootstrap3",
+        context: '.toc-content',
+        hashGenerator: function (text) {
+          return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+        },
+        ignoreSelector: ".toc-ignore",
+        scrollTo: 0
+      };
+      options.showAndHide = true;
+      options.smoothScroll = true;
+
+      // tocify
+      var toc = $("#TOC").tocify(options).data("toc-tocify");
+    });
+  </script>
+
+  <!-- dynamically load mathjax for compatibility with self-contained -->
+  <script>
+    (function () {
+      var script = document.createElement("script");
+      script.type = "text/javascript";
+      script.src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+      document.getElementsByTagName("head")[0].appendChild(script);
+    })();
+  </script>
+
+</body>
+
+</html>

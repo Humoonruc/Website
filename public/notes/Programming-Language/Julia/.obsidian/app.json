@@ -1,0 +1,16 @@
+{
+  "showLineNumber": false,
+  "useMarkdownLinks": true,
+  "alwaysUpdateLinks": true,
+  "newLinkFormat": "relative",
+  "showUnsupportedFiles": true,
+  "readableLineLength": false,
+  "strictLineBreaks": true,
+  "showFrontmatter": true,
+  "spellcheck": true,
+  "spellcheckLanguages": [
+    "zh-CN",
+    "en-US"
+  ],
+  "useTab": true
+}

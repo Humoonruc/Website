@@ -1,0 +1,293 @@
+---
+title: "Python发送邮件"
+subtitle: ''
+author: "Humoon"
+date: "`r Sys.Date()`"
+output:
+  html_document:
+    df_print: paged
+    fig_caption: yes
+    theme: united
+    highlight: haddock
+    number_sections: yes
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: true
+      smooth_scroll: FALSE
+  rticles::ctex:
+    df_print: default
+    fig_caption: yes
+    number_sections: false
+  word_document:
+    fig_caption: yes
+    toc: yes
+    toc_depth: 3
+    reference_docx: 
+  pdf_document:
+    toc: yes
+    toc_depth: '2'
+documentclass: ctexart
+classoption: hyperref,
+---
+
+
+```{r setup, include = FALSE}
+
+## global options
+knitr::opts_chunk$set(
+  fig.width = 6, fig.asp = 0.618,
+  out.width = "80%", fig.align = "center",
+  fig.path = 'Figures/', fig.show = "hold",
+  warn = 1, warning = FALSE, message = FALSE, echo = TRUE, 
+  comment = '', collapse = F, 
+  cache = T, cache.comments = F, autodep = TRUE
+  )
+
+
+## use necessary packages
+library('pacman')
+p_load(tidyverse, lubridate, data.table, magrittr, # 数据整理
+       ggthemes, showtext, gridExtra, igraph, ggraph, # 可视化
+       lmtest, plm, orcutt, stats, forecast, zoo, # 统计分析  
+       rvest, httr, reticulate, # 爬虫
+       sqldf, DT, # I/O
+       jiebaR, wordcloud2, webshot, htmlwidgets, tidytext # 文本分析
+       )
+options(sqldf.driver = "SQLite") 
+
+
+## pdf中图形内部的中文字体设置
+pdf.options(family = "GB1")
+# 安装字体文件
+# font_add('YaHei','MS YaHei.ttf')
+windowsFonts(YaHei = windowsFont("Microsoft YaHei"))
+showtext_auto(enable = TRUE)
+# 包含图的代码块需要fig.showtext = TRUE选项
+# ggplot2图形需要在主题中显式指定中文字体才能正常显示图中的中文
+```
+
+# 发送文本格式的文件
+
+```{python, eval=F}
+import smtplib
+from email.mime.text import MIMEText
+from email.header import Header
+
+
+# 第三方 SMTP 服务信息：
+# 126 的 SMTP 服务器为 smtp.126.com，端口号25；
+# 腾讯企业邮箱的服务器为 smtp.exmail.qq.com，端口号465
+mail_host = "smtp.exmail.qq.com" 
+server_port = 465 # 服务器端口
+mail_sender = "b18500290@ucass.edu.cn" # 发件人邮箱账号
+mail_pass = "johQnSMD37LB5edf" # 授权密码，非登录密码！网易的授权密码 hmfyx520，腾讯的 johQnSMD37LB5edf
+mail_receiver = ['b18500290@ucass.edu.cn', "humoonruc@126.com"] # 收件人邮箱账号，可以是一个列表，发送给多人
+
+# 主题与内容
+title = '测试'  # 邮件主题
+content = 'Python爬虫运行异常' # 邮件内容
+
+
+def mail():
+    try:
+        msg = MIMEText(content, 'plain', 'utf-8') # 应用内容，文本格式，编码
+        msg['From'] = Header("Python", 'utf-8') # 发件人姓名或昵称
+        msg['To'] = Header("Me", 'utf-8') # 收件人姓名或昵称
+        msg['Subject'] = Header(title, 'utf-8') # 应用邮件的标题
+
+        # server = smtplib.SMTP(mail_host, server_port)  # 连接到126邮件服务器
+        server = smtplib.SMTP_SSL(mail_host, server_port) # 连接到腾讯邮箱服务器
+        server.login(mail_sender, mail_pass)  # 登陆
+        server.sendmail(mail_sender, mail_receiver, msg.as_string()) # 发送
+        server.quit() # 关闭连接
+        print ("邮件发送成功")
+    except smtplib.SMTPException as e:
+        print(e)
+        ret=False
+
+mail()
+```
+
+
+# 发送HTML格式的文件
+
+唯一区别就是在 MIMEText() 中声明 html 格式，邮件内容使用 HTML 语言编写，因此内容会更加丰富
+
+```{python, eval=F}
+import smtplib
+from email.mime.text import MIMEText
+from email.header import Header
+
+
+# 第三方 SMTP 服务信息：
+# 126 的 SMTP 服务器为 smtp.126.com，端口号25；
+# 腾讯企业邮箱的服务器为 smtp.exmail.qq.com，端口号465
+mail_host = "smtp.exmail.qq.com" 
+server_port = 465 # 服务器端口
+mail_sender = "b18500290@ucass.edu.cn" # 发件人邮箱账号
+mail_pass = "johQnSMD37LB5edf" # 授权密码，非登录密码！网易的授权密码 hmfyx520，腾讯的 johQnSMD37LB5edf
+mail_receiver = ['b18500290@ucass.edu.cn', "humoonruc@126.com"] # 收件人邮箱账号，可以是一个列表，发送给多人
+
+# 主题与内容
+title = '测试'  # 邮件主题
+content = """
+<p>Python 邮件发送测试...</p>
+<p><a href="http://www.runoob.com">这是一个链接</a></p>
+""" # 邮件内容
+
+
+def mail():
+    try:
+        msg = MIMEText(content, 'html', 'utf-8') # 应用内容，html格式，编码
+        msg['From'] = Header("Python", 'utf-8') # 发件人姓名或昵称
+        msg['To'] = Header("Me", 'utf-8') # 收件人姓名或昵称
+        msg['Subject'] = Header(title, 'utf-8') # 应用邮件的标题
+
+        # server = smtplib.SMTP(mail_host, server_port)  # 连接到126邮件服务器
+        server = smtplib.SMTP_SSL(mail_host, server_port) # 连接到腾讯邮箱服务器
+        server.login(mail_sender, mail_pass)  # 登陆
+        server.sendmail(mail_sender, mail_receiver, msg.as_string()) # 发送
+        server.quit() # 关闭连接
+        print ("邮件发送成功")
+    except smtplib.SMTPException as e:
+        print(e)
+        ret=False
+
+mail()
+```
+
+# 在 HTML 文本中添加图片
+
+邮件的 HTML 文本中一般邮件服务商添加外链是无效的，正确添加图片的实例如下所示：
+
+```{python, eval=F}
+import smtplib
+from email.mime.image import MIMEImage
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
+from email.header import Header
+
+
+# 第三方 SMTP 服务信息：
+# 126 的 SMTP 服务器为 smtp.126.com，端口号25；
+# 腾讯企业邮箱的服务器为 smtp.exmail.qq.com，端口号465
+mail_host = "smtp.exmail.qq.com" 
+server_port = 465 # 服务器端口
+mail_sender = "b18500290@ucass.edu.cn" # 发件人邮箱账号
+mail_pass = "johQnSMD37LB5edf" # 授权密码，非登录密码！网易的授权密码 hmfyx520，腾讯的 johQnSMD37LB5edf
+mail_receiver = ['b18500290@ucass.edu.cn', "humoonruc@126.com"] # 收件人邮箱账号，可以是一个列表，发送给多人
+
+
+title = '测试'  # 邮件主题
+
+msgRoot = MIMEMultipart('related')
+msgRoot['From'] = Header("菜鸟教程", 'utf-8')
+msgRoot['To'] =  Header("测试", 'utf-8')
+msgRoot['Subject'] = Header(title, 'utf-8')
+
+msgAlternative = MIMEMultipart('alternative')
+msgRoot.attach(msgAlternative)
+
+content = """
+<p>Python 邮件发送测试...</p>
+<p><a href="http://www.runoob.com">菜鸟教程链接</a></p>
+<p>图片演示：</p>
+<p><img src="cid:image1"></p>
+""" # 邮件内容
+
+msgAlternative.attach(MIMEText(content, 'html', 'utf-8'))
+
+# 指定图片为当前目录
+fp = open('test.png', 'rb')
+msgImage = MIMEImage(fp.read())
+fp.close()
+ 
+# 定义图片 ID，在 HTML 文本中引用
+msgImage.add_header('Content-ID', '<image1>')
+msgRoot.attach(msgImage)
+
+
+def mail():
+    try:
+        # server = smtplib.SMTP(mail_host, server_port)  # 连接到126邮件服务器
+        server = smtplib.SMTP_SSL(mail_host, server_port) # 连接到腾讯邮箱服务器
+        server.login(mail_sender, mail_pass)  # 登陆
+        server.sendmail(mail_sender, mail_receiver, msgRoot.as_string()) # 发送
+        server.quit() # 关闭连接
+        print ("邮件发送成功")
+    except smtplib.SMTPException as e:
+        print(e)
+        ret=False
+
+mail()
+```
+
+
+# 发送带附件的邮件
+
+发送带附件的邮件，首先要创建MIMEMultipart()实例，然后构造附件，如果有多个附件，可依次构造，最后利用smtplib.smtp发送。
+
+```{python, eval=F}
+import smtplib
+from email.mime.text import MIMEText
+from email.header import Header
+from email.mime.multipart import MIMEMultipart # 多了一行！！！
+
+
+# 第三方 SMTP 服务信息：
+# 126 的 SMTP 服务器为 smtp.126.com，端口号25；
+# 腾讯企业邮箱的服务器为 smtp.exmail.qq.com，端口号465
+mail_host = "smtp.exmail.qq.com" 
+server_port = 465 # 服务器端口
+mail_sender = "b18500290@ucass.edu.cn" # 发件人邮箱账号
+mail_pass = "johQnSMD37LB5edf" # 授权密码，非登录密码！网易的授权密码 hmfyx520，腾讯的 johQnSMD37LB5edf
+mail_receiver = ['b18500290@ucass.edu.cn', "humoonruc@126.com"] # 收件人邮箱账号，可以是一个列表，发送给多人
+
+
+title = '测试'  # 邮件主题
+content = """ 
+<p>Python 邮件发送测试...</p>
+<p><a href="http://www.runoob.com">这是一个链接</a></p>
+""" # 邮件内容
+
+
+#创建一个带附件的实例
+msg = MIMEMultipart()
+msg['From'] = Header("菜鸟教程", 'utf-8')
+msg['To'] =  Header("测试", 'utf-8')
+msg['Subject'] = Header(title, 'utf-8')
+msg.attach(MIMEText(content, 'html', 'utf-8'))
+
+# 构造附件1，传送当前目录下的 test.txt 文件
+att1 = MIMEText(open('test.txt', 'rb').read(), 'base64', 'utf-8')
+att1["Content-Type"] = 'application/octet-stream' 
+att1["Content-Disposition"] = 'attachment; filename="test.txt"'
+# 这里的filename可以任意写，写什么名字，邮件中显示什么名字
+message.attach(att1)
+ 
+# 构造附件2，传送当前目录下的 runoob.txt 文件
+att2 = MIMEText(open('runoob.txt', 'rb').read(), 'base64', 'utf-8')
+att2["Content-Type"] = 'application/octet-stream'
+att2["Content-Disposition"] = 'attachment; filename="runoob.txt"'
+message.attach(att2)
+
+def mail():
+    try:
+        # server = smtplib.SMTP(mail_host, server_port)  # 连接到126邮件服务器
+        server = smtplib.SMTP_SSL(mail_host, server_port) # 连接到腾讯邮箱服务器
+        server.login(mail_sender, mail_pass)  # 登陆
+        server.sendmail(mail_sender, mail_receiver, msg.as_string()) # 发送
+        server.quit() # 关闭连接
+        print ("邮件发送成功")
+    except smtplib.SMTPException as e:
+        print(e)
+        ret=False
+
+mail()
+```
+
+
+
+
+

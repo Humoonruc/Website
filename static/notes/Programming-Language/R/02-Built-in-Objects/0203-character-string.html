@@ -1,0 +1,1879 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Humoon" />
+
+<meta name="date" content="2022-06-19" />
+
+<title>String</title>
+
+<script src="libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="libs/navigation-1.1/tabsets.js"></script>
+<script src="libs/navigation-1.1/codefolding.js"></script>
+<script src="libs/navigation-1.1/sourceembed.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; } /* Alert */
+code span.an { color: #008000; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #0000ff; } /* ControlFlow */
+code span.ch { color: #008080; } /* Char */
+code span.cn { } /* Constant */
+code span.co { color: #008000; } /* Comment */
+code span.cv { color: #008000; } /* CommentVar */
+code span.do { color: #008000; } /* Documentation */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.im { } /* Import */
+code span.in { color: #008000; } /* Information */
+code span.kw { color: #0000ff; } /* Keyword */
+code span.op { } /* Operator */
+code span.ot { color: #ff4000; } /* Other */
+code span.pp { color: #ff4000; } /* Preprocessor */
+code span.sc { color: #008080; } /* SpecialChar */
+code span.ss { color: #008080; } /* SpecialString */
+code span.st { color: #008080; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #008080; } /* VerbatimString */
+code span.wa { color: #008000; font-weight: bold; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+<link rel="stylesheet" href="../css/style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">String</h1>
+<h4 class="author">Humoon</h4>
+<h4 class="date">2022-06-19</h4>
+
+</div>
+
+
+<p><strong>字符串函数一般都是向量化的，对输入的字符串向量的每个元素进行操作</strong>。</p>
+<div id="字符串基础" class="section level2">
+<h2>字符串基础</h2>
+<div id="readlines" class="section level3">
+<h3>readLines()</h3>
+<ol style="list-style-type: decimal">
+<li>在R中读入一个文本文件可以用<code>readLines()</code>函数，它返回一个字符型向量，文件中每一行都是向量中对应的一个元素。这个文件可以是本地文件，也可以是一个网址。</li>
+</ol>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>index <span class="ot">&lt;-</span> <span class="fu">readLines</span>(<span class="st">&quot;https://www.baidu.com&quot;</span>) <span class="co"># 我的主页</span></span></code></pre></div>
+<pre><code>#&gt; Warning in readLines(&quot;https://www.baidu.com&quot;): incomplete final line found on
+#&gt; &#39;https://www.baidu.com&#39;</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(index) <span class="co"># HTML代码</span></span></code></pre></div>
+<pre><code>#&gt; [1] &quot;&lt;html&gt;&quot;                                                                
+#&gt; [2] &quot;&lt;head&gt;&quot;                                                                
+#&gt; [3] &quot;\t&lt;script&gt;&quot;                                                            
+#&gt; [4] &quot;\t\tlocation.replace(location.href.replace(\&quot;https://\&quot;,\&quot;http://\&quot;));&quot;
+#&gt; [5] &quot;\t&lt;/script&gt;&quot;                                                           
+#&gt; [6] &quot;&lt;/head&gt;&quot;</code></pre>
+<ol start="2" style="list-style-type: decimal">
+<li><code>readline()</code>支持从键盘直接输入一行文本，显然，R必须在交互式模式下运行，否则人没法输入任何东西。它有一个常用的地方，就是在代码运行过程中要求用户输入一些回答，例如：</li>
+</ol>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">readline</span>(<span class="st">&quot;Answer yes or no: &quot;</span>)</span></code></pre></div>
+<p>当R运行到这一行时会停下来等待用户输入（回车表示输入结束），然后根据输入的结果，代码可以接着执行。</p>
+<ol start="3" style="list-style-type: decimal">
+<li>在Windows系统中，<code>readLines()</code>读utf-8编码的txt文件会导致乱码，只能顺利读取ANSI编码的txt文件。</li>
+</ol>
+</div>
+<div id="writelines" class="section level3">
+<h3>writeLines()</h3>
+<ol style="list-style-type: decimal">
+<li>注意，字符串的打印形式与其本身的内容不是相同的，因为打印形式中会显示出转义字符。<strong>如果想要查看字符串的真正内容，可以使用<code>writeLines()</code></strong></li>
+</ol>
+<blockquote>
+<p>writeLines(text, con = stdout(), sep = “”, useBytes = FALSE)</p>
+</blockquote>
+<ol start="2" style="list-style-type: decimal">
+<li>Windows系统中<code>writeLines()</code>写入txt文件会导致乱码，替代方案是用<code>writeBin(charToRaw(string), file)</code>写入文件</li>
+</ol>
+</div>
+<div id="字符串包含引文时引号的使用" class="section level3">
+<h3>字符串包含引文时引号的使用</h3>
+<p>若一个字符串包含引文，为了符合行文习惯(双引号)，并使代码引号有层次的区别，外层应用单引号。</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># string1 &lt;- &#39;When putting a &#39;quote&#39; inside a string, use single quotation marks.&#39;</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="co"># string1 &lt;- &quot;When putting a &quot;quote&quot; inside a string, use double quotation marks.&quot;</span></span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>string3 <span class="ot">&lt;-</span> <span class="st">&quot;When putting a &#39;quote&#39; inside a string, use single quotation marks inside and double quotation marks outside.&quot;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>string4 <span class="ot">&lt;-</span> <span class="st">&#39;When putting a &quot;quote&quot; inside a string, use double quotation marks inside and single quotation marks outside.&#39;</span></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co"># 字符串的打印形式</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>string3</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>string4</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;When putting a &#39;quote&#39; inside a string, use single quotation marks inside and double quotation marks outside.&quot;
+#&gt; [1] &quot;When putting a \&quot;quote\&quot; inside a string, use double quotation marks inside and single quotation marks outside.&quot;</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 字符串编译后导出的形式</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(string3)</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(string4)</span></code></pre></div>
+<pre><code>#&gt; When putting a &#39;quote&#39; inside a string, use single quotation marks inside and double quotation marks outside.
+#&gt; When putting a &quot;quote&quot; inside a string, use double quotation marks inside and single quotation marks outside.</code></pre>
+<p>string1和string2有语法错误，前后两个字符串中间夹了一个编译器不认识的quote。</p>
+<p>string3和string4在语法上没问题，但编译时效果不同。string4才是我们想要的。</p>
+</div>
+<div id="转义符号" class="section level3">
+<h3>转义符号”\”</h3>
+<p>反斜杠”\“可以将R语言及R Markdown的语法部件转义为字符。<br />
+如果想要在字符串中包含一个单引号或双引号，可以使用”\’“和”\““对其进行转义。</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>string5 <span class="ot">&lt;-</span> <span class="st">&#39;I don</span><span class="sc">\&#39;</span><span class="st">t know why they called us &quot;Chinese&quot;.&#39;</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>string6 <span class="ot">&lt;-</span> <span class="st">&quot;When putting a </span><span class="sc">\&quot;</span><span class="st">quote</span><span class="sc">\&quot;</span><span class="st"> inside a string, you can use backslash as well.&quot;</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(string5)</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(string6)</span></code></pre></div>
+<pre><code>#&gt; I don&#39;t know why they called us &quot;Chinese&quot;.
+#&gt; When putting a &quot;quote&quot; inside a string, you can use backslash as well.</code></pre>
+<p>如果想要在字符串中包含一个反斜杠，就需要使用两个反斜杠：“\\”</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>string7 <span class="ot">&lt;-</span> <span class="st">&quot;I think the backslash </span><span class="sc">\&quot;\\\&quot;</span><span class="st"> is amazing!&quot;</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a><span class="fu">print</span>(string7) <span class="co"># 或 string7</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(string7)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;I think the backslash \&quot;\\\&quot; is amazing!&quot;
+#&gt; I think the backslash &quot;\&quot; is amazing!</code></pre>
+</div>
+<div id="特殊字符" class="section level3">
+<h3>特殊字符</h3>
+<p>其他几种特殊字符。最常用的是换行符”\n”、制表符”\t”和退格”\b”，你可以使用
+?‘“’ 或 ?”’” 调出帮助文件来查看完整的特殊字符列表。</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>string8 <span class="ot">&lt;-</span> <span class="st">&#39;The special characters &quot;</span><span class="sc">\n</span><span class="st">&quot;, &quot;</span><span class="sc">\t</span><span class="st">&quot; and &quot;</span><span class="sc">\b</span><span class="st">&quot; are very interesing.&#39;</span></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>string9 <span class="ot">&lt;-</span> <span class="st">&quot;The special characters </span><span class="sc">\&quot;\\</span><span class="st">n</span><span class="sc">\&quot;</span><span class="st">, </span><span class="sc">\&quot;\\</span><span class="st">t</span><span class="sc">\&quot;</span><span class="st"> and </span><span class="sc">\&quot;\\</span><span class="st">b</span><span class="sc">\&quot;</span><span class="st"> are very interesing.&quot;</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(string8)</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a><span class="fu">writeLines</span>(string9)</span></code></pre></div>
+<pre><code>#&gt; The special characters &quot;
+#&gt; &quot;, &quot; &quot; and &quot;&quot; are very interesing.
+#&gt; The special characters &quot;\n&quot;, &quot;\t&quot; and &quot;\b&quot; are very interesing.</code></pre>
+<p>生成的html文件中”\b”变成了一个奇怪的方框，控制台显示的则是正确的。可能R
+Markdown与R语言中”\b”的含义不同。</p>
+</div>
+</div>
+<div id="字符串格式化" class="section level2">
+<h2>字符串格式化</h2>
+<div id="basesprintf" class="section level3">
+<h3>base::sprintf()</h3>
+<p><code>sprintf(包含占位符的字符串，欲填充的字符串)</code></p>
+<table>
+<colgroup>
+<col width="14%" />
+<col width="85%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><strong>占位符</strong></th>
+<th></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>%</td>
+<td>如果要在占位符内部使用%，需要写成%%</td>
+</tr>
+<tr class="even">
+<td><strong>转换符</strong></td>
+<td><strong>类型</strong></td>
+</tr>
+<tr class="odd">
+<td>d</td>
+<td>十进制整数</td>
+</tr>
+<tr class="even">
+<td>o</td>
+<td>八进制整数</td>
+</tr>
+<tr class="odd">
+<td>x, X</td>
+<td>小/大写十六进制整数</td>
+</tr>
+<tr class="even">
+<td>f</td>
+<td>十进制浮点数</td>
+</tr>
+<tr class="odd">
+<td>e, E</td>
+<td>科学计数法表示的数，e小写或大写</td>
+</tr>
+<tr class="even">
+<td>g, G</td>
+<td>智能选择使用浮点数还是科学计数法（g对应e，G对应E），默认显示6位有效数字</td>
+</tr>
+<tr class="odd">
+<td>s</td>
+<td>字符串</td>
+</tr>
+<tr class="even">
+<td><strong>浮点数格式</strong></td>
+<td></td>
+</tr>
+<tr class="odd">
+<td>width.precision</td>
+<td>输出的最小宽度（不足以空格补齐）.输出精度（对f和e/E意味着小数点后几位，对g/G意味着有效数字位数）</td>
+</tr>
+<tr class="even">
+<td>-</td>
+<td>指定左对齐（默认右对齐），即宽度不足时从右边补充空格</td>
+</tr>
+<tr class="odd">
+<td>+</td>
+<td>永远带符号（默认只有负数带一个负号，正数不带符号）</td>
+</tr>
+<tr class="even">
+<td>空格</td>
+<td>首字符并非负号时，空一格</td>
+</tr>
+<tr class="odd">
+<td>0</td>
+<td>宽度不足时补0，而非默认的空格</td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;The ratio is %d%%&quot;</span>, <span class="dv">10</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;The ratio is 10%&quot;</code></pre>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;%f&quot;</span>, pi) <span class="co"># 浮点数</span></span></code></pre></div>
+<pre><code>#&gt; [1] &quot;3.141593&quot;</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;%.3f&quot;</span>, pi) <span class="co"># 保留小数点后3位</span></span></code></pre></div>
+<pre><code>#&gt; [1] &quot;3.142&quot;</code></pre>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;%.0f&quot;</span>, pi) <span class="co"># 保留小数点后0位</span></span></code></pre></div>
+<pre><code>#&gt; [1] &quot;3&quot;</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;%5.1f&quot;</span>, pi) <span class="co"># 最小宽度为5，保留小数点后1位，不足补空格</span></span></code></pre></div>
+<pre><code>#&gt; [1] &quot;  3.1&quot;</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;%05.1f&quot;</span>, pi) <span class="co"># 用0补齐</span></span></code></pre></div>
+<pre><code>#&gt; [1] &quot;003.1&quot;</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;%+f&quot;</span>, pi) <span class="co"># 永远带符号</span></span></code></pre></div>
+<pre><code>#&gt; [1] &quot;+3.141593&quot;</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;% f&quot;</span>, pi)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot; 3.141593&quot;</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;%-10f&quot;</span>, pi) <span class="co"># 左对齐，宽度为10</span></span></code></pre></div>
+<pre><code>#&gt; [1] &quot;3.141593  &quot;</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;%e&quot;</span>, pi)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;3.141593e+00&quot;</code></pre>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;%E&quot;</span>, pi)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;3.141593E+00&quot;</code></pre>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;%g&quot;</span>, pi)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;3.14159&quot;</code></pre>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;%g&quot;</span>, <span class="fl">1e6</span> <span class="sc">*</span> pi)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;3.14159e+06&quot;</code></pre>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;%.9g&quot;</span>, <span class="fl">1e6</span> <span class="sc">*</span> pi)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;3141592.65&quot;</code></pre>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(<span class="st">&quot;%.2g&quot;</span>, <span class="fl">23.75</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;24&quot;</code></pre>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a><span class="fu">sprintf</span>(</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;min 10-char string &#39;%10s&#39;&quot;</span>,</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;ABC&quot;</span>, <span class="st">&quot;and an even longer one&quot;</span>)</span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;min 10-char string &#39;         a&#39;&quot;            
+#&gt; [2] &quot;min 10-char string &#39;       ABC&#39;&quot;            
+#&gt; [3] &quot;min 10-char string &#39;and an even longer one&#39;&quot;</code></pre>
+</div>
+<div id="借助-python" class="section level3">
+<h3>借助 python</h3>
+<p>加入 python 代码块，使用 python 中的字符串格式化方法 .format()</p>
+<p><code>模板字符串.format(以逗号分隔的填充参数序列)</code></p>
+<p>其中，<code>{}</code>为模板中的槽，槽内部定义每个槽的格式化样式，形如：</p>
+<p><code>id:[fill][align][sign][width][,][.precision][type]</code></p>
+<table>
+<colgroup>
+<col width="11%" />
+<col width="88%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>类别</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>fill</td>
+<td>宽度不足时填充的字符</td>
+</tr>
+<tr class="even">
+<td>align</td>
+<td>对齐方式. <code>&lt;</code> 左对齐；<code>&gt;</code>
+右对齐；<code>=</code>
+内容右对齐，符号放置在填充字符（如”0”）的左侧；<code>^</code> 居中</td>
+</tr>
+<tr class="odd">
+<td>sign</td>
+<td><p><code>+</code> 正数加<code>+</code>，负数加<code>-</code></p>
+<p>空格，正数加空格，负数加<code>-</code></p></td>
+</tr>
+<tr class="even">
+<td>,</td>
+<td>为数字添加千位分隔符</td>
+</tr>
+<tr class="odd">
+<td>width</td>
+<td>输出的最小宽度（不足以 fill 补齐）</td>
+</tr>
+<tr class="even">
+<td>.precision</td>
+<td>小数点后保留精度</td>
+</tr>
+<tr class="odd">
+<td>type</td>
+<td>格式化类型</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>s 字符串（不指定type时默认）</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>d 十进制整数</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>o 八进制整数</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>x, X 小/大写十六进制整数</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>f 十进制浮点数</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>e, E 科学计数法表示的数，e小写或大写</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>g, G
+智能选择使用浮点数还是科学计数法（g对应e，G对应E），默认显示6位有效数字</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>% 百分比，默认显示小数点后6位</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>b 二进制整数</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>c 10进制整数转换为 Unicode 字符</td>
+</tr>
+</tbody>
+</table>
+<p>这种方法的缺点在于，输出宽度、精度等参数必须是确定的常数，而不能是变量。因此当这些数值必须取变量时，仍要使用<code>.rjust()</code>、<code>.ljust()</code>和<code>.center()</code>方法。</p>
+<p>示例：</p>
+<div class="sourceCode" id="cb48"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>str1 <span class="op">=</span> <span class="st">&quot;</span><span class="sc">{0:=^20}</span><span class="st">&quot;</span>.<span class="bu">format</span>(<span class="st">&quot;Python&quot;</span>) </span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>str1 <span class="co"># 用 &#39;=&#39; 填充，居中对齐，槽宽度为20</span></span></code></pre></div>
+<pre><code>#&gt; &#39;=======Python=======&#39;</code></pre>
+<div class="sourceCode" id="cb50"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a>str2 <span class="op">=</span> <span class="st">&quot;</span><span class="sc">{:=^20}</span><span class="st">&quot;</span>.<span class="bu">format</span>(<span class="st">&quot;Python&quot;</span>) </span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a>str2 <span class="co"># 参数索引0可以省略</span></span></code></pre></div>
+<pre><code>#&gt; &#39;=======Python=======&#39;</code></pre>
+<div class="sourceCode" id="cb52"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>str3 <span class="op">=</span> <span class="st">&quot;</span><span class="sc">{:*&gt;20}</span><span class="st">&quot;</span>.<span class="bu">format</span>(<span class="st">&quot;BIT&quot;</span>) </span>
+<span id="cb52-2"><a href="#cb52-2" aria-hidden="true" tabindex="-1"></a>str3 <span class="co"># 用 &#39;*&#39; 填充，右对齐，槽宽度为20</span></span></code></pre></div>
+<pre><code>#&gt; &#39;*****************BIT&#39;</code></pre>
+<div class="sourceCode" id="cb54"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>str4 <span class="op">=</span> <span class="st">&quot;</span><span class="sc">{:10}</span><span class="st">&quot;</span>.<span class="bu">format</span>(<span class="st">&quot;BIT&quot;</span>)</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a>str4 <span class="co"># 默认左对齐，空格填充</span></span></code></pre></div>
+<pre><code>#&gt; &#39;BIT       &#39;</code></pre>
+<div class="sourceCode" id="cb56"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>str5 <span class="op">=</span> <span class="st">&quot;{:,.2f}&quot;</span>.<span class="bu">format</span>(<span class="fl">12345.6789</span>)</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a>str5 <span class="co"># 使用千位分隔符，保留两位小数的浮点型</span></span></code></pre></div>
+<pre><code>#&gt; &#39;12,345.68&#39;</code></pre>
+<div class="sourceCode" id="cb58"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>str6 <span class="op">=</span> <span class="st">&quot;</span><span class="sc">{0:b}</span><span class="st">, </span><span class="sc">{0:c}</span><span class="st">, </span><span class="sc">{0:d}</span><span class="st">, </span><span class="sc">{0:o}</span><span class="st">, </span><span class="sc">{0:x}</span><span class="st">, </span><span class="sc">{0:X}</span><span class="st">&quot;</span>.<span class="bu">format</span>(<span class="dv">426</span>)</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>str6 <span class="co"># 一个参数填到所有槽中，分别转换为：二进制，Unicode 编码，十进制，八进制，十六进制，大写的十六进制</span></span></code></pre></div>
+<pre><code>#&gt; &#39;110101010, ƪ, 426, 652, 1aa, 1AA&#39;</code></pre>
+<div class="sourceCode" id="cb60"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a>str7 <span class="op">=</span> <span class="st">&quot;</span><span class="sc">{0:.2e}</span><span class="st">, </span><span class="sc">{0:.2E}</span><span class="st">, </span><span class="sc">{0:.2f}</span><span class="st">, </span><span class="sc">{0:.2%}</span><span class="st">&quot;</span>.<span class="bu">format</span>(<span class="fl">3.14</span>)</span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>str7 <span class="co"># 分别转换为：科学记数法，大写科学记数法，浮点数，百分数</span></span></code></pre></div>
+<pre><code>#&gt; &#39;3.14e+00, 3.14E+00, 3.14, 314.00%&#39;</code></pre>
+<div class="sourceCode" id="cb62"><pre
+class="sourceCode python"><code class="sourceCode python"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a>str8  <span class="op">=</span> <span class="st">&quot;I am </span><span class="sc">{:s}</span><span class="st">, age </span><span class="sc">{:d}</span><span class="st">, money </span><span class="sc">{:.2f}</span><span class="st">&quot;</span>.<span class="bu">format</span>(<span class="st">&quot;seven&quot;</span>, <span class="dv">18</span>, <span class="fl">88888.1</span>)</span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>str8 <span class="co"># 槽与填充参数的顺序恰好对应时，也可以省略参数索引</span></span></code></pre></div>
+<pre><code>#&gt; &#39;I am seven, age 18, money 88888.10&#39;</code></pre>
+</div>
+<div id="formattable-包" class="section level3">
+<h3>formattable 包</h3>
+<ul>
+<li>percent()</li>
+<li>comma()</li>
+<li>currency()</li>
+<li>accounting()，会计格式，如负数用括号表示</li>
+<li>scientific()</li>
+</ul>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(formattable)</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb64-3"><a href="#cb64-3" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span></span>
+<span id="cb64-4"><a href="#cb64-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.frame</span>(</span>
+<span id="cb64-5"><a href="#cb64-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">id =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>,</span>
+<span id="cb64-6"><a href="#cb64-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="fu">c</span>(</span>
+<span id="cb64-7"><a href="#cb64-7" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;Bob&quot;</span>,</span>
+<span id="cb64-8"><a href="#cb64-8" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;Ashley&quot;</span>,</span>
+<span id="cb64-9"><a href="#cb64-9" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;James&quot;</span>,</span>
+<span id="cb64-10"><a href="#cb64-10" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;David&quot;</span>,</span>
+<span id="cb64-11"><a href="#cb64-11" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;Jenny&quot;</span>,</span>
+<span id="cb64-12"><a href="#cb64-12" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;Hans&quot;</span>,</span>
+<span id="cb64-13"><a href="#cb64-13" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;Leo&quot;</span>,</span>
+<span id="cb64-14"><a href="#cb64-14" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;John&quot;</span>,</span>
+<span id="cb64-15"><a href="#cb64-15" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;Emily&quot;</span>,</span>
+<span id="cb64-16"><a href="#cb64-16" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;Lee&quot;</span></span>
+<span id="cb64-17"><a href="#cb64-17" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb64-18"><a href="#cb64-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">age =</span> <span class="fu">c</span>(<span class="dv">28</span>, <span class="dv">27</span>, <span class="dv">30</span>, <span class="dv">28</span>, <span class="dv">29</span>, <span class="dv">29</span>, <span class="dv">27</span>, <span class="dv">27</span>, <span class="dv">31</span>, <span class="dv">30</span>),</span>
+<span id="cb64-19"><a href="#cb64-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">grade =</span> <span class="fu">c</span>(<span class="st">&quot;C&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="st">&quot;C&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;B&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="st">&quot;C&quot;</span>, <span class="st">&quot;C&quot;</span>),</span>
+<span id="cb64-20"><a href="#cb64-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">test1_score =</span> <span class="fu">c</span>(<span class="fl">8.9</span>, <span class="fl">9.5</span>, <span class="fl">9.6</span>, <span class="fl">8.9</span>, <span class="fl">9.1</span>, <span class="fl">9.3</span>, <span class="fl">9.3</span>, <span class="fl">9.9</span>, <span class="fl">8.5</span>, <span class="fl">8.6</span>),</span>
+<span id="cb64-21"><a href="#cb64-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">test2_score =</span> <span class="fu">c</span>(<span class="fl">9.1</span>, <span class="fl">9.1</span>, <span class="fl">9.2</span>, <span class="fl">9.1</span>, <span class="fl">8.9</span>, <span class="fl">8.5</span>, <span class="fl">9.2</span>, <span class="fl">9.3</span>, <span class="fl">9.1</span>, <span class="fl">8.8</span>),</span>
+<span id="cb64-22"><a href="#cb64-22" aria-hidden="true" tabindex="-1"></a>    <span class="at">final_score =</span> <span class="fu">c</span>(<span class="dv">9</span>, <span class="fl">9.3</span>, <span class="fl">9.4</span>, <span class="dv">9</span>, <span class="dv">9</span>, <span class="fl">8.9</span>, <span class="fl">9.25</span>, <span class="fl">9.6</span>, <span class="fl">8.8</span>, <span class="fl">8.7</span>),</span>
+<span id="cb64-23"><a href="#cb64-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">registered =</span> <span class="fu">c</span>(<span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">TRUE</span>, <span class="cn">FALSE</span>, <span class="cn">FALSE</span>, <span class="cn">FALSE</span>),</span>
+<span id="cb64-24"><a href="#cb64-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">stringsAsFactors =</span> <span class="cn">FALSE</span></span>
+<span id="cb64-25"><a href="#cb64-25" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb64-26"><a href="#cb64-26" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div>
+<pre><code>#&gt;    id   name age grade test1_score test2_score final_score registered
+#&gt; 1   1    Bob  28     C         8.9         9.1        9.00       TRUE
+#&gt; 2   2 Ashley  27     A         9.5         9.1        9.30      FALSE
+#&gt; 3   3  James  30     A         9.6         9.2        9.40       TRUE
+#&gt; 4   4  David  28     C         8.9         9.1        9.00      FALSE
+#&gt; 5   5  Jenny  29     B         9.1         8.9        9.00       TRUE
+#&gt; 6   6   Hans  29     B         9.3         8.5        8.90       TRUE
+#&gt; 7   7    Leo  27     B         9.3         9.2        9.25       TRUE
+#&gt; 8   8   John  27     A         9.9         9.3        9.60      FALSE
+#&gt; 9   9  Emily  31     C         8.5         9.1        8.80      FALSE
+#&gt; 10 10    Lee  30     C         8.6         8.8        8.70      FALSE</code></pre>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a><span class="fu">formattable</span>(</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a>  df,</span>
+<span id="cb66-3"><a href="#cb66-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(</span>
+<span id="cb66-4"><a href="#cb66-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">age =</span> <span class="fu">color_tile</span>(<span class="st">&quot;white&quot;</span>, <span class="st">&quot;orange&quot;</span>),</span>
+<span id="cb66-5"><a href="#cb66-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">grade =</span> <span class="fu">formatter</span>(<span class="st">&quot;span&quot;</span>, <span class="at">style =</span> x <span class="sc">~</span> <span class="fu">ifelse</span>(</span>
+<span id="cb66-6"><a href="#cb66-6" aria-hidden="true" tabindex="-1"></a>      x <span class="sc">==</span> <span class="st">&quot;A&quot;</span>, <span class="fu">style</span>(<span class="at">color =</span> <span class="st">&quot;green&quot;</span>, <span class="at">font.weight =</span> <span class="st">&quot;bold&quot;</span>), <span class="cn">NA</span></span>
+<span id="cb66-7"><a href="#cb66-7" aria-hidden="true" tabindex="-1"></a>    )),</span>
+<span id="cb66-8"><a href="#cb66-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">area</span>(<span class="at">col =</span> <span class="fu">c</span>(test1_score, test2_score)) <span class="sc">~</span> <span class="fu">normalize_bar</span>(<span class="st">&quot;pink&quot;</span>, <span class="fl">0.2</span>),</span>
+<span id="cb66-9"><a href="#cb66-9" aria-hidden="true" tabindex="-1"></a>    <span class="at">final_score =</span> <span class="fu">formatter</span>(</span>
+<span id="cb66-10"><a href="#cb66-10" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;span&quot;</span>,</span>
+<span id="cb66-11"><a href="#cb66-11" aria-hidden="true" tabindex="-1"></a>      <span class="at">style =</span> x <span class="sc">~</span> <span class="fu">style</span>(<span class="at">color =</span> <span class="fu">ifelse</span>(<span class="fu">rank</span>(<span class="sc">-</span>x) <span class="sc">&lt;=</span> <span class="dv">3</span>, <span class="st">&quot;green&quot;</span>, <span class="st">&quot;gray&quot;</span>)),</span>
+<span id="cb66-12"><a href="#cb66-12" aria-hidden="true" tabindex="-1"></a>      x <span class="sc">~</span> <span class="fu">sprintf</span>(<span class="st">&quot;%.2f (rank: %02d)&quot;</span>, x, <span class="fu">rank</span>(<span class="sc">-</span>x))</span>
+<span id="cb66-13"><a href="#cb66-13" aria-hidden="true" tabindex="-1"></a>    ),</span>
+<span id="cb66-14"><a href="#cb66-14" aria-hidden="true" tabindex="-1"></a>    <span class="at">registered =</span> <span class="fu">formatter</span>(</span>
+<span id="cb66-15"><a href="#cb66-15" aria-hidden="true" tabindex="-1"></a>      <span class="st">&quot;span&quot;</span>,</span>
+<span id="cb66-16"><a href="#cb66-16" aria-hidden="true" tabindex="-1"></a>      <span class="at">style =</span> x <span class="sc">~</span> <span class="fu">style</span>(<span class="at">color =</span> <span class="fu">ifelse</span>(x, <span class="st">&quot;green&quot;</span>, <span class="st">&quot;red&quot;</span>)),</span>
+<span id="cb66-17"><a href="#cb66-17" aria-hidden="true" tabindex="-1"></a>      x <span class="sc">~</span> <span class="fu">icontext</span>(<span class="fu">ifelse</span>(x, <span class="st">&quot;ok&quot;</span>, <span class="st">&quot;remove&quot;</span>), <span class="fu">ifelse</span>(x, <span class="st">&quot;Yes&quot;</span>, <span class="st">&quot;No&quot;</span>))</span>
+<span id="cb66-18"><a href="#cb66-18" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb66-19"><a href="#cb66-19" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb66-20"><a href="#cb66-20" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<table class="table table-condensed">
+<thead>
+<tr>
+<th style="text-align:right;">
+id
+</th>
+<th style="text-align:right;">
+name
+</th>
+<th style="text-align:right;">
+age
+</th>
+<th style="text-align:right;">
+grade
+</th>
+<th style="text-align:right;">
+test1_score
+</th>
+<th style="text-align:right;">
+test2_score
+</th>
+<th style="text-align:right;">
+final_score
+</th>
+<th style="text-align:right;">
+registered
+</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:right;">
+1
+</td>
+<td style="text-align:right;">
+Bob
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffe8bf">28</span>
+</td>
+<td style="text-align:right;">
+<span>C</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: pink; width: 42.86%">8.9</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: pink; width: 54.29%">9.1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: gray">9.00 (rank: 06)</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green"> <i class="glyphicon glyphicon-ok"></i> Yes
+</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+2
+</td>
+<td style="text-align:right;">
+Ashley
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">27</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green; font-weight: bold">A</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: pink; width: 77.14%">9.5</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: pink; width: 54.29%">9.1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">9.30 (rank: 03)</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red"> <i class="glyphicon glyphicon-remove"></i> No
+</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+3
+</td>
+<td style="text-align:right;">
+James
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffbb3f">30</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green; font-weight: bold">A</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: pink; width: 82.86%">9.6</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: pink; width: 60.00%">9.2</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">9.40 (rank: 02)</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green"> <i class="glyphicon glyphicon-ok"></i> Yes
+</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+4
+</td>
+<td style="text-align:right;">
+David
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffe8bf">28</span>
+</td>
+<td style="text-align:right;">
+<span>C</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: pink; width: 42.86%">8.9</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: pink; width: 54.29%">9.1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: gray">9.00 (rank: 06)</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red"> <i class="glyphicon glyphicon-remove"></i> No
+</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+5
+</td>
+<td style="text-align:right;">
+Jenny
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffd27f">29</span>
+</td>
+<td style="text-align:right;">
+<span>B</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: pink; width: 54.29%">9.1</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: pink; width: 42.86%">8.9</span>
+</td>
+<td style="text-align:right;">
+<span style="color: gray">9.00 (rank: 06)</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green"> <i class="glyphicon glyphicon-ok"></i> Yes
+</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+6
+</td>
+<td style="text-align:right;">
+Hans
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffd27f">29</span>
+</td>
+<td style="text-align:right;">
+<span>B</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: pink; width: 65.71%">9.3</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: pink; width: 20.00%">8.5</span>
+</td>
+<td style="text-align:right;">
+<span style="color: gray">8.90 (rank: 08)</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green"> <i class="glyphicon glyphicon-ok"></i> Yes
+</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+7
+</td>
+<td style="text-align:right;">
+Leo
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">27</span>
+</td>
+<td style="text-align:right;">
+<span>B</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: pink; width: 65.71%">9.3</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: pink; width: 60.00%">9.2</span>
+</td>
+<td style="text-align:right;">
+<span style="color: gray">9.25 (rank: 04)</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green"> <i class="glyphicon glyphicon-ok"></i> Yes
+</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+8
+</td>
+<td style="text-align:right;">
+John
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffffff">27</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green; font-weight: bold">A</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: pink; width: 100.00%">9.9</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: pink; width: 65.71%">9.3</span>
+</td>
+<td style="text-align:right;">
+<span style="color: green">9.60 (rank: 01)</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red"> <i class="glyphicon glyphicon-remove"></i> No
+</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+9
+</td>
+<td style="text-align:right;">
+Emily
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffa500">31</span>
+</td>
+<td style="text-align:right;">
+<span>C</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: pink; width: 20.00%">8.5</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: pink; width: 54.29%">9.1</span>
+</td>
+<td style="text-align:right;">
+<span style="color: gray">8.80 (rank: 09)</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red"> <i class="glyphicon glyphicon-remove"></i> No
+</span>
+</td>
+</tr>
+<tr>
+<td style="text-align:right;">
+10
+</td>
+<td style="text-align:right;">
+Lee
+</td>
+<td style="text-align:right;">
+<span
+style="display: block; padding: 0 4px; border-radius: 4px; background-color: #ffbb3f">30</span>
+</td>
+<td style="text-align:right;">
+<span>C</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: pink; width: 25.71%">8.6</span>
+</td>
+<td style="text-align:right;">
+<span
+style="display: inline-block; direction: rtl; unicode-bidi: plaintext; border-radius: 4px; padding-right: 2px; background-color: pink; width: 37.14%">8.8</span>
+</td>
+<td style="text-align:right;">
+<span style="color: gray">8.70 (rank: 10)</span>
+</td>
+<td style="text-align:right;">
+<span style="color: red"> <i class="glyphicon glyphicon-remove"></i> No
+</span>
+</td>
+</tr>
+</tbody>
+</table>
+<p><code>文字格式自定义</code>、<code>文字背景自定义</code>、<code>文本自定义</code>三种自定义可视化类型：</p>
+<ul>
+<li>color_tile函数用于输出按照数值量级进行颜色背景填充的列。</li>
+<li>formatter函数提供字体显示格式的自定义，grade列自定义了值为A的记录显示绿色，并将字体加粗，否则忽略。</li>
+<li>test1_score,
+test2_score两列通过area函数在对应字体背景位置使用条形图来代表指标量级大小，颜色填充粉色。</li>
+<li>final_score列对指标按照top3显示绿色，其余显示灰色，同时将内容显示格式自定义为浮点型+(rank:名次)进行显示。</li>
+<li>registered列则在对填充颜色按照对应布尔值进行显示（TRUE显示绿色、FALSE显示红色）之外，在左侧添加了对用的icon文本（TRUE显示绿色对号，FALSE显示红色叉号）。</li>
+</ul>
+</div>
+</div>
+<div id="函数分类" class="section level2">
+<h2>函数分类</h2>
+<p><strong>字符串拼接函数</strong></p>
+<ul>
+<li>str_c: 字符串拼接。</li>
+<li>str_trim: 去掉字符串的白空格</li>
+<li>str_pad: 补充字符串的长度</li>
+<li><code>str_squish</code>：删除字符串中多于1个的空格。非常有用的函数！</li>
+<li>str_dup: 复制字符串</li>
+<li>str_sub: 字符串切片</li>
+<li>str_sub&lt;- 字符串切片，并赋值，同str_sub</li>
+</ul>
+<p><strong>字符串计算函数</strong></p>
+<ul>
+<li>str_count: 字符串计数</li>
+<li><code>str_length()</code>: 字符串长度，同<code>nchar()</code></li>
+<li>str_sort: 字符串值排序</li>
+<li>str_order: 字符串索引排序，规则同str_sort</li>
+</ul>
+<p><strong>字符串匹配函数</strong></p>
+<ul>
+<li><code>str_view()/str_view_all()</code>
+查看string是否匹配pattern，如果匹配，就高亮显示</li>
+<li>str_split: 字符串分割</li>
+<li>str_split_fixed: 字符串分割，同str_split</li>
+<li>str_subset: 返回匹配的字符串</li>
+<li>word: 从文本中提取单词</li>
+<li><code>str_detect()</code>/<code>str_view()</code>:
+检查匹配字符串的字符</li>
+<li>str_match: 从字符串中提取匹配组。</li>
+<li>str_match_all: 从字符串中提取匹配组，同str_match</li>
+<li><code>chartr(old, new, string)</code>: 从 old 到 new
+的一一对应的替换，作用在 string 上</li>
+<li>str_replace: 字符串替换</li>
+<li>str_replace_all: 字符串替换，同str_replace</li>
+<li>str_replace_na: 把NA替换为字符串”NA”</li>
+<li>str_remove：删除匹配的字符串</li>
+<li>str_remove_all：删除所有匹配的字符</li>
+<li>str_locate: 找到匹配的字符串的位置。</li>
+<li>str_locate_all: 找到匹配的字符串的位置,同str_locate</li>
+<li>str_extract: 从字符串中提取匹配字符</li>
+<li>str_extract_all: 从字符串中提取匹配字符，同str_extract</li>
+</ul>
+<p><strong>字符串格式化</strong></p>
+<ul>
+<li><code>base::sprintf()</code>，详见上一节</li>
+<li><code>str_glue()</code>：参数里面的<code>{}</code>占位符，同javascript的<code>${}</code></li>
+<li>str_wrap: 控制长字符串输出排版</li>
+<li>str_conv: 字符编码转换</li>
+<li><code>str_to_upper()</code>/<code>toupper()</code>:
+字符串转成大写</li>
+<li><code>str_to_lower()</code>/<code>tolower()</code>:
+字符串转成小写,规则同str_to_upper</li>
+<li>str_to_title(): 字符串转成首字母大写,规则同str_to_upper</li>
+<li>str_to_sentence(): 只有一句的首字母大写</li>
+</ul>
+<p><strong>参数控制函数，仅用于构造功能的参数，不能独立使用。</strong></p>
+<ul>
+<li>boundary: 定义使用边界</li>
+<li>coll: 定义字符串标准排序规则。</li>
+<li>fixed: 定义用于匹配的字符，包括正则表达式中的转义符</li>
+<li>regex: 定义正则表达式</li>
+</ul>
+</div>
+<div id="stringr" class="section level2">
+<h2>stringr::</h2>
+<p><a href="../pdf/cheatsheet-strings.pdf"><strong>stringr
+cheatsheet.pdf</strong></a></p>
+<object data="../pdf/cheatsheet-strings.pdf" type="application/pdf" width="100%" height="100%">
+</object>
+<div id="str_length-字符串长度" class="section level3">
+<h3><code>str_length()</code> 字符串长度</h3>
+<p>同 <code>base::nchar()</code></p>
+<p>使用 RStudio，那么通用前缀 str_ 会特别有用，因为输入 str_
+后会触发自动完成功能，你可以看到所有的字符串函数：</p>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_length</span>(<span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;R for data science&quot;</span>))</span></code></pre></div>
+<pre><code>#&gt; [1]  1 18</code></pre>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_length</span>(<span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;R for data science&quot;</span>)) <span class="sc">%&gt;%</span> <span class="fu">sum</span>()</span></code></pre></div>
+<pre><code>#&gt; [1] 19</code></pre>
+</div>
+<div id="str_c字符串组合" class="section level3">
+<h3><code>str_c()</code>字符串组合</h3>
+<p><code>str_c(..., sep = "", collapse = NULL)</code></p>
+<p>合并若干个字符串或字符向量的对应元素，默认无间隔符</p>
+<div class="sourceCode" id="cb71"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb71-1"><a href="#cb71-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 向量化操作，自动循环短向量</span></span>
+<span id="cb71-2"><a href="#cb71-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_c</span>(<span class="st">&quot;prefix-&quot;</span>, <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>), <span class="st">&quot;-suffix&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;prefix-a-suffix&quot; &quot;prefix-b-suffix&quot; &quot;prefix-c-suffix&quot;</code></pre>
+<div class="sourceCode" id="cb73"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb73-1"><a href="#cb73-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 合并一个字符向量的各元素为一个长字符串，使用参数collapse，将向量“塌缩”为一个字符串</span></span>
+<span id="cb73-2"><a href="#cb73-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_c</span>(<span class="fu">c</span>(<span class="st">&quot;x&quot;</span>, <span class="st">&quot;y&quot;</span>, <span class="st">&quot;z&quot;</span>), <span class="at">collapse =</span> <span class="st">&quot;+&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;x+y+z&quot;</code></pre>
+<p><code>str_replace_na(string, replacement = "NA")</code>，默认将 na
+转化为字符串”NA”</p>
+<div class="sourceCode" id="cb75"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb75-1"><a href="#cb75-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;abc&quot;</span>, <span class="cn">NA</span>)</span>
+<span id="cb75-2"><a href="#cb75-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_c</span>(<span class="st">&quot;|-&quot;</span>, x, <span class="st">&quot;-|&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;|-abc-|&quot; NA</code></pre>
+<div class="sourceCode" id="cb77"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb77-1"><a href="#cb77-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_c</span>(<span class="st">&quot;|-&quot;</span>, <span class="fu">str_replace_na</span>(x), <span class="st">&quot;-|&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;|-abc-|&quot; &quot;|-NA-|&quot;</code></pre>
+</div>
+<div id="str_trim-去掉字符串首尾的空格和制表符t" class="section level3">
+<h3><code>str_trim()</code> 去掉字符串首尾的空格和制表符(\t)</h3>
+<blockquote>
+<p>str_trim(string, side = c(“both”, “left”, “right”))</p>
+</blockquote>
+<p>side: 过滤方式，both两边都过滤，left左边过滤，right右边过滤</p>
+</div>
+<div id="str_pad-补充字符串的长度" class="section level3">
+<h3><code>str_pad()</code> 补充字符串的长度</h3>
+<blockquote>
+<p>str_pad(string, width, side = c(“left”, “right”, “both”), pad = ”
+“)</p>
+</blockquote>
+<p>width: 字符串填充后的长度<br />
+side: 填充方向，both两边都填充，left左边填充，right右边填充<br />
+pad: 用于填充的字符</p>
+</div>
+<div id="str_dup-复制字符串" class="section level3">
+<h3><code>str_dup()</code> 复制字符串</h3>
+<blockquote>
+<p>str_dup(string, times)</p>
+</blockquote>
+<p>times: 复制次数</p>
+<div class="sourceCode" id="cb79"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb79-1"><a href="#cb79-1" aria-hidden="true" tabindex="-1"></a>val <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;abca4&quot;</span>, <span class="dv">123</span>, <span class="st">&quot;cba2&quot;</span>)</span>
+<span id="cb79-2"><a href="#cb79-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb79-3"><a href="#cb79-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 复制2次</span></span>
+<span id="cb79-4"><a href="#cb79-4" aria-hidden="true" tabindex="-1"></a><span class="fu">str_dup</span>(val, <span class="dv">2</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;abca4abca4&quot; &quot;123123&quot;     &quot;cba2cba2&quot;</code></pre>
+<div class="sourceCode" id="cb81"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb81-1"><a href="#cb81-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 按位置复制</span></span>
+<span id="cb81-2"><a href="#cb81-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_dup</span>(val, <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;abca4&quot;        &quot;123123&quot;       &quot;cba2cba2cba2&quot;</code></pre>
+</div>
+<div id="str_wrap-控制长字符串输出排版" class="section level3">
+<h3><code>str_wrap()</code> 控制长字符串输出排版</h3>
+<blockquote>
+<p>str_wrap(string, width = 80, indent = 0, exdent = 0)</p>
+</blockquote>
+<p>width: 设置一行所占的宽度。<br />
+indent: 段落首行的缩进值<br />
+exdent: 段落非首行的缩进值</p>
+<div class="sourceCode" id="cb83"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb83-1"><a href="#cb83-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 这段代码可以在 console 中运行，但不能在 Rmarkdown 中直接运行</span></span>
+<span id="cb83-2"><a href="#cb83-2" aria-hidden="true" tabindex="-1"></a>str <span class="ot">&lt;-</span> <span class="st">&quot;R语言作为统计学一门语言，一直在小众领域闪耀着光芒。直到大数据的爆发，R语言变成了一门炙手可热的数据分析的利器。随着越来越多的工程背景的人的加入，R语言的社区在迅速扩大成长。现在已不仅仅是统计领域，教育，银行，电商，互联网….都在使用R语言。&quot;</span></span>
+<span id="cb83-3"><a href="#cb83-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb83-4"><a href="#cb83-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb83-5"><a href="#cb83-5" aria-hidden="true" tabindex="-1"></a><span class="co"># 设置宽度为40个字符</span></span>
+<span id="cb83-6"><a href="#cb83-6" aria-hidden="true" tabindex="-1"></a><span class="co"># cat(str_wrap(str, width = 40), &quot;\n&quot;)</span></span>
+<span id="cb83-7"><a href="#cb83-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb83-8"><a href="#cb83-8" aria-hidden="true" tabindex="-1"></a><span class="co"># 设置宽度为60字符，首行缩进4字符</span></span>
+<span id="cb83-9"><a href="#cb83-9" aria-hidden="true" tabindex="-1"></a><span class="co"># cat(str_wrap(txt, width = 60, indent = 4), &quot;\n&quot;)</span></span>
+<span id="cb83-10"><a href="#cb83-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb83-11"><a href="#cb83-11" aria-hidden="true" tabindex="-1"></a><span class="co"># 设置宽度为10字符，非首行缩进4字符</span></span>
+<span id="cb83-12"><a href="#cb83-12" aria-hidden="true" tabindex="-1"></a><span class="co"># cat(str_wrap(txt, width = 10, exdent = 4), &quot;\n&quot;)</span></span></code></pre></div>
+</div>
+<div id="str_split-拆分字符串" class="section level3">
+<h3><code>str_split()</code> 拆分字符串</h3>
+<blockquote>
+<p>str_split(string, pattern, n = Inf) str_split_fixed(string, pattern,
+n)</p>
+</blockquote>
+<p>pattern: 匹配的字符。<br />
+n: 分割个数</p>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a>val <span class="ot">&lt;-</span> <span class="st">&quot;abc,123,234,iuuu&quot;</span></span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 以,进行分割</span></span>
+<span id="cb84-4"><a href="#cb84-4" aria-hidden="true" tabindex="-1"></a>s1 <span class="ot">&lt;-</span> <span class="fu">str_split</span>(val, <span class="st">&quot;,&quot;</span>)</span>
+<span id="cb84-5"><a href="#cb84-5" aria-hidden="true" tabindex="-1"></a>s1</span></code></pre></div>
+<pre><code>#&gt; [[1]]
+#&gt; [1] &quot;abc&quot;  &quot;123&quot;  &quot;234&quot;  &quot;iuuu&quot;</code></pre>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 以,进行分割，且只保留2块</span></span>
+<span id="cb86-2"><a href="#cb86-2" aria-hidden="true" tabindex="-1"></a>s2 <span class="ot">&lt;-</span> <span class="fu">str_split</span>(val, <span class="st">&quot;,&quot;</span>, <span class="dv">2</span>)</span>
+<span id="cb86-3"><a href="#cb86-3" aria-hidden="true" tabindex="-1"></a>s2</span></code></pre></div>
+<pre><code>#&gt; [[1]]
+#&gt; [1] &quot;abc&quot;          &quot;123,234,iuuu&quot;</code></pre>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 查看str_split()函数操作的结果类型list</span></span>
+<span id="cb88-2"><a href="#cb88-2" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(s1)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;list&quot;</code></pre>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 用str_split_fixed()函数分割，结果类型是matrix</span></span>
+<span id="cb90-2"><a href="#cb90-2" aria-hidden="true" tabindex="-1"></a>s3 <span class="ot">&lt;-</span> <span class="fu">str_split_fixed</span>(val, <span class="st">&quot;,&quot;</span>, <span class="dv">2</span>)</span>
+<span id="cb90-3"><a href="#cb90-3" aria-hidden="true" tabindex="-1"></a>s3</span></code></pre></div>
+<pre><code>#&gt;      [,1]  [,2]          
+#&gt; [1,] &quot;abc&quot; &quot;123,234,iuuu&quot;</code></pre>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(s3)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;matrix&quot; &quot;array&quot;</code></pre>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>fruits <span class="ot">&lt;-</span> <span class="fu">c</span>(</span>
+<span id="cb94-2"><a href="#cb94-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;apples and oranges and pears and bananas&quot;</span>,</span>
+<span id="cb94-3"><a href="#cb94-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;pineapples and mangos and guavas&quot;</span></span>
+<span id="cb94-4"><a href="#cb94-4" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb94-5"><a href="#cb94-5" aria-hidden="true" tabindex="-1"></a><span class="fu">str_split</span>(fruits, <span class="st">&quot; and &quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [[1]]
+#&gt; [1] &quot;apples&quot;  &quot;oranges&quot; &quot;pears&quot;   &quot;bananas&quot;
+#&gt; 
+#&gt; [[2]]
+#&gt; [1] &quot;pineapples&quot; &quot;mangos&quot;     &quot;guavas&quot;</code></pre>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>gpl <span class="ot">&lt;-</span> <span class="fu">readLines</span>(<span class="fu">file.path</span>(<span class="fu">R.home</span>(), <span class="st">&quot;COPYING&quot;</span>))</span>
+<span id="cb96-2"><a href="#cb96-2" aria-hidden="true" tabindex="-1"></a>words <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">strsplit</span>(gpl, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">W&quot;</span>)) <span class="co"># \\W 意为非单词字符</span></span>
+<span id="cb96-3"><a href="#cb96-3" aria-hidden="true" tabindex="-1"></a>words <span class="ot">&lt;-</span> words[words <span class="sc">!=</span> <span class="st">&quot;&quot;</span>] <span class="co"># 去掉空字符</span></span>
+<span id="cb96-4"><a href="#cb96-4" aria-hidden="true" tabindex="-1"></a><span class="fu">tail</span>(<span class="fu">sort</span>(<span class="fu">table</span>(<span class="fu">tolower</span>(words))), <span class="dv">10</span>) <span class="co"># 频数最大的10个单词</span></span></code></pre></div>
+<pre><code>#&gt; 
+#&gt;    this      is       a program     and     you      or      of      to     the 
+#&gt;      49      53      57      71      72      76      77     104     108     194</code></pre>
+</div>
+<div id="str_sub-字符串取子集" class="section level3">
+<h3><code>str_sub()</code> 字符串取子集</h3>
+<blockquote>
+<p>str_sub(string, start = 1L, end = -1L)</p>
+</blockquote>
+<blockquote>
+<p>str_sub(string, start = 1L, end = -1L) &lt;- value</p>
+</blockquote>
+<p>两个参数分别为始末位置，符号代表从后往前数第多少个字符</p>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a>txt <span class="ot">&lt;-</span> <span class="st">&quot;I am Conan.&quot;</span></span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb98-3"><a href="#cb98-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 分2段截取字符串</span></span>
+<span id="cb98-4"><a href="#cb98-4" aria-hidden="true" tabindex="-1"></a><span class="fu">str_sub</span>(txt, <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">4</span>), <span class="fu">c</span>(<span class="dv">6</span>, <span class="dv">8</span>))</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;I am C&quot; &quot;m Con&quot;</code></pre>
+<div class="sourceCode" id="cb100"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 通过负坐标截取字符串</span></span>
+<span id="cb100-2"><a href="#cb100-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_sub</span>(txt, <span class="sc">-</span><span class="dv">3</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;an.&quot;</code></pre>
+<div class="sourceCode" id="cb102"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_sub</span>(txt, <span class="at">end =</span> <span class="sc">-</span><span class="dv">3</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;I am Cona&quot;</code></pre>
+<div class="sourceCode" id="cb104"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 赋值</span></span>
+<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;Apple&quot;</span>, <span class="st">&quot;Banana&quot;</span>, <span class="st">&quot;Pear&quot;</span>)</span>
+<span id="cb104-3"><a href="#cb104-3" aria-hidden="true" tabindex="-1"></a><span class="co"># str_sub()对x向量化操作；str_to_lower全部转换为小写字母</span></span>
+<span id="cb104-4"><a href="#cb104-4" aria-hidden="true" tabindex="-1"></a><span class="fu">str_sub</span>(x, <span class="dv">1</span>, <span class="dv">1</span>) <span class="ot">&lt;-</span> <span class="fu">str_to_lower</span>(<span class="fu">str_sub</span>(x, <span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb104-5"><a href="#cb104-5" aria-hidden="true" tabindex="-1"></a>x</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;apple&quot;  &quot;banana&quot; &quot;pear&quot;</code></pre>
+</div>
+<div id="str_to_-大小写函数族" class="section level3">
+<h3><code>str_to_*()</code> 大小写函数族</h3>
+<p><code>str_to_upper(string, locale = "")</code> 转换为全大写字母</p>
+<p><code>str_to_lower(string, locale = "")</code> 转换为全小写字母</p>
+<p><code>str_to_title(string, locale = "")</code> 单词首字母大写</p>
+<p><code>str_to_sentence()</code> 全句首字母大写</p>
+<p>locale:按哪种语言习惯排序</p>
+<div class="sourceCode" id="cb106"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>dog <span class="ot">&lt;-</span> <span class="st">&quot;Look the quick brown dog!&quot;</span></span>
+<span id="cb106-2"><a href="#cb106-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_to_upper</span>(dog)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;LOOK THE QUICK BROWN DOG!&quot;</code></pre>
+<div class="sourceCode" id="cb108"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_to_lower</span>(dog)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;look the quick brown dog!&quot;</code></pre>
+<div class="sourceCode" id="cb110"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_to_title</span>(dog)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;Look The Quick Brown Dog!&quot;</code></pre>
+<div class="sourceCode" id="cb112"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_to_sentence</span>(<span class="st">&quot;look the quick brown dog!&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;Look the quick brown dog!&quot;</code></pre>
+</div>
+<div id="str_count-字符串计数" class="section level3">
+<h3><code>str_count()</code> 字符串计数</h3>
+<blockquote>
+<p>str_count(string, pattern = ““)</p>
+</blockquote>
+<div class="sourceCode" id="cb114"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 注意正则表达式的特殊字符</span></span>
+<span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_count</span>(<span class="fu">c</span>(<span class="st">&quot;a.&quot;</span>, <span class="st">&quot;.&quot;</span>, <span class="st">&quot;.a.&quot;</span>, <span class="cn">NA</span>), <span class="st">&quot;.&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1]  2  1  3 NA</code></pre>
+<div class="sourceCode" id="cb116"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb116-1"><a href="#cb116-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 用fixed匹配字符</span></span>
+<span id="cb116-2"><a href="#cb116-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_count</span>(<span class="fu">c</span>(<span class="st">&quot;a.&quot;</span>, <span class="st">&quot;.&quot;</span>, <span class="st">&quot;.a.&quot;</span>, <span class="cn">NA</span>), <span class="fu">fixed</span>(<span class="st">&quot;.&quot;</span>))</span></code></pre></div>
+<pre><code>#&gt; [1]  1  1  2 NA</code></pre>
+<div class="sourceCode" id="cb118"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb118-1"><a href="#cb118-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 用\\匹配字符</span></span>
+<span id="cb118-2"><a href="#cb118-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_count</span>(<span class="fu">c</span>(<span class="st">&quot;a.&quot;</span>, <span class="st">&quot;.&quot;</span>, <span class="st">&quot;.a.&quot;</span>, <span class="cn">NA</span>), <span class="st">&quot;</span><span class="sc">\\</span><span class="st">.&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1]  1  1  2 NA</code></pre>
+</div>
+<div id="str_sort-字符串排序" class="section level3">
+<h3><code>str_sort()</code> 字符串排序</h3>
+<blockquote>
+<p>str_sort(x, decreasing = FALSE, na_last = TRUE, locale = ““, …)
+str_order(x, decreasing = FALSE, na_last = TRUE, locale =”“, …)</p>
+</blockquote>
+<p>x: 字符串，字符串向量。 decreasing: 排序方向。 na_last:
+NA值的存放位置，一共3个值，TRUE放到最后，FALSE放到最前，NA过滤处理
+locale: 按哪种语言习惯排序</p>
+<div class="sourceCode" id="cb120"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb120-1"><a href="#cb120-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 按ASCII字母排序</span></span>
+<span id="cb120-2"><a href="#cb120-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_sort</span>(<span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="st">&quot;11&quot;</span>), <span class="at">locale =</span> <span class="st">&quot;en&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;1&quot;  &quot;11&quot; &quot;2&quot;  &quot;a&quot;</code></pre>
+<div class="sourceCode" id="cb122"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb122-1"><a href="#cb122-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 倒序排序</span></span>
+<span id="cb122-2"><a href="#cb122-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_sort</span>(letters, <span class="at">decreasing =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>#&gt;  [1] &quot;z&quot; &quot;y&quot; &quot;x&quot; &quot;w&quot; &quot;v&quot; &quot;u&quot; &quot;t&quot; &quot;s&quot; &quot;r&quot; &quot;q&quot; &quot;p&quot; &quot;o&quot; &quot;n&quot; &quot;m&quot; &quot;l&quot; &quot;k&quot; &quot;j&quot; &quot;i&quot; &quot;h&quot;
+#&gt; [20] &quot;g&quot; &quot;f&quot; &quot;e&quot; &quot;d&quot; &quot;c&quot; &quot;b&quot; &quot;a&quot;</code></pre>
+<div class="sourceCode" id="cb124"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb124-1"><a href="#cb124-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 按拼音排序</span></span>
+<span id="cb124-2"><a href="#cb124-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_sort</span>(<span class="fu">c</span>(<span class="st">&quot;你&quot;</span>, <span class="st">&quot;好&quot;</span>, <span class="st">&quot;粉&quot;</span>, <span class="st">&quot;丝&quot;</span>, <span class="st">&quot;日&quot;</span>, <span class="st">&quot;志&quot;</span>), <span class="at">locale =</span> <span class="st">&quot;zh&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;粉&quot; &quot;好&quot; &quot;你&quot; &quot;日&quot; &quot;丝&quot; &quot;志&quot;</code></pre>
+<p>对NA的排序处理：</p>
+<div class="sourceCode" id="cb126"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb126-1"><a href="#cb126-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 把NA放最后面</span></span>
+<span id="cb126-2"><a href="#cb126-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_sort</span>(<span class="fu">c</span>(<span class="cn">NA</span>, <span class="st">&quot;1&quot;</span>, <span class="cn">NA</span>), <span class="at">na_last =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;1&quot; NA  NA</code></pre>
+<div class="sourceCode" id="cb128"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb128-1"><a href="#cb128-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 把NA放最前面</span></span>
+<span id="cb128-2"><a href="#cb128-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_sort</span>(<span class="fu">c</span>(<span class="cn">NA</span>, <span class="st">&quot;1&quot;</span>, <span class="cn">NA</span>), <span class="at">na_last =</span> <span class="cn">FALSE</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] NA  NA  &quot;1&quot;</code></pre>
+<div class="sourceCode" id="cb130"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb130-1"><a href="#cb130-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 去掉NA值</span></span>
+<span id="cb130-2"><a href="#cb130-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_sort</span>(<span class="fu">c</span>(<span class="cn">NA</span>, <span class="st">&quot;1&quot;</span>, <span class="cn">NA</span>), <span class="at">na_last =</span> <span class="cn">NA</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;1&quot;</code></pre>
+</div>
+<div id="str_detect-检测是否匹配返回tf" class="section level3">
+<h3><code>str_detect()</code> 检测是否匹配，返回T/F</h3>
+<div class="sourceCode" id="cb132"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb132-1"><a href="#cb132-1" aria-hidden="true" tabindex="-1"></a>val <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;abca4&quot;</span>, <span class="dv">123</span>, <span class="st">&quot;cba2&quot;</span>)</span>
+<span id="cb132-2"><a href="#cb132-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb132-3"><a href="#cb132-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查字符串向量，是否包括a</span></span>
+<span id="cb132-4"><a href="#cb132-4" aria-hidden="true" tabindex="-1"></a><span class="fu">str_detect</span>(val, <span class="st">&quot;a&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1]  TRUE FALSE  TRUE</code></pre>
+<div class="sourceCode" id="cb134"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb134-1"><a href="#cb134-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查字符串向量，是否以a为开头</span></span>
+<span id="cb134-2"><a href="#cb134-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_detect</span>(val, <span class="st">&quot;^a&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1]  TRUE FALSE FALSE</code></pre>
+<div class="sourceCode" id="cb136"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb136-1"><a href="#cb136-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查字符串向量，是否以a为结尾</span></span>
+<span id="cb136-2"><a href="#cb136-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_detect</span>(val, <span class="st">&quot;a$&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] FALSE FALSE FALSE</code></pre>
+</div>
+<div id="str_subset-返回成功匹配的字符串" class="section level3">
+<h3><code>str_subset()</code> 返回成功匹配的字符串</h3>
+<div class="sourceCode" id="cb138"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb138-1"><a href="#cb138-1" aria-hidden="true" tabindex="-1"></a>val <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;abc&quot;</span>, <span class="dv">123</span>, <span class="st">&quot;cba&quot;</span>)</span>
+<span id="cb138-2"><a href="#cb138-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb138-3"><a href="#cb138-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 全文匹配</span></span>
+<span id="cb138-4"><a href="#cb138-4" aria-hidden="true" tabindex="-1"></a><span class="fu">str_subset</span>(val, <span class="st">&quot;a&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;abc&quot; &quot;cba&quot;</code></pre>
+<div class="sourceCode" id="cb140"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb140-1"><a href="#cb140-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 开头匹配</span></span>
+<span id="cb140-2"><a href="#cb140-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_subset</span>(val, <span class="st">&quot;^a&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;abc&quot;</code></pre>
+<div class="sourceCode" id="cb142"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb142-1"><a href="#cb142-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 结尾匹配</span></span>
+<span id="cb142-2"><a href="#cb142-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_subset</span>(val, <span class="st">&quot;a$&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;cba&quot;</code></pre>
+</div>
+<div id="str_matchstr_extract-从字符串中提取匹配模式"
+class="section level3">
+<h3><code>str_match()/str_extract()</code> 从字符串中提取匹配模式</h3>
+<p>主要与正则表达式配合使用</p>
+<blockquote>
+<p>str_match(string, pattern) str_match_all(string, pattern)</p>
+</blockquote>
+<p>以字符串matrix格式返回</p>
+<div class="sourceCode" id="cb144"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb144-1"><a href="#cb144-1" aria-hidden="true" tabindex="-1"></a>val <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;abc&quot;</span>, <span class="dv">123</span>, <span class="st">&quot;cba&quot;</span>)</span>
+<span id="cb144-2"><a href="#cb144-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb144-3"><a href="#cb144-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 匹配字符a，并返回对应的字符</span></span>
+<span id="cb144-4"><a href="#cb144-4" aria-hidden="true" tabindex="-1"></a><span class="fu">str_match</span>(val, <span class="st">&quot;a&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt;      [,1]
+#&gt; [1,] &quot;a&quot; 
+#&gt; [2,] NA  
+#&gt; [3,] &quot;a&quot;</code></pre>
+<div class="sourceCode" id="cb146"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb146-1"><a href="#cb146-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 匹配字符0-9，限1个，并返回对应的字符</span></span>
+<span id="cb146-2"><a href="#cb146-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_match</span>(val, <span class="st">&quot;[0-9]&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt;      [,1]
+#&gt; [1,] NA  
+#&gt; [2,] &quot;1&quot; 
+#&gt; [3,] NA</code></pre>
+<div class="sourceCode" id="cb148"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb148-1"><a href="#cb148-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 匹配字符0-9，不限数量，并返回对应的字符</span></span>
+<span id="cb148-2"><a href="#cb148-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_match</span>(val, <span class="st">&quot;[0-9]*&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt;      [,1] 
+#&gt; [1,] &quot;&quot;   
+#&gt; [2,] &quot;123&quot;
+#&gt; [3,] &quot;&quot;</code></pre>
+<div class="sourceCode" id="cb150"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb150-1"><a href="#cb150-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 返回matrix</span></span>
+<span id="cb150-2"><a href="#cb150-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_match_all</span>(val, <span class="st">&quot;a&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [[1]]
+#&gt;      [,1]
+#&gt; [1,] &quot;a&quot; 
+#&gt; 
+#&gt; [[2]]
+#&gt;      [,1]
+#&gt; 
+#&gt; [[3]]
+#&gt;      [,1]
+#&gt; [1,] &quot;a&quot;</code></pre>
+<div class="sourceCode" id="cb152"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb152-1"><a href="#cb152-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_match_all</span>(val, <span class="st">&quot;[0-9]&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [[1]]
+#&gt;      [,1]
+#&gt; 
+#&gt; [[2]]
+#&gt;      [,1]
+#&gt; [1,] &quot;1&quot; 
+#&gt; [2,] &quot;2&quot; 
+#&gt; [3,] &quot;3&quot; 
+#&gt; 
+#&gt; [[3]]
+#&gt;      [,1]</code></pre>
+<blockquote>
+<p>str_extract(string, pattern) str_extract_all(string, pattern,
+simplify = FALSE)</p>
+</blockquote>
+<p>simplify: TRUE返回matrix，FALSE返回列表</p>
+<div class="sourceCode" id="cb154"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb154-1"><a href="#cb154-1" aria-hidden="true" tabindex="-1"></a>val <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;abca4&quot;</span>, <span class="dv">123</span>, <span class="st">&quot;cba2&quot;</span>)</span>
+<span id="cb154-2"><a href="#cb154-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb154-3"><a href="#cb154-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 返回匹配的数字</span></span>
+<span id="cb154-4"><a href="#cb154-4" aria-hidden="true" tabindex="-1"></a><span class="fu">str_extract</span>(val, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">d&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;4&quot; &quot;1&quot; &quot;2&quot;</code></pre>
+<div class="sourceCode" id="cb156"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb156-1"><a href="#cb156-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 返回匹配的字符</span></span>
+<span id="cb156-2"><a href="#cb156-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_extract</span>(val, <span class="st">&quot;[a-z]+&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;abca&quot; NA     &quot;cba&quot;</code></pre>
+<div class="sourceCode" id="cb158"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb158-1"><a href="#cb158-1" aria-hidden="true" tabindex="-1"></a>val <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;abca4&quot;</span>, <span class="dv">123</span>, <span class="st">&quot;cba2&quot;</span>)</span>
+<span id="cb158-2"><a href="#cb158-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_extract_all</span>(val, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">d&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [[1]]
+#&gt; [1] &quot;4&quot;
+#&gt; 
+#&gt; [[2]]
+#&gt; [1] &quot;1&quot; &quot;2&quot; &quot;3&quot;
+#&gt; 
+#&gt; [[3]]
+#&gt; [1] &quot;2&quot;</code></pre>
+<div class="sourceCode" id="cb160"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb160-1"><a href="#cb160-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_extract_all</span>(val, <span class="st">&quot;[a-z]+&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [[1]]
+#&gt; [1] &quot;abca&quot;
+#&gt; 
+#&gt; [[2]]
+#&gt; character(0)
+#&gt; 
+#&gt; [[3]]
+#&gt; [1] &quot;cba&quot;</code></pre>
+</div>
+<div id="word-从文本中提取单词以单词为单位看待字符串"
+class="section level3">
+<h3><code>word()</code> 从文本中提取单词（以单词为单位看待字符串）</h3>
+<blockquote>
+<p>word(string, start = 1L, end = start, sep = fixed(” “))</p>
+</blockquote>
+<p>start: 从第几个词开始。 end: 到第几个词结束。 sep:
+分词间隔字符，默认为空格。</p>
+<div class="sourceCode" id="cb162"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb162-1"><a href="#cb162-1" aria-hidden="true" tabindex="-1"></a>val <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;I am Conan.&quot;</span>, <span class="st">&quot;http://fens.me, ok&quot;</span>)</span>
+<span id="cb162-2"><a href="#cb162-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb162-3"><a href="#cb162-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 默认以空格分割，取第一个位置的字符串</span></span>
+<span id="cb162-4"><a href="#cb162-4" aria-hidden="true" tabindex="-1"></a><span class="fu">word</span>(val, <span class="dv">1</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;I&quot;               &quot;http://fens.me,&quot;</code></pre>
+<div class="sourceCode" id="cb164"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb164-1"><a href="#cb164-1" aria-hidden="true" tabindex="-1"></a><span class="fu">word</span>(val, <span class="sc">-</span><span class="dv">1</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;Conan.&quot; &quot;ok&quot;</code></pre>
+<div class="sourceCode" id="cb166"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb166-1"><a href="#cb166-1" aria-hidden="true" tabindex="-1"></a><span class="fu">word</span>(val, <span class="dv">2</span>, <span class="sc">-</span><span class="dv">1</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;am Conan.&quot; &quot;ok&quot;</code></pre>
+<div class="sourceCode" id="cb168"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb168-1"><a href="#cb168-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 以,分割，取第一个位置的字符串</span></span>
+<span id="cb168-2"><a href="#cb168-2" aria-hidden="true" tabindex="-1"></a>val <span class="ot">&lt;-</span> <span class="st">&quot;111,222,333,444&quot;</span></span>
+<span id="cb168-3"><a href="#cb168-3" aria-hidden="true" tabindex="-1"></a><span class="fu">word</span>(val, <span class="dv">1</span>, <span class="at">sep =</span> <span class="fu">fixed</span>(<span class="st">&quot;,&quot;</span>))</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;111&quot;</code></pre>
+<div class="sourceCode" id="cb170"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb170-1"><a href="#cb170-1" aria-hidden="true" tabindex="-1"></a><span class="fu">word</span>(val, <span class="dv">3</span>, <span class="at">sep =</span> <span class="fu">fixed</span>(<span class="st">&quot;,&quot;</span>))</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;333&quot;</code></pre>
+</div>
+<div id="str_replace-字符串替换" class="section level3">
+<h3><code>str_replace()</code> 字符串替换</h3>
+<blockquote>
+<p>str_replace(string, pattern, replacement)<br />
+str_replace_all(string, pattern, replacement)<br />
+str_replace_na(string, replacement = “NA”), 将NA（默认）替换为’NA’</p>
+</blockquote>
+<p><strong>参数 replacement
+可以是一个函数，使替换的规则更加复杂</strong></p>
+<div class="sourceCode" id="cb172"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb172-1"><a href="#cb172-1" aria-hidden="true" tabindex="-1"></a>val <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;abc&quot;</span>, <span class="dv">123</span>, <span class="st">&quot;cba&quot;</span>)</span>
+<span id="cb172-2"><a href="#cb172-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb172-3"><a href="#cb172-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 把目标字符串第一个出现的a或b，替换为-</span></span>
+<span id="cb172-4"><a href="#cb172-4" aria-hidden="true" tabindex="-1"></a><span class="fu">str_replace</span>(val, <span class="st">&quot;[ab]&quot;</span>, <span class="st">&quot;-&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;-bc&quot; &quot;123&quot; &quot;c-a&quot;</code></pre>
+<div class="sourceCode" id="cb174"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb174-1"><a href="#cb174-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 把目标字符串所有出现的a或b，替换为-</span></span>
+<span id="cb174-2"><a href="#cb174-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_replace_all</span>(val, <span class="st">&quot;[ab]&quot;</span>, <span class="st">&quot;-&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;--c&quot; &quot;123&quot; &quot;c--&quot;</code></pre>
+<div class="sourceCode" id="cb176"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb176-1"><a href="#cb176-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 把目标字符串所有出现的a，替换为被转义的字符</span></span>
+<span id="cb176-2"><a href="#cb176-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_replace_all</span>(val, <span class="st">&quot;[a]&quot;</span>, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;bc&quot;  &quot;123&quot; &quot;cb&quot;</code></pre>
+<div class="sourceCode" id="cb178"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb178-1"><a href="#cb178-1" aria-hidden="true" tabindex="-1"></a>pigIt <span class="ot">&lt;-</span> <span class="cf">function</span>(string) {</span>
+<span id="cb178-2"><a href="#cb178-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">str_replace_all</span>(string, <span class="st">&quot;</span><span class="sc">\\</span><span class="st">w+&quot;</span>, <span class="cf">function</span>(word) {</span>
+<span id="cb178-3"><a href="#cb178-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">str_c</span>(<span class="fu">str_sub</span>(word, <span class="dv">2</span>), <span class="fu">str_sub</span>(word, <span class="dv">1</span>, <span class="dv">1</span>), <span class="st">&quot;ay&quot;</span>)</span>
+<span id="cb178-4"><a href="#cb178-4" aria-hidden="true" tabindex="-1"></a>  })</span>
+<span id="cb178-5"><a href="#cb178-5" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb178-6"><a href="#cb178-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb178-7"><a href="#cb178-7" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(testthat)</span></code></pre></div>
+<pre><code>#&gt; 
+#&gt; Attaching package: &#39;testthat&#39;</code></pre>
+<pre><code>#&gt; The following objects are masked from &#39;package:magrittr&#39;:
+#&gt; 
+#&gt;     equals, is_less_than, not</code></pre>
+<pre><code>#&gt; The following object is masked from &#39;package:dplyr&#39;:
+#&gt; 
+#&gt;     matches</code></pre>
+<pre><code>#&gt; The following object is masked from &#39;package:purrr&#39;:
+#&gt; 
+#&gt;     is_null</code></pre>
+<pre><code>#&gt; The following objects are masked from &#39;package:readr&#39;:
+#&gt; 
+#&gt;     edition_get, local_edition</code></pre>
+<pre><code>#&gt; The following object is masked from &#39;package:tidyr&#39;:
+#&gt; 
+#&gt;     matches</code></pre>
+<div class="sourceCode" id="cb185"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb185-1"><a href="#cb185-1" aria-hidden="true" tabindex="-1"></a><span class="fu">test_that</span>(<span class="st">&quot;Sample Tests&quot;</span>, {</span>
+<span id="cb185-2"><a href="#cb185-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">pigIt</span>(<span class="st">&quot;Pig latin is cool&quot;</span>), <span class="st">&quot;igPay atinlay siay oolcay&quot;</span>)</span>
+<span id="cb185-3"><a href="#cb185-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">expect_equal</span>(<span class="fu">pigIt</span>(<span class="st">&quot;Hello world !&quot;</span>), <span class="st">&quot;elloHay orldway !&quot;</span>)</span>
+<span id="cb185-4"><a href="#cb185-4" aria-hidden="true" tabindex="-1"></a>})</span></code></pre></div>
+<pre><code>#&gt; Test passed 😀</code></pre>
+</div>
+<div id="str_locate-找到模式在字符串中的始末位置"
+class="section level3">
+<h3><code>str_locate()</code> 找到模式在字符串中的始末位置</h3>
+<blockquote>
+<p>str_locate(string, pattern) str_locate_all(string, pattern)</p>
+</blockquote>
+<div class="sourceCode" id="cb187"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb187-1"><a href="#cb187-1" aria-hidden="true" tabindex="-1"></a>val <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;abca&quot;</span>, <span class="dv">123</span>, <span class="st">&quot;cba&quot;</span>)</span>
+<span id="cb187-2"><a href="#cb187-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb187-3"><a href="#cb187-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 匹配a在字符串中的位置</span></span>
+<span id="cb187-4"><a href="#cb187-4" aria-hidden="true" tabindex="-1"></a><span class="fu">str_locate</span>(val, <span class="st">&quot;a&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt;      start end
+#&gt; [1,]     1   1
+#&gt; [2,]    NA  NA
+#&gt; [3,]     3   3</code></pre>
+<div class="sourceCode" id="cb189"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb189-1"><a href="#cb189-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 用向量匹配</span></span>
+<span id="cb189-2"><a href="#cb189-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_locate</span>(val, <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="dv">12</span>, <span class="st">&quot;b&quot;</span>))</span></code></pre></div>
+<pre><code>#&gt;      start end
+#&gt; [1,]     1   1
+#&gt; [2,]     1   2
+#&gt; [3,]     2   2</code></pre>
+<div class="sourceCode" id="cb191"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb191-1"><a href="#cb191-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 以字符串matrix格式返回</span></span>
+<span id="cb191-2"><a href="#cb191-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_locate_all</span>(val, <span class="st">&quot;a&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [[1]]
+#&gt;      start end
+#&gt; [1,]     1   1
+#&gt; [2,]     4   4
+#&gt; 
+#&gt; [[2]]
+#&gt;      start end
+#&gt; 
+#&gt; [[3]]
+#&gt;      start end
+#&gt; [1,]     3   3</code></pre>
+<div class="sourceCode" id="cb193"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb193-1"><a href="#cb193-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 匹配a或b字符，以字符串matrix格式返回</span></span>
+<span id="cb193-2"><a href="#cb193-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_locate_all</span>(val, <span class="st">&quot;[ab]&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [[1]]
+#&gt;      start end
+#&gt; [1,]     1   1
+#&gt; [2,]     2   2
+#&gt; [3,]     4   4
+#&gt; 
+#&gt; [[2]]
+#&gt;      start end
+#&gt; 
+#&gt; [[3]]
+#&gt;      start end
+#&gt; [1,]     2   2
+#&gt; [2,]     3   3</code></pre>
+</div>
+<div id="str_conv-字符编码转换" class="section level3">
+<h3><code>str_conv</code> 字符编码转换</h3>
+<blockquote>
+<p>str_conv(string, encoding)</p>
+</blockquote>
+<div class="sourceCode" id="cb195"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb195-1"><a href="#cb195-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 把中文字符字节化</span></span>
+<span id="cb195-2"><a href="#cb195-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">charToRaw</span>(<span class="st">&quot;你好&quot;</span>)</span>
+<span id="cb195-3"><a href="#cb195-3" aria-hidden="true" tabindex="-1"></a>x</span></code></pre></div>
+<pre><code>#&gt; [1] e4 bd a0 e5 a5 bd</code></pre>
+<div class="sourceCode" id="cb197"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb197-1"><a href="#cb197-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 默认win系统字符集为GBK，GB2312为GBK字集，转码正常</span></span>
+<span id="cb197-2"><a href="#cb197-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_conv</span>(x, <span class="st">&quot;GBK&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;浣犲ソ&quot;</code></pre>
+<div class="sourceCode" id="cb199"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb199-1"><a href="#cb199-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_conv</span>(x, <span class="st">&quot;GB2312&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; Warning in stri_conv(string, encoding, &quot;UTF-8&quot;): input data \xffffffa0 in the
+#&gt; current source encoding could not be converted to Unicode</code></pre>
+<pre><code>#&gt; Warning in stri_conv(string, encoding, &quot;UTF-8&quot;): input data \xffffffbd in the
+#&gt; current source encoding could not be converted to Unicode</code></pre>
+<pre><code>#&gt; [1] &quot;浣\032濂\032&quot;</code></pre>
+<div class="sourceCode" id="cb203"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb203-1"><a href="#cb203-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 转UTF-8失败</span></span>
+<span id="cb203-2"><a href="#cb203-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_conv</span>(x, <span class="st">&quot;UTF-8&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;你好&quot;</code></pre>
+<div class="sourceCode" id="cb205"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb205-1"><a href="#cb205-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 把unicode转UTF-8</span></span>
+<span id="cb205-2"><a href="#cb205-2" aria-hidden="true" tabindex="-1"></a><span class="fu">str_conv</span>(<span class="st">&quot;\u5317\u4eac&quot;</span>, <span class="st">&quot;UTF-8&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;北京&quot;</code></pre>
+</div>
+<div id="str_glue-模板字符串" class="section level3">
+<h3><code>str_glue()</code> 模板字符串</h3>
+<div class="sourceCode" id="cb207"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb207-1"><a href="#cb207-1" aria-hidden="true" tabindex="-1"></a>name <span class="ot">&lt;-</span> <span class="st">&quot;Fred&quot;</span></span>
+<span id="cb207-2"><a href="#cb207-2" aria-hidden="true" tabindex="-1"></a>age <span class="ot">&lt;-</span> <span class="dv">50</span></span>
+<span id="cb207-3"><a href="#cb207-3" aria-hidden="true" tabindex="-1"></a>anniversary <span class="ot">&lt;-</span> <span class="fu">as.Date</span>(<span class="st">&quot;1991-10-12&quot;</span>)</span>
+<span id="cb207-4"><a href="#cb207-4" aria-hidden="true" tabindex="-1"></a><span class="fu">str_glue</span>(</span>
+<span id="cb207-5"><a href="#cb207-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;My name is {name}, &quot;</span>,</span>
+<span id="cb207-6"><a href="#cb207-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;my age next year is {age + 1}, &quot;</span>,</span>
+<span id="cb207-7"><a href="#cb207-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;and my anniversary is {format(anniversary, &#39;%A, %B %d, %Y&#39;)}.&quot;</span></span>
+<span id="cb207-8"><a href="#cb207-8" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<pre><code>#&gt; My name is Fred, my age next year is 51, and my anniversary is 星期六, 十月 12, 1991.</code></pre>
+<div class="sourceCode" id="cb209"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb209-1"><a href="#cb209-1" aria-hidden="true" tabindex="-1"></a><span class="fu">str_glue</span>(<span class="st">&quot;My name is {name}, not {{name}}.&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; My name is Fred, not {name}.</code></pre>
+</div>
+</div>
+<div id="base" class="section level2">
+<h2>base::</h2>
+<div id="chartr-字符替换" class="section level3">
+<h3><code>chartr()</code> 字符替换</h3>
+<p><code>chartr(old, new, x)</code>，非常好用的函数，相当于按一个哈希表进行字符转换</p>
+<div class="sourceCode" id="cb211"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb211-1"><a href="#cb211-1" aria-hidden="true" tabindex="-1"></a><span class="fu">chartr</span>(<span class="at">old =</span> <span class="st">&quot;a&quot;</span>, <span class="at">new =</span> <span class="st">&quot;c&quot;</span>, <span class="at">x =</span> <span class="st">&quot;a123&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;c123&quot;</code></pre>
+<div class="sourceCode" id="cb213"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb213-1"><a href="#cb213-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 注意，old和new参数可以都是字符串，index 对应的字符进行任意次数的替换</span></span>
+<span id="cb213-2"><a href="#cb213-2" aria-hidden="true" tabindex="-1"></a><span class="fu">chartr</span>(<span class="st">&quot;Tt&quot;</span>, <span class="st">&quot;Uu&quot;</span>, <span class="st">&quot;AtGCtttACC&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;AuGCuuuACC&quot;</code></pre>
+</div>
+<div id="字符串分割" class="section level3">
+<h3>字符串分割</h3>
+<p><code>strsplit(x, split, fixed = FALSE)</code></p>
+<div class="sourceCode" id="cb215"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb215-1"><a href="#cb215-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fixed=F, 第2个参数为正则表达式。&#39;.&#39;可匹配除“\n”和&quot;\r&quot;之外的任何单个字符。</span></span>
+<span id="cb215-2"><a href="#cb215-2" aria-hidden="true" tabindex="-1"></a>splited <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">strsplit</span>(<span class="st">&quot;a.b.c&quot;</span>, <span class="st">&quot;.&quot;</span>))</span>
+<span id="cb215-3"><a href="#cb215-3" aria-hidden="true" tabindex="-1"></a>splited</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot; &quot;&quot;</code></pre>
+<div class="sourceCode" id="cb217"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb217-1"><a href="#cb217-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fixed=T，第2个参数为文本字符串</span></span>
+<span id="cb217-2"><a href="#cb217-2" aria-hidden="true" tabindex="-1"></a>splited <span class="ot">&lt;-</span> <span class="fu">unlist</span>(<span class="fu">strsplit</span>(<span class="st">&quot;a.b.c&quot;</span>, <span class="st">&quot;.&quot;</span>, <span class="at">fixed =</span> T))</span>
+<span id="cb217-3"><a href="#cb217-3" aria-hidden="true" tabindex="-1"></a>splited</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;a&quot; &quot;b&quot; &quot;c&quot;</code></pre>
+</div>
+<div id="字符串匹配" class="section level3">
+<h3>字符串匹配</h3>
+<p>字符串匹配函数 grep(pattern, x, fixed=FALSE)和grepl()</p>
+<div class="sourceCode" id="cb219"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb219-1"><a href="#cb219-1" aria-hidden="true" tabindex="-1"></a>cstr <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;b&quot;</span>, <span class="st">&quot;A&quot;</span>, <span class="st">&quot;c&quot;</span>, <span class="st">&quot;a.a&quot;</span>)</span>
+<span id="cb219-2"><a href="#cb219-2" aria-hidden="true" tabindex="-1"></a><span class="co"># fixed=T，第1个参数为文本字符串</span></span>
+<span id="cb219-3"><a href="#cb219-3" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span>(<span class="st">&quot;.&quot;</span>, cstr, <span class="at">fixed =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] 4</code></pre>
+<div class="sourceCode" id="cb221"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb221-1"><a href="#cb221-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fixed=F，第1个参数为正则表达式</span></span>
+<span id="cb221-2"><a href="#cb221-2" aria-hidden="true" tabindex="-1"></a><span class="fu">grep</span>(<span class="st">&quot;.&quot;</span>, cstr, <span class="at">fixed =</span> F)</span></code></pre></div>
+<pre><code>#&gt; [1] 1 2 3 4</code></pre>
+<div class="sourceCode" id="cb223"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb223-1"><a href="#cb223-1" aria-hidden="true" tabindex="-1"></a><span class="co"># grep仅返回匹配项的下标；而grepl返回逻辑向量表示有没有找到匹配</span></span>
+<span id="cb223-2"><a href="#cb223-2" aria-hidden="true" tabindex="-1"></a><span class="fu">grepl</span>(<span class="st">&quot;.&quot;</span>, cstr, <span class="at">fixed =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] FALSE FALSE FALSE  TRUE</code></pre>
+<div class="sourceCode" id="cb225"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb225-1"><a href="#cb225-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 用于提取子集是一样的</span></span>
+<span id="cb225-2"><a href="#cb225-2" aria-hidden="true" tabindex="-1"></a>cstr[<span class="fu">grep</span>(<span class="st">&quot;.&quot;</span>, cstr, <span class="at">fixed =</span> <span class="cn">TRUE</span>)]</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;a.a&quot;</code></pre>
+<div class="sourceCode" id="cb227"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb227-1"><a href="#cb227-1" aria-hidden="true" tabindex="-1"></a>cstr[<span class="fu">grepl</span>(<span class="st">&quot;.&quot;</span>, cstr, <span class="at">fixed =</span> <span class="cn">TRUE</span>)]</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;a.a&quot;</code></pre>
+</div>
+<div id="字符串替换" class="section level3">
+<h3>字符串替换</h3>
+<p>字符串替换函数 sub(pattern, replacement, x, fixed=FALSE)</p>
+<div class="sourceCode" id="cb229"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb229-1"><a href="#cb229-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fixed=F, 第1个参数为正则表达式，&#39;\\s&#39;表示空白</span></span>
+<span id="cb229-2"><a href="#cb229-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sub</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">s&quot;</span>, <span class="st">&quot;.&quot;</span>, <span class="st">&quot;Hello There&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;Hello.There&quot;</code></pre>
+<div class="sourceCode" id="cb231"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb231-1"><a href="#cb231-1" aria-hidden="true" tabindex="-1"></a><span class="co"># fixed=T, 第1个参数为文本字符串，在&#39;Hello There&#39;中找不到&#39;\\s&#39;</span></span>
+<span id="cb231-2"><a href="#cb231-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sub</span>(<span class="st">&quot;</span><span class="sc">\\</span><span class="st">s&quot;</span>, <span class="st">&quot;.&quot;</span>, <span class="st">&quot;Hello There&quot;</span>, <span class="at">fixed =</span> T)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;Hello There&quot;</code></pre>
+<div class="sourceCode" id="cb233"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb233-1"><a href="#cb233-1" aria-hidden="true" tabindex="-1"></a><span class="co"># sub()与gsub()的区别，替换一次和替换任意次（只要匹配成功）</span></span>
+<span id="cb233-2"><a href="#cb233-2" aria-hidden="true" tabindex="-1"></a><span class="fu">sub</span>(<span class="st">&quot;e&quot;</span>, <span class="st">&quot;E&quot;</span>, <span class="st">&quot;Hello There&quot;</span>, <span class="at">fixed =</span> T)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;HEllo There&quot;</code></pre>
+<div class="sourceCode" id="cb235"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb235-1"><a href="#cb235-1" aria-hidden="true" tabindex="-1"></a><span class="fu">gsub</span>(<span class="st">&quot;e&quot;</span>, <span class="st">&quot;E&quot;</span>, <span class="st">&quot;Hello There&quot;</span>, <span class="at">fixed =</span> T)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;HEllo ThErE&quot;</code></pre>
+</div>
+</div>
+
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlN0cmluZyINCnN1YnRpdGxlOiAnJw0KYXV0aG9yOiAiSHVtb29uIg0KZGF0ZTogImByIFN5cy5EYXRlKClgIg0Kb3V0cHV0Og0KICBodG1sX2RvY3VtZW50OiANCiAgICBjb2RlX2Rvd25sb2FkOiB0cnVlDQogICAgY3NzOiBbIi4uL2Nzcy9zdHlsZS5jc3MiXQ0KICAgIGZpZ19jYXB0aW9uOiB5ZXMNCiAgICB0aGVtZTogdW5pdGVkDQogICAgaGlnaGxpZ2h0OiBoYWRkb2NrDQogICAgbnVtYmVyX3NlY3Rpb25zOiBubw0KICAgIHRvYzogeWVzDQogICAgdG9jX2RlcHRoOiA0DQogICAgdG9jX2Zsb2F0Og0KICAgICAgY29sbGFwc2VkOiB5ZXMNCiAgICAgIHNtb290aF9zY3JvbGw6IHllcw0KZG9jdW1lbnRjbGFzczogY3RleGFydA0KY2xhc3NvcHRpb246IGh5cGVycmVmLA0KLS0tDQoNCmBgYHtyIHNldHVwLCBpbmNsdWRlID0gRkFMU0V9DQpzb3VyY2UoIi4uL1JtYXJrZG93bi10ZW1wbGF0ZS9SbWFya2Rvd25fY29uZmlnLlIiKQ0KDQojIyBnbG9iYWwgb3B0aW9ucyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0Ka25pdHI6Om9wdHNfY2h1bmskc2V0KA0KICB3aWR0aCA9IGNvbmZpZyR3aWR0aCwNCiAgZmlnLndpZHRoID0gY29uZmlnJGZpZy53aWR0aCwNCiAgZmlnLmFzcCA9IGNvbmZpZyRmaWcuYXNwLA0KICBvdXQud2lkdGggPSBjb25maWckb3V0LndpZHRoLA0KICBmaWcuYWxpZ24gPSBjb25maWckZmlnLmFsaWduLA0KICBmaWcucGF0aCA9IGNvbmZpZyRmaWcucGF0aCwNCiAgZmlnLnNob3cgPSBjb25maWckZmlnLnNob3csDQogIHdhcm4gPSBjb25maWckd2FybiwNCiAgd2FybmluZyA9IGNvbmZpZyR3YXJuaW5nLA0KICBtZXNzYWdlID0gY29uZmlnJG1lc3NhZ2UsDQogIGVjaG8gPSBjb25maWckZWNobywgDQogIGV2YWwgPSBjb25maWckZXZhbCwgDQogIHRpZHkgPSBjb25maWckdGlkeSwgDQogIGNvbW1lbnQgPSBjb25maWckY29tbWVudCwgDQogIGNvbGxhcHNlID0gY29uZmlnJGNvbGxhcHNlLCANCiAgY2FjaGUgPSBjb25maWckY2FjaGUsDQogIGNhY2hlLmNvbW1lbnRzID0gY29uZmlnJGNhY2hlLmNvbW1lbnRzLA0KICBhdXRvZGVwID0gY29uZmlnJGF1dG9kZXANCikNCg0KIyMgdXNlIG5lY2Vzc2FyeSBwYWNrYWdlcyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCmxpYnJhcnkodGlkeXZlcnNlKQ0KbGlicmFyeShkYXRhLnRhYmxlKQ0KbGlicmFyeShtYWdyaXR0cikNCmxpYnJhcnkocGxvdGx5KQ0KbGlicmFyeShodG1sd2lkZ2V0cykNCmBgYA0KDQoqKuWtl+espuS4suWHveaVsOS4gOiIrOmDveaYr+WQkemHj+WMlueahO+8jOWvuei+k+WFpeeahOWtl+espuS4suWQkemHj+eahOavj+S4quWFg+e0oOi/m+ihjOaTjeS9nCoq44CCDQoNCiMjIOWtl+espuS4suWfuuehgA0KDQojIyMgcmVhZExpbmVzKCkNCg0KMS4gIOWcqFLkuK3or7vlhaXkuIDkuKrmlofmnKzmlofku7blj6/ku6XnlKhgcmVhZExpbmVzKClg5Ye95pWw77yM5a6D6L+U5Zue5LiA5Liq5a2X56ym5Z6L5ZCR6YeP77yM5paH5Lu25Lit5q+P5LiA6KGM6YO95piv5ZCR6YeP5Lit5a+55bqU55qE5LiA5Liq5YWD57Sg44CC6L+Z5Liq5paH5Lu25Y+v5Lul5piv5pys5Zyw5paH5Lu277yM5Lmf5Y+v5Lul5piv5LiA5Liq572R5Z2A44CCDQoNCmBgYHtyfQ0KaW5kZXggPC0gcmVhZExpbmVzKCJodHRwczovL3d3dy5iYWlkdS5jb20iKSAjIOaIkeeahOS4u+mhtQ0KaGVhZChpbmRleCkgIyBIVE1M5Luj56CBDQpgYGANCg0KMi4gIGByZWFkbGluZSgpYOaUr+aMgeS7jumUruebmOebtOaOpei+k+WFpeS4gOihjOaWh+acrO+8jOaYvueEtu+8jFLlv4XpobvlnKjkuqTkupLlvI/mqKHlvI/kuIvov5DooYzvvIzlkKbliJnkurrmsqHms5XovpPlhaXku7vkvZXkuJzopb/jgILlroPmnInkuIDkuKrluLjnlKjnmoTlnLDmlrnvvIzlsLHmmK/lnKjku6PnoIHov5DooYzov4fnqIvkuK3opoHmsYLnlKjmiLfovpPlhaXkuIDkupvlm57nrZTvvIzkvovlpoLvvJoNCg0KYGBge3IsIGV2YWw9RkFMU0V9DQp4IDwtIHJlYWRsaW5lKCJBbnN3ZXIgeWVzIG9yIG5vOiAiKQ0KYGBgDQoNCuW9k1Lov5DooYzliLDov5nkuIDooYzml7bkvJrlgZzkuIvmnaXnrYnlvoXnlKjmiLfovpPlhaXvvIjlm57ovabooajnpLrovpPlhaXnu5PmnZ/vvInvvIznhLblkI7moLnmja7ovpPlhaXnmoTnu5PmnpzvvIzku6PnoIHlj6/ku6XmjqXnnYDmiafooYzjgIINCg0KMy4gIOWcqFdpbmRvd3Pns7vnu5/kuK3vvIxgcmVhZExpbmVzKClg6K+7dXRmLTjnvJbnoIHnmoR0eHTmlofku7bkvJrlr7zoh7TkubHnoIHvvIzlj6rog73pobrliKnor7vlj5ZBTlNJ57yW56CB55qEdHh05paH5Lu244CCDQoNCiMjIyB3cml0ZUxpbmVzKCkNCg0KMS4gIOazqOaEj++8jOWtl+espuS4sueahOaJk+WNsOW9ouW8j+S4juWFtuacrOi6q+eahOWGheWuueS4jeaYr+ebuOWQjOeahO+8jOWboOS4uuaJk+WNsOW9ouW8j+S4reS8muaYvuekuuWHuui9rOS5ieWtl+espuOAgioq5aaC5p6c5oOz6KaB5p+l55yL5a2X56ym5Liy55qE55yf5q2j5YaF5a6577yM5Y+v5Lul5L2/55SoYHdyaXRlTGluZXMoKWAqKg0KDQo+IHdyaXRlTGluZXModGV4dCwgY29uID0gc3Rkb3V0KCksIHNlcCA9ICJcbiIsIHVzZUJ5dGVzID0gRkFMU0UpDQoNCjIuICBXaW5kb3dz57O757uf5LitYHdyaXRlTGluZXMoKWDlhpnlhaV0eHTmlofku7bkvJrlr7zoh7TkubHnoIHvvIzmm7/ku6PmlrnmoYjmmK/nlKhgd3JpdGVCaW4oY2hhclRvUmF3KHN0cmluZyksIGZpbGUpYOWGmeWFpeaWh+S7tg0KDQojIyMg5a2X56ym5Liy5YyF5ZCr5byV5paH5pe25byV5Y+355qE5L2/55SoDQoNCuiLpeS4gOS4quWtl+espuS4suWMheWQq+W8leaWh++8jOS4uuS6huespuWQiOihjOaWh+S5oOaDryjlj4zlvJXlj7cp77yM5bm25L2/5Luj56CB5byV5Y+35pyJ5bGC5qyh55qE5Yy65Yir77yM5aSW5bGC5bqU55So5Y2V5byV5Y+344CCDQoNCmBgYHtyIHF1b3RlLCByZXN1bHRzPSdob2xkJ30NCiMgc3RyaW5nMSA8LSAnV2hlbiBwdXR0aW5nIGEgJ3F1b3RlJyBpbnNpZGUgYSBzdHJpbmcsIHVzZSBzaW5nbGUgcXVvdGF0aW9uIG1hcmtzLicNCiMgc3RyaW5nMSA8LSAiV2hlbiBwdXR0aW5nIGEgInF1b3RlIiBpbnNpZGUgYSBzdHJpbmcsIHVzZSBkb3VibGUgcXVvdGF0aW9uIG1hcmtzLiINCnN0cmluZzMgPC0gIldoZW4gcHV0dGluZyBhICdxdW90ZScgaW5zaWRlIGEgc3RyaW5nLCB1c2Ugc2luZ2xlIHF1b3RhdGlvbiBtYXJrcyBpbnNpZGUgYW5kIGRvdWJsZSBxdW90YXRpb24gbWFya3Mgb3V0c2lkZS4iDQpzdHJpbmc0IDwtICdXaGVuIHB1dHRpbmcgYSAicXVvdGUiIGluc2lkZSBhIHN0cmluZywgdXNlIGRvdWJsZSBxdW90YXRpb24gbWFya3MgaW5zaWRlIGFuZCBzaW5nbGUgcXVvdGF0aW9uIG1hcmtzIG91dHNpZGUuJw0KDQojIOWtl+espuS4sueahOaJk+WNsOW9ouW8jw0Kc3RyaW5nMw0Kc3RyaW5nNA0KYGBgDQoNCmBgYHtyLCByZXN1bHRzPSdob2xkJ30NCiMg5a2X56ym5Liy57yW6K+R5ZCO5a+85Ye655qE5b2i5byPDQp3cml0ZUxpbmVzKHN0cmluZzMpDQp3cml0ZUxpbmVzKHN0cmluZzQpDQpgYGANCg0Kc3RyaW5nMeWSjHN0cmluZzLmnInor63ms5XplJnor6/vvIzliY3lkI7kuKTkuKrlrZfnrKbkuLLkuK3pl7TlpLnkuobkuIDkuKrnvJbor5HlmajkuI3orqTor4bnmoRxdW90ZeOAgg0KDQpzdHJpbmcz5ZKMc3RyaW5nNOWcqOivreazleS4iuayoemXrumimO+8jOS9hue8luivkeaXtuaViOaenOS4jeWQjOOAgnN0cmluZzTmiY3mmK/miJHku6zmg7PopoHnmoTjgIINCg0KIyMjIOi9rOS5ieespuWPtyJcXCINCg0K5Y+N5pac5p2gIlxcIuWPr+S7peWwhlLor63oqIDlj4pSIE1hcmtkb3du55qE6K+t5rOV6YOo5Lu26L2s5LmJ5Li65a2X56ym44CCXA0K5aaC5p6c5oOz6KaB5Zyo5a2X56ym5Liy5Lit5YyF5ZCr5LiA5Liq5Y2V5byV5Y+35oiW5Y+M5byV5Y+377yM5Y+v5Lul5L2/55SoIlxcJyLlkowiXFwiIuWvueWFtui/m+ihjOi9rOS5ieOAgg0KDQpgYGB7ciwgcmVzdWx0cz0naG9sZCd9DQpzdHJpbmc1IDwtICdJIGRvblwndCBrbm93IHdoeSB0aGV5IGNhbGxlZCB1cyAiQ2hpbmVzZSIuJw0Kc3RyaW5nNiA8LSAiV2hlbiBwdXR0aW5nIGEgXCJxdW90ZVwiIGluc2lkZSBhIHN0cmluZywgeW91IGNhbiB1c2UgYmFja3NsYXNoIGFzIHdlbGwuIg0Kd3JpdGVMaW5lcyhzdHJpbmc1KQ0Kd3JpdGVMaW5lcyhzdHJpbmc2KQ0KYGBgDQoNCuWmguaenOaDs+imgeWcqOWtl+espuS4suS4reWMheWQq+S4gOS4quWPjeaWnOadoO+8jOWwsemcgOimgeS9v+eUqOS4pOS4quWPjeaWnOadoO+8miJcXFxcIg0KDQpgYGB7ciwgcmVzdWx0cz0naG9sZCd9DQpzdHJpbmc3IDwtICJJIHRoaW5rIHRoZSBiYWNrc2xhc2ggXCJcXFwiIGlzIGFtYXppbmchIg0KcHJpbnQoc3RyaW5nNykgIyDmiJYgc3RyaW5nNw0Kd3JpdGVMaW5lcyhzdHJpbmc3KQ0KYGBgDQoNCiMjIyDnibnmrorlrZfnrKYNCg0K5YW25LuW5Yeg56eN54m55q6K5a2X56ym44CC5pyA5bi455So55qE5piv5o2i6KGM56ymIlxcbiLjgIHliLbooajnrKYiXFx0IuWSjOmAgOagvCJcXGIi77yM5L2g5Y+v5Lul5L2/55SoID8nIicg5oiWID8iJyIg6LCD5Ye65biu5Yqp5paH5Lu25p2l5p+l55yL5a6M5pW055qE54m55q6K5a2X56ym5YiX6KGo44CCDQoNCmBgYHtyLCByZXN1bHRzPSdob2xkJ30NCnN0cmluZzggPC0gJ1RoZSBzcGVjaWFsIGNoYXJhY3RlcnMgIlxuIiwgIlx0IiBhbmQgIlxiIiBhcmUgdmVyeSBpbnRlcmVzaW5nLicNCnN0cmluZzkgPC0gIlRoZSBzcGVjaWFsIGNoYXJhY3RlcnMgXCJcXG5cIiwgXCJcXHRcIiBhbmQgXCJcXGJcIiBhcmUgdmVyeSBpbnRlcmVzaW5nLiINCndyaXRlTGluZXMoc3RyaW5nOCkNCndyaXRlTGluZXMoc3RyaW5nOSkNCmBgYA0KDQrnlJ/miJDnmoRodG1s5paH5Lu25LitIlxcYiLlj5jmiJDkuobkuIDkuKrlpYfmgKrnmoTmlrnmoYbvvIzmjqfliLblj7DmmL7npLrnmoTliJnmmK/mraPnoa7nmoTjgILlj6/og71SIE1hcmtkb3du5LiOUuivreiogOS4rSJcXGIi55qE5ZCr5LmJ5LiN5ZCM44CCDQoNCiMjIOWtl+espuS4suagvOW8j+WMlg0KDQojIyMgYmFzZTo6c3ByaW50ZigpDQoNCmBzcHJpbnRmKOWMheWQq+WNoOS9jeespueahOWtl+espuS4su+8jOassuWhq+WFheeahOWtl+espuS4silgDQoNCnwgKirljaDkvY3nrKYqKiAgICAgIHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwtLS0tLS0tLS0tLS0tLS0tLXwtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLXwNCnwgXCUgICAgICAgICAgICAgIHwg5aaC5p6c6KaB5Zyo5Y2g5L2N56ym5YaF6YOo5L2/55SoJe+8jOmcgOimgeWGmeaIkCUlICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8ICoq6L2s5o2i56ymKiogICAgICB8ICoq57G75Z6LKiogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwgZCAgICAgICAgICAgICAgIHwg5Y2B6L+b5Yi25pW05pWwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KfCBvICAgICAgICAgICAgICAgfCDlhavov5vliLbmlbTmlbAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IHgsIFggICAgICAgICAgICB8IOWwjy/lpKflhpnljYHlha3ov5vliLbmlbTmlbAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IGYgICAgICAgICAgICAgICB8IOWNgei/m+WItua1rueCueaVsCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IGUsIEUgICAgICAgICAgICB8IOenkeWtpuiuoeaVsOazleihqOekuueahOaVsO+8jGXlsI/lhpnmiJblpKflhpkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IGcsIEcgICAgICAgICAgICB8IOaZuuiDvemAieaLqeS9v+eUqOa1rueCueaVsOi/mOaYr+enkeWtpuiuoeaVsOazle+8iGflr7nlupRl77yMR+WvueW6lEXvvInvvIzpu5jorqTmmL7npLo25L2N5pyJ5pWI5pWw5a2XICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IHMgICAgICAgICAgICAgICB8IOWtl+espuS4siAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8ICoq5rWu54K55pWw5qC85byPKiogIHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwgd2lkdGgucHJlY2lzaW9uIHwg6L6T5Ye655qE5pyA5bCP5a695bqm77yI5LiN6Laz5Lul56m65qC86KGl6b2Q77yJLui+k+WHuueyvuW6pu+8iOWvuWblkoxlL0XmhI/lkbPnnYDlsI/mlbDngrnlkI7lh6DkvY3vvIzlr7lnL0fmhI/lkbPnnYDmnInmlYjmlbDlrZfkvY3mlbDvvIkgfA0KfCBcLSAgICAgICAgICAgICAgfCDmjIflrprlt6blr7npvZDvvIjpu5jorqTlj7Plr7npvZDvvInvvIzljbPlrr3luqbkuI3otrPml7bku47lj7PovrnooaXlhYXnqbrmoLwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IFwrICAgICAgICAgICAgICB8IOawuOi/nOW4puespuWPt++8iOm7mOiupOWPquaciei0n+aVsOW4puS4gOS4qui0n+WPt++8jOato+aVsOS4jeW4puespuWPt++8iSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KfCDnqbrmoLwgICAgICAgICAgICB8IOmmluWtl+espuW5tumdnui0n+WPt+aXtu+8jOepuuS4gOagvCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IDAgICAgICAgICAgICAgICB8IOWuveW6puS4jei2s+aXtuihpTDvvIzogIzpnZ7pu5jorqTnmoTnqbrmoLwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCg0KYGBge3J9DQpzcHJpbnRmKCJUaGUgcmF0aW8gaXMgJWQlJSIsIDEwKQ0KDQoNCnNwcmludGYoIiVmIiwgcGkpICMg5rWu54K55pWwDQpzcHJpbnRmKCIlLjNmIiwgcGkpICMg5L+d55WZ5bCP5pWw54K55ZCOM+S9jQ0Kc3ByaW50ZigiJS4wZiIsIHBpKSAjIOS/neeVmeWwj+aVsOeCueWQjjDkvY0NCnNwcmludGYoIiU1LjFmIiwgcGkpICMg5pyA5bCP5a695bqm5Li6Ne+8jOS/neeVmeWwj+aVsOeCueWQjjHkvY3vvIzkuI3otrPooaXnqbrmoLwNCnNwcmludGYoIiUwNS4xZiIsIHBpKSAjIOeUqDDooaXpvZANCnNwcmludGYoIiUrZiIsIHBpKSAjIOawuOi/nOW4puespuWPtw0Kc3ByaW50ZigiJSBmIiwgcGkpDQpzcHJpbnRmKCIlLTEwZiIsIHBpKSAjIOW3puWvuem9kO+8jOWuveW6puS4ujEwDQpzcHJpbnRmKCIlZSIsIHBpKQ0Kc3ByaW50ZigiJUUiLCBwaSkNCnNwcmludGYoIiVnIiwgcGkpDQpzcHJpbnRmKCIlZyIsIDFlNiAqIHBpKQ0Kc3ByaW50ZigiJS45ZyIsIDFlNiAqIHBpKQ0Kc3ByaW50ZigiJS4yZyIsIDIzLjc1KQ0KDQpzcHJpbnRmKA0KICAibWluIDEwLWNoYXIgc3RyaW5nICclMTBzJyIsDQogIGMoImEiLCAiQUJDIiwgImFuZCBhbiBldmVuIGxvbmdlciBvbmUiKQ0KKQ0KYGBgDQoNCiMjIyDlgJ/liqkgcHl0aG9uDQoNCuWKoOWFpSBweXRob24g5Luj56CB5Z2X77yM5L2/55SoIHB5dGhvbiDkuK3nmoTlrZfnrKbkuLLmoLzlvI/ljJbmlrnms5UgLmZvcm1hdCgpDQoNCmDmqKHmnb/lrZfnrKbkuLIuZm9ybWF0KOS7pemAl+WPt+WIhumalOeahOWhq+WFheWPguaVsOW6j+WIlylgDQoNCuWFtuS4re+8jGB7fWDkuLrmqKHmnb/kuK3nmoTmp73vvIzmp73lhoXpg6jlrprkuYnmr4/kuKrmp73nmoTmoLzlvI/ljJbmoLflvI/vvIzlvaLlpoLvvJoNCg0KYGlkOltmaWxsXVthbGlnbl1bc2lnbl1bd2lkdGhdWyxdWy5wcmVjaXNpb25dW3R5cGVdYA0KDQorLS0tLS0tLS0tLS0tKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tKw0KfCDnsbvliKsgICAgICAgfCDlkKvkuYkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQorPT09PT09PT09PT09Kz09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09Kw0KfCBmaWxsICAgICAgIHwg5a695bqm5LiN6Laz5pe25aGr5YWF55qE5a2X56ymICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQorLS0tLS0tLS0tLS0tKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tKw0KfCBhbGlnbiAgICAgIHwg5a+56b2Q5pa55byPLiBgPGAg5bem5a+56b2Q77ybYD5gIOWPs+Wvuem9kO+8m2A9YCDlhoXlrrnlj7Plr7npvZDvvIznrKblj7fmlL7nva7lnKjloavlhYXlrZfnrKbvvIjlpoIiMCLvvInnmoTlt6bkvqfvvJtgXmAg5bGF5LitIHwNCistLS0tLS0tLS0tLS0rLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0rDQp8IHNpZ24gICAgICAgfCBgK2Ag5q2j5pWw5YqgYCtg77yM6LSf5pWw5YqgYC1gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwgICAgICAgICAgICB8ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8ICAgICAgICAgICAgfCDnqbrmoLzvvIzmraPmlbDliqDnqbrmoLzvvIzotJ/mlbDliqBgLWAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KKy0tLS0tLS0tLS0tLSstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSsNCnwgLCAgICAgICAgICB8IOS4uuaVsOWtl+a3u+WKoOWNg+S9jeWIhumalOespiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KKy0tLS0tLS0tLS0tLSstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSsNCnwgd2lkdGggICAgICB8IOi+k+WHuueahOacgOWwj+WuveW6pu+8iOS4jei2s+S7pSBmaWxsIOihpem9kO+8iSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCistLS0tLS0tLS0tLS0rLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0rDQp8IC5wcmVjaXNpb24gfCDlsI/mlbDngrnlkI7kv53nlZnnsr7luqYgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQorLS0tLS0tLS0tLS0tKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tKw0KfCB0eXBlICAgICAgIHwg5qC85byP5YyW57G75Z6LICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KKy0tLS0tLS0tLS0tLSstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSsNCnwgICAgICAgICAgICB8IHMg5a2X56ym5Liy77yI5LiN5oyH5a6adHlwZeaXtum7mOiupO+8iSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCistLS0tLS0tLS0tLS0rLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0rDQp8ICAgICAgICAgICAgfCBkIOWNgei/m+WItuaVtOaVsCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQorLS0tLS0tLS0tLS0tKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tKw0KfCAgICAgICAgICAgIHwgbyDlhavov5vliLbmlbTmlbAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KKy0tLS0tLS0tLS0tLSstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSsNCnwgICAgICAgICAgICB8IHgsIFgg5bCPL+Wkp+WGmeWNgeWFrei/m+WItuaVtOaVsCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQorLS0tLS0tLS0tLS0tKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tKw0KfCAgICAgICAgICAgIHwgZiDljYHov5vliLbmta7ngrnmlbAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCistLS0tLS0tLS0tLS0rLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0rDQp8ICAgICAgICAgICAgfCBlLCBFIOenkeWtpuiuoeaVsOazleihqOekuueahOaVsO+8jGXlsI/lhpnmiJblpKflhpkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KKy0tLS0tLS0tLS0tLSstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSsNCnwgICAgICAgICAgICB8IGcsIEcg5pm66IO96YCJ5oup5L2/55So5rWu54K55pWw6L+Y5piv56eR5a2m6K6h5pWw5rOV77yIZ+WvueW6lGXvvIxH5a+55bqURe+8ie+8jOm7mOiupOaYvuekujbkvY3mnInmlYjmlbDlrZcgICAgICAgICAgICAgICAgICB8DQorLS0tLS0tLS0tLS0tKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tKw0KfCAgICAgICAgICAgIHwgXCUg55m+5YiG5q+U77yM6buY6K6k5pi+56S65bCP5pWw54K55ZCONuS9jSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQorLS0tLS0tLS0tLS0tKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tKw0KfCAgICAgICAgICAgIHwgYiDkuozov5vliLbmlbTmlbAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KKy0tLS0tLS0tLS0tLSstLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLSsNCnwgICAgICAgICAgICB8IGMgMTDov5vliLbmlbTmlbDovazmjaLkuLogVW5pY29kZSDlrZfnrKYgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQorLS0tLS0tLS0tLS0tKy0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tKw0KDQrov5nnp43mlrnms5XnmoTnvLrngrnlnKjkuo7vvIzovpPlh7rlrr3luqbjgIHnsr7luqbnrYnlj4LmlbDlv4XpobvmmK/noa7lrprnmoTluLjmlbDvvIzogIzkuI3og73mmK/lj5jph4/jgILlm6DmraTlvZPov5nkupvmlbDlgLzlv4Xpobvlj5blj5jph4/ml7bvvIzku43opoHkvb/nlKhgLnJqdXN0KClg44CBYC5sanVzdCgpYOWSjGAuY2VudGVyKClg5pa55rOV44CCDQoNCuekuuS+i++8mg0KDQpgYGB7cHl0aG9ufQ0Kc3RyMSA9ICJ7MDo9XjIwfSIuZm9ybWF0KCJQeXRob24iKSANCnN0cjEgIyDnlKggJz0nIOWhq+WFhe+8jOWxheS4reWvuem9kO+8jOanveWuveW6puS4ujIwDQoNCnN0cjIgPSAiezo9XjIwfSIuZm9ybWF0KCJQeXRob24iKSANCnN0cjIgIyDlj4LmlbDntKLlvJUw5Y+v5Lul55yB55WlDQoNCnN0cjMgPSAiezoqPjIwfSIuZm9ybWF0KCJCSVQiKSANCnN0cjMgIyDnlKggJyonIOWhq+WFhe+8jOWPs+Wvuem9kO+8jOanveWuveW6puS4ujIwDQoNCnN0cjQgPSAiezoxMH0iLmZvcm1hdCgiQklUIikNCnN0cjQgIyDpu5jorqTlt6blr7npvZDvvIznqbrmoLzloavlhYUNCg0Kc3RyNSA9ICJ7OiwuMmZ9Ii5mb3JtYXQoMTIzNDUuNjc4OSkNCnN0cjUgIyDkvb/nlKjljYPkvY3liIbpmpTnrKbvvIzkv53nlZnkuKTkvY3lsI/mlbDnmoTmta7ngrnlnosNCg0Kc3RyNiA9ICJ7MDpifSwgezA6Y30sIHswOmR9LCB7MDpvfSwgezA6eH0sIHswOlh9Ii5mb3JtYXQoNDI2KQ0Kc3RyNiAjIOS4gOS4quWPguaVsOWhq+WIsOaJgOacieanveS4re+8jOWIhuWIq+i9rOaNouS4uu+8muS6jOi/m+WItu+8jFVuaWNvZGUg57yW56CB77yM5Y2B6L+b5Yi277yM5YWr6L+b5Yi277yM5Y2B5YWt6L+b5Yi277yM5aSn5YaZ55qE5Y2B5YWt6L+b5Yi2DQoNCnN0cjcgPSAiezA6LjJlfSwgezA6LjJFfSwgezA6LjJmfSwgezA6LjIlfSIuZm9ybWF0KDMuMTQpDQpzdHI3ICMg5YiG5Yir6L2s5o2i5Li677ya56eR5a2m6K6w5pWw5rOV77yM5aSn5YaZ56eR5a2m6K6w5pWw5rOV77yM5rWu54K55pWw77yM55m+5YiG5pWwDQoNCnN0cjggID0gIkkgYW0gezpzfSwgYWdlIHs6ZH0sIG1vbmV5IHs6LjJmfSIuZm9ybWF0KCJzZXZlbiIsIDE4LCA4ODg4OC4xKQ0Kc3RyOCAjIOanveS4juWhq+WFheWPguaVsOeahOmhuuW6j+aBsOWlveWvueW6lOaXtu+8jOS5n+WPr+S7peecgeeVpeWPguaVsOe0ouW8lQ0KYGBgDQoNCiMjIyBmb3JtYXR0YWJsZSDljIUNCg0KLSBwZXJjZW50KCkNCi0gY29tbWEoKQ0KLSBjdXJyZW5jeSgpDQotIGFjY291bnRpbmcoKe+8jOS8muiuoeagvOW8j++8jOWmgui0n+aVsOeUqOaLrOWPt+ihqOekug0KLSBzY2llbnRpZmljKCkNCg0KDQpgYGB7cn0NCmxpYnJhcnkoZm9ybWF0dGFibGUpDQoNCmRmIDwtDQogIGRhdGEuZnJhbWUoDQogICAgaWQgPSAxOjEwLA0KICAgIG5hbWUgPSBjKA0KICAgICAgIkJvYiIsDQogICAgICAiQXNobGV5IiwNCiAgICAgICJKYW1lcyIsDQogICAgICAiRGF2aWQiLA0KICAgICAgIkplbm55IiwNCiAgICAgICJIYW5zIiwNCiAgICAgICJMZW8iLA0KICAgICAgIkpvaG4iLA0KICAgICAgIkVtaWx5IiwNCiAgICAgICJMZWUiDQogICAgKSwNCiAgICBhZ2UgPSBjKDI4LCAyNywgMzAsIDI4LCAyOSwgMjksIDI3LCAyNywgMzEsIDMwKSwNCiAgICBncmFkZSA9IGMoIkMiLCAiQSIsICJBIiwgIkMiLCAiQiIsICJCIiwgIkIiLCAiQSIsICJDIiwgIkMiKSwNCiAgICB0ZXN0MV9zY29yZSA9IGMoOC45LCA5LjUsIDkuNiwgOC45LCA5LjEsIDkuMywgOS4zLCA5LjksIDguNSwgOC42KSwNCiAgICB0ZXN0Ml9zY29yZSA9IGMoOS4xLCA5LjEsIDkuMiwgOS4xLCA4LjksIDguNSwgOS4yLCA5LjMsIDkuMSwgOC44KSwNCiAgICBmaW5hbF9zY29yZSA9IGMoOSwgOS4zLCA5LjQsIDksIDksIDguOSwgOS4yNSwgOS42LCA4LjgsIDguNyksDQogICAgcmVnaXN0ZXJlZCA9IGMoVFJVRSwgRkFMU0UsIFRSVUUsIEZBTFNFLCBUUlVFLCBUUlVFLCBUUlVFLCBGQUxTRSwgRkFMU0UsIEZBTFNFKSwNCiAgICBzdHJpbmdzQXNGYWN0b3JzID0gRkFMU0UNCiAgKQ0KZGYNCg0KZm9ybWF0dGFibGUoDQogIGRmLA0KICBsaXN0KA0KICAgIGFnZSA9IGNvbG9yX3RpbGUoIndoaXRlIiwgIm9yYW5nZSIpLA0KICAgIGdyYWRlID0gZm9ybWF0dGVyKCJzcGFuIiwgc3R5bGUgPSB4IH4gaWZlbHNlKA0KICAgICAgeCA9PSAiQSIsIHN0eWxlKGNvbG9yID0gImdyZWVuIiwgZm9udC53ZWlnaHQgPSAiYm9sZCIpLCBOQQ0KICAgICkpLA0KICAgIGFyZWEoY29sID0gYyh0ZXN0MV9zY29yZSwgdGVzdDJfc2NvcmUpKSB+IG5vcm1hbGl6ZV9iYXIoInBpbmsiLCAwLjIpLA0KICAgIGZpbmFsX3Njb3JlID0gZm9ybWF0dGVyKA0KICAgICAgInNwYW4iLA0KICAgICAgc3R5bGUgPSB4IH4gc3R5bGUoY29sb3IgPSBpZmVsc2UocmFuaygteCkgPD0gMywgImdyZWVuIiwgImdyYXkiKSksDQogICAgICB4IH4gc3ByaW50ZigiJS4yZiAocmFuazogJTAyZCkiLCB4LCByYW5rKC14KSkNCiAgICApLA0KICAgIHJlZ2lzdGVyZWQgPSBmb3JtYXR0ZXIoDQogICAgICAic3BhbiIsDQogICAgICBzdHlsZSA9IHggfiBzdHlsZShjb2xvciA9IGlmZWxzZSh4LCAiZ3JlZW4iLCAicmVkIikpLA0KICAgICAgeCB+IGljb250ZXh0KGlmZWxzZSh4LCAib2siLCAicmVtb3ZlIiksIGlmZWxzZSh4LCAiWWVzIiwgIk5vIikpDQogICAgKQ0KICApDQopDQpgYGANCmDmloflrZfmoLzlvI/oh6rlrprkuYlg44CBYOaWh+Wtl+iDjOaZr+iHquWumuS5iWDjgIFg5paH5pys6Ieq5a6a5LmJYOS4ieenjeiHquWumuS5ieWPr+inhuWMluexu+Wei++8mg0KDQotIGNvbG9yX3RpbGXlh73mlbDnlKjkuo7ovpPlh7rmjInnhafmlbDlgLzph4/nuqfov5vooYzpopzoibLog4zmma/loavlhYXnmoTliJfjgIINCi0gZm9ybWF0dGVy5Ye95pWw5o+Q5L6b5a2X5L2T5pi+56S65qC85byP55qE6Ieq5a6a5LmJ77yMZ3JhZGXliJfoh6rlrprkuYnkuoblgLzkuLpB55qE6K6w5b2V5pi+56S657u/6Imy77yM5bm25bCG5a2X5L2T5Yqg57KX77yM5ZCm5YiZ5b+955Wl44CCDQotIHRlc3QxX3Njb3JlLCB0ZXN0Ml9zY29yZeS4pOWIl+mAmui/h2FyZWHlh73mlbDlnKjlr7nlupTlrZfkvZPog4zmma/kvY3nva7kvb/nlKjmnaHlvaLlm77mnaXku6PooajmjIfmoIfph4/nuqflpKflsI/vvIzpopzoibLloavlhYXnsonoibLjgIINCi0gZmluYWxfc2NvcmXliJflr7nmjIfmoIfmjInnhad0b3Az5pi+56S657u/6Imy77yM5YW25L2Z5pi+56S654Gw6Imy77yM5ZCM5pe25bCG5YaF5a655pi+56S65qC85byP6Ieq5a6a5LmJ5Li65rWu54K55Z6LKyhyYW5rOuWQjeasoSnov5vooYzmmL7npLrjgIINCi0gcmVnaXN0ZXJlZOWIl+WImeWcqOWvueWhq+WFheminOiJsuaMieeFp+WvueW6lOW4g+WwlOWAvOi/m+ihjOaYvuekuu+8iFRSVUXmmL7npLrnu7/oibLjgIFGQUxTReaYvuekuue6ouiJsu+8ieS5i+Wklu+8jOWcqOW3puS+p+a3u+WKoOS6huWvueeUqOeahGljb27mlofmnKzvvIhUUlVF5pi+56S657u/6Imy5a+55Y+377yMRkFMU0XmmL7npLrnuqLoibLlj4nlj7fvvInjgIINCg0KDQojIyDlh73mlbDliIbnsbsNCg0KKirlrZfnrKbkuLLmi7zmjqXlh73mlbAqKg0KDQotICAgc3RyX2M6IOWtl+espuS4suaLvOaOpeOAgg0KLSAgIHN0cl90cmltOiDljrvmjonlrZfnrKbkuLLnmoTnmb3nqbrmoLwNCi0gICBzdHJfcGFkOiDooaXlhYXlrZfnrKbkuLLnmoTplb/luqYNCi0gICBgc3RyX3NxdWlzaGDvvJrliKDpmaTlrZfnrKbkuLLkuK3lpJrkuo4x5Liq55qE56m65qC844CC6Z2e5bi45pyJ55So55qE5Ye95pWw77yBDQotICAgc3RyX2R1cDog5aSN5Yi25a2X56ym5LiyDQotICAgc3RyX3N1Yjog5a2X56ym5Liy5YiH54mHDQotICAgc3RyX3N1Ylw8LSDlrZfnrKbkuLLliIfniYfvvIzlubbotYvlgLzvvIzlkIxzdHJfc3ViDQoNCioq5a2X56ym5Liy6K6h566X5Ye95pWwKioNCg0KLSAgIHN0cl9jb3VudDog5a2X56ym5Liy6K6h5pWwDQotICAgYHN0cl9sZW5ndGgoKWA6IOWtl+espuS4sumVv+W6pu+8jOWQjGBuY2hhcigpYA0KLSAgIHN0cl9zb3J0OiDlrZfnrKbkuLLlgLzmjpLluo8NCi0gICBzdHJfb3JkZXI6IOWtl+espuS4sue0ouW8leaOkuW6j++8jOinhOWImeWQjHN0cl9zb3J0DQoNCioq5a2X56ym5Liy5Yy56YWN5Ye95pWwKioNCg0KLSAgIGBzdHJfdmlldygpL3N0cl92aWV3X2FsbCgpYCDmn6XnnItzdHJpbmfmmK/lkKbljLnphY1wYXR0ZXJu77yM5aaC5p6c5Yy56YWN77yM5bCx6auY5Lqu5pi+56S6DQotICAgc3RyX3NwbGl0OiDlrZfnrKbkuLLliIblibINCi0gICBzdHJfc3BsaXRfZml4ZWQ6IOWtl+espuS4suWIhuWJsu+8jOWQjHN0cl9zcGxpdA0KLSAgIHN0cl9zdWJzZXQ6IOi/lOWbnuWMuemFjeeahOWtl+espuS4sg0KLSAgIHdvcmQ6IOS7juaWh+acrOS4reaPkOWPluWNleivjQ0KLSAgIGBzdHJfZGV0ZWN0KClgL2BzdHJfdmlldygpYDog5qOA5p+l5Yy56YWN5a2X56ym5Liy55qE5a2X56ymDQotICAgc3RyX21hdGNoOiDku47lrZfnrKbkuLLkuK3mj5Dlj5bljLnphY3nu4TjgIINCi0gICBzdHJfbWF0Y2hfYWxsOiDku47lrZfnrKbkuLLkuK3mj5Dlj5bljLnphY3nu4TvvIzlkIxzdHJfbWF0Y2gNCi0gICBgY2hhcnRyKG9sZCwgbmV3LCBzdHJpbmcpYDog5LuOIG9sZCDliLAgbmV3IOeahOS4gOS4gOWvueW6lOeahOabv+aNou+8jOS9nOeUqOWcqCBzdHJpbmcg5LiKDQotICAgc3RyX3JlcGxhY2U6IOWtl+espuS4suabv+aNog0KLSAgIHN0cl9yZXBsYWNlX2FsbDog5a2X56ym5Liy5pu/5o2i77yM5ZCMc3RyX3JlcGxhY2UNCi0gICBzdHJfcmVwbGFjZV9uYTog5oqKTkHmm7/mjaLkuLrlrZfnrKbkuLIiTkEiDQotICAgc3RyX3JlbW92Ze+8muWIoOmZpOWMuemFjeeahOWtl+espuS4sg0KLSAgIHN0cl9yZW1vdmVfYWxs77ya5Yig6Zmk5omA5pyJ5Yy56YWN55qE5a2X56ymDQotICAgc3RyX2xvY2F0ZTog5om+5Yiw5Yy56YWN55qE5a2X56ym5Liy55qE5L2N572u44CCDQotICAgc3RyX2xvY2F0ZV9hbGw6IOaJvuWIsOWMuemFjeeahOWtl+espuS4sueahOS9jee9rizlkIxzdHJfbG9jYXRlDQotICAgc3RyX2V4dHJhY3Q6IOS7juWtl+espuS4suS4reaPkOWPluWMuemFjeWtl+espg0KLSAgIHN0cl9leHRyYWN0X2FsbDog5LuO5a2X56ym5Liy5Lit5o+Q5Y+W5Yy56YWN5a2X56ym77yM5ZCMc3RyX2V4dHJhY3QNCg0KKirlrZfnrKbkuLLmoLzlvI/ljJYqKg0KDQotIGBiYXNlOjpzcHJpbnRmKClg77yM6K+m6KeB5LiK5LiA6IqCDQotICAgYHN0cl9nbHVlKClg77ya5Y+C5pWw6YeM6Z2i55qEYHt9YOWNoOS9jeespu+8jOWQjGphdmFzY3JpcHTnmoRgJHt9YA0KLSAgIHN0cl93cmFwOiDmjqfliLbplb/lrZfnrKbkuLLovpPlh7rmjpLniYgNCi0gICBzdHJfY29udjog5a2X56ym57yW56CB6L2s5o2iDQotICAgYHN0cl90b191cHBlcigpYC9gdG91cHBlcigpYDog5a2X56ym5Liy6L2s5oiQ5aSn5YaZDQotICAgYHN0cl90b19sb3dlcigpYC9gdG9sb3dlcigpYDog5a2X56ym5Liy6L2s5oiQ5bCP5YaZLOinhOWImeWQjHN0cl90b191cHBlcg0KLSAgIHN0cl90b190aXRsZSgpOiDlrZfnrKbkuLLovazmiJDpppblrZfmr43lpKflhpks6KeE5YiZ5ZCMc3RyX3RvX3VwcGVyDQotICAgc3RyX3RvX3NlbnRlbmNlKCk6IOWPquacieS4gOWPpeeahOmmluWtl+avjeWkp+WGmQ0KDQoqKuWPguaVsOaOp+WItuWHveaVsO+8jOS7heeUqOS6juaehOmAoOWKn+iDveeahOWPguaVsO+8jOS4jeiDveeLrOeri+S9v+eUqOOAgioqDQoNCi0gICBib3VuZGFyeTog5a6a5LmJ5L2/55So6L6555WMDQotICAgY29sbDog5a6a5LmJ5a2X56ym5Liy5qCH5YeG5o6S5bqP6KeE5YiZ44CCDQotICAgZml4ZWQ6IOWumuS5ieeUqOS6juWMuemFjeeahOWtl+espu+8jOWMheaLrOato+WImeihqOi+vuW8j+S4reeahOi9rOS5ieespg0KLSAgIHJlZ2V4OiDlrprkuYnmraPliJnooajovr7lvI8NCg0KDQojIyBzdHJpbmdyOjoNCg0KPGEgaHJlZj0iLi4vcGRmL2NoZWF0c2hlZXQtc3RyaW5ncy5wZGYiPjxzdHJvbmc+c3RyaW5nciBjaGVhdHNoZWV0LnBkZjwvc3Ryb25nPjwvYT4NCg0KPG9iamVjdCBkYXRhPSIuLi9wZGYvY2hlYXRzaGVldC1zdHJpbmdzLnBkZiIgdHlwZT0iYXBwbGljYXRpb24vcGRmIiB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIj48L29iamVjdD4NCg0KDQojIyMgYHN0cl9sZW5ndGgoKWAg5a2X56ym5Liy6ZW/5bqmDQoNCuWQjCBgYmFzZTo6bmNoYXIoKWANCg0K5L2/55SoIFJTdHVkaW/vvIzpgqPkuYjpgJrnlKjliY3nvIAgc3RyXF8g5Lya54m55Yir5pyJ55So77yM5Zug5Li66L6T5YWlIHN0clxfIOWQjuS8muinpuWPkeiHquWKqOWujOaIkOWKn+iDve+8jOS9oOWPr+S7peeci+WIsOaJgOacieeahOWtl+espuS4suWHveaVsO+8mg0KDQpgYGB7cn0NCnN0cl9sZW5ndGgoYygiYSIsICJSIGZvciBkYXRhIHNjaWVuY2UiKSkNCnN0cl9sZW5ndGgoYygiYSIsICJSIGZvciBkYXRhIHNjaWVuY2UiKSkgJT4lIHN1bSgpDQpgYGANCg0KIyMjIGBzdHJfYygpYOWtl+espuS4sue7hOWQiA0KDQpgc3RyX2MoLi4uLCBzZXAgPSAiIiwgY29sbGFwc2UgPSBOVUxMKWANCg0K5ZCI5bm26Iul5bmy5Liq5a2X56ym5Liy5oiW5a2X56ym5ZCR6YeP55qE5a+55bqU5YWD57Sg77yM6buY6K6k5peg6Ze06ZqU56ymDQoNCmBgYHtyfQ0KIyDlkJHph4/ljJbmk43kvZzvvIzoh6rliqjlvqrnjq/nn63lkJHph48NCnN0cl9jKCJwcmVmaXgtIiwgYygiYSIsICJiIiwgImMiKSwgIi1zdWZmaXgiKQ0KYGBgDQoNCmBgYHtyfQ0KIyDlkIjlubbkuIDkuKrlrZfnrKblkJHph4/nmoTlkITlhYPntKDkuLrkuIDkuKrplb/lrZfnrKbkuLLvvIzkvb/nlKjlj4LmlbBjb2xsYXBzZe+8jOWwhuWQkemHj+KAnOWhjOe8qeKAneS4uuS4gOS4quWtl+espuS4sg0Kc3RyX2MoYygieCIsICJ5IiwgInoiKSwgY29sbGFwc2UgPSAiKyIpDQpgYGANCg0KDQpgc3RyX3JlcGxhY2VfbmEoc3RyaW5nLCByZXBsYWNlbWVudCA9ICJOQSIpYO+8jOm7mOiupOWwhiBuYSDovazljJbkuLrlrZfnrKbkuLIiTkEiDQoNCmBgYHtyfQ0KeCA8LSBjKCJhYmMiLCBOQSkNCnN0cl9jKCJ8LSIsIHgsICItfCIpDQoNCnN0cl9jKCJ8LSIsIHN0cl9yZXBsYWNlX25hKHgpLCAiLXwiKQ0KYGBgDQoNCiMjIyBgc3RyX3RyaW0oKWAg5Y675o6J5a2X56ym5Liy6aaW5bC+55qE56m65qC85ZKM5Yi26KGo56ymKFxcdCkNCg0KPiBzdHJfdHJpbShzdHJpbmcsIHNpZGUgPSBjKCJib3RoIiwgImxlZnQiLCAicmlnaHQiKSkNCg0Kc2lkZTog6L+H5ruk5pa55byP77yMYm90aOS4pOi+uemDvei/h+a7pO+8jGxlZnTlt6bovrnov4fmu6TvvIxyaWdodOWPs+i+uei/h+a7pA0KDQojIyMgYHN0cl9wYWQoKWAg6KGl5YWF5a2X56ym5Liy55qE6ZW/5bqmDQoNCj4gc3RyX3BhZChzdHJpbmcsIHdpZHRoLCBzaWRlID0gYygibGVmdCIsICJyaWdodCIsICJib3RoIiksIHBhZCA9ICIgIikNCg0Kd2lkdGg6IOWtl+espuS4suWhq+WFheWQjueahOmVv+W6plwNCnNpZGU6IOWhq+WFheaWueWQke+8jGJvdGjkuKTovrnpg73loavlhYXvvIxsZWZ05bem6L655aGr5YWF77yMcmlnaHTlj7PovrnloavlhYVcDQpwYWQ6IOeUqOS6juWhq+WFheeahOWtl+espg0KDQojIyMgYHN0cl9kdXAoKWAg5aSN5Yi25a2X56ym5LiyDQoNCj4gc3RyX2R1cChzdHJpbmcsIHRpbWVzKQ0KDQp0aW1lczog5aSN5Yi25qyh5pWwDQoNCmBgYHtyfQ0KdmFsIDwtIGMoImFiY2E0IiwgMTIzLCAiY2JhMiIpDQoNCiMg5aSN5Yi2MuasoQ0Kc3RyX2R1cCh2YWwsIDIpDQoNCiMg5oyJ5L2N572u5aSN5Yi2DQpzdHJfZHVwKHZhbCwgMTozKQ0KYGBgDQoNCiMjIyBgc3RyX3dyYXAoKWAg5o6n5Yi26ZW/5a2X56ym5Liy6L6T5Ye65o6S54mIDQoNCj4gc3RyX3dyYXAoc3RyaW5nLCB3aWR0aCA9IDgwLCBpbmRlbnQgPSAwLCBleGRlbnQgPSAwKQ0KDQp3aWR0aDog6K6+572u5LiA6KGM5omA5Y2g55qE5a695bqm44CCXA0KaW5kZW50OiDmrrXokL3pppbooYznmoTnvKnov5vlgLxcDQpleGRlbnQ6IOauteiQvemdnummluihjOeahOe8qei/m+WAvA0KDQoNCmBgYHtyfQ0KIyDov5nmrrXku6PnoIHlj6/ku6XlnKggY29uc29sZSDkuK3ov5DooYzvvIzkvYbkuI3og73lnKggUm1hcmtkb3duIOS4reebtOaOpei/kOihjA0Kc3RyIDwtICJS6K+t6KiA5L2c5Li657uf6K6h5a2m5LiA6Zeo6K+t6KiA77yM5LiA55u05Zyo5bCP5LyX6aKG5Z+f6Zeq6ICA552A5YWJ6IqS44CC55u05Yiw5aSn5pWw5o2u55qE54iG5Y+R77yMUuivreiogOWPmOaIkOS6huS4gOmXqOeCmeaJi+WPr+eDreeahOaVsOaNruWIhuaekOeahOWIqeWZqOOAgumaj+edgOi2iuadpei2iuWkmueahOW3peeoi+iDjOaZr+eahOS6uueahOWKoOWFpe+8jFLor63oqIDnmoTnpL7ljLrlnKjov4XpgJ/mianlpKfmiJDplb/jgILnjrDlnKjlt7LkuI3ku4Xku4XmmK/nu5/orqHpoobln5/vvIzmlZnogrLvvIzpk7booYzvvIznlLXllYbvvIzkupLogZTnvZHigKYu6YO95Zyo5L2/55SoUuivreiogOOAgiINCg0KDQojIOiuvue9ruWuveW6puS4ujQw5Liq5a2X56ymDQojIGNhdChzdHJfd3JhcChzdHIsIHdpZHRoID0gNDApLCAiXG4iKQ0KDQojIOiuvue9ruWuveW6puS4ujYw5a2X56ym77yM6aaW6KGM57yp6L+bNOWtl+espg0KIyBjYXQoc3RyX3dyYXAodHh0LCB3aWR0aCA9IDYwLCBpbmRlbnQgPSA0KSwgIlxuIikNCg0KIyDorr7nva7lrr3luqbkuLoxMOWtl+espu+8jOmdnummluihjOe8qei/mzTlrZfnrKYNCiMgY2F0KHN0cl93cmFwKHR4dCwgd2lkdGggPSAxMCwgZXhkZW50ID0gNCksICJcbiIpDQpgYGANCg0KIyMjIGBzdHJfc3BsaXQoKWAg5ouG5YiG5a2X56ym5LiyDQoNCj4gc3RyX3NwbGl0KHN0cmluZywgcGF0dGVybiwgbiA9IEluZikgc3RyX3NwbGl0X2ZpeGVkKHN0cmluZywgcGF0dGVybiwgbikNCg0KcGF0dGVybjog5Yy56YWN55qE5a2X56ym44CCXA0Kbjog5YiG5Ymy5Liq5pWwDQoNCmBgYHtyfQ0KdmFsIDwtICJhYmMsMTIzLDIzNCxpdXV1Ig0KDQojIOS7pSzov5vooYzliIblibINCnMxIDwtIHN0cl9zcGxpdCh2YWwsICIsIikNCnMxDQoNCiMg5LulLOi/m+ihjOWIhuWJsu+8jOS4lOWPquS/neeVmTLlnZcNCnMyIDwtIHN0cl9zcGxpdCh2YWwsICIsIiwgMikNCnMyDQoNCiMg5p+l55yLc3RyX3NwbGl0KCnlh73mlbDmk43kvZznmoTnu5PmnpznsbvlnotsaXN0DQpjbGFzcyhzMSkNCg0KIyDnlKhzdHJfc3BsaXRfZml4ZWQoKeWHveaVsOWIhuWJsu+8jOe7k+aenOexu+Wei+aYr21hdHJpeA0KczMgPC0gc3RyX3NwbGl0X2ZpeGVkKHZhbCwgIiwiLCAyKQ0KczMNCmNsYXNzKHMzKQ0KDQoNCmZydWl0cyA8LSBjKA0KICAiYXBwbGVzIGFuZCBvcmFuZ2VzIGFuZCBwZWFycyBhbmQgYmFuYW5hcyIsDQogICJwaW5lYXBwbGVzIGFuZCBtYW5nb3MgYW5kIGd1YXZhcyINCikNCnN0cl9zcGxpdChmcnVpdHMsICIgYW5kICIpDQoNCg0KZ3BsIDwtIHJlYWRMaW5lcyhmaWxlLnBhdGgoUi5ob21lKCksICJDT1BZSU5HIikpDQp3b3JkcyA8LSB1bmxpc3Qoc3Ryc3BsaXQoZ3BsLCAiXFxXIikpICMgXFxXIOaEj+S4uumdnuWNleivjeWtl+espg0Kd29yZHMgPC0gd29yZHNbd29yZHMgIT0gIiJdICMg5Y675o6J56m65a2X56ymDQp0YWlsKHNvcnQodGFibGUodG9sb3dlcih3b3JkcykpKSwgMTApICMg6aKR5pWw5pyA5aSn55qEMTDkuKrljZXor40NCmBgYA0KDQojIyMgYHN0cl9zdWIoKWAg5a2X56ym5Liy5Y+W5a2Q6ZuGDQoNCj4gc3RyX3N1YihzdHJpbmcsIHN0YXJ0ID0gMUwsIGVuZCA9IC0xTCkNCg0KPiBzdHJfc3ViKHN0cmluZywgc3RhcnQgPSAxTCwgZW5kID0gLTFMKSBcPC0gdmFsdWUNCg0K5Lik5Liq5Y+C5pWw5YiG5Yir5Li65aeL5pyr5L2N572u77yM56ym5Y+35Luj6KGo5LuO5ZCO5b6A5YmN5pWw56ys5aSa5bCR5Liq5a2X56ymDQoNCmBgYHtyfQ0KdHh0IDwtICJJIGFtIENvbmFuLiINCg0KIyDliIYy5q615oiq5Y+W5a2X56ym5LiyDQpzdHJfc3ViKHR4dCwgYygxLCA0KSwgYyg2LCA4KSkNCg0KIyDpgJrov4fotJ/lnZDmoIfmiKrlj5blrZfnrKbkuLINCnN0cl9zdWIodHh0LCAtMykNCnN0cl9zdWIodHh0LCBlbmQgPSAtMykNCg0KIyDotYvlgLwNCnggPC0gYygiQXBwbGUiLCAiQmFuYW5hIiwgIlBlYXIiKQ0KIyBzdHJfc3ViKCnlr7l45ZCR6YeP5YyW5pON5L2c77ybc3RyX3RvX2xvd2Vy5YWo6YOo6L2s5o2i5Li65bCP5YaZ5a2X5q+NDQpzdHJfc3ViKHgsIDEsIDEpIDwtIHN0cl90b19sb3dlcihzdHJfc3ViKHgsIDEsIDEpKQ0KeA0KYGBgDQoNCiMjIyBgc3RyX3RvXyooKWAg5aSn5bCP5YaZ5Ye95pWw5pePDQoNCmBzdHJfdG9fdXBwZXIoc3RyaW5nLCBsb2NhbGUgPSAiIilgIOi9rOaNouS4uuWFqOWkp+WGmeWtl+avjQ0KDQpgc3RyX3RvX2xvd2VyKHN0cmluZywgbG9jYWxlID0gIiIpYCDovazmjaLkuLrlhajlsI/lhpnlrZfmr40NCg0KYHN0cl90b190aXRsZShzdHJpbmcsIGxvY2FsZSA9ICIiKWAg5Y2V6K+N6aaW5a2X5q+N5aSn5YaZDQoNCmBzdHJfdG9fc2VudGVuY2UoKWAg5YWo5Y+l6aaW5a2X5q+N5aSn5YaZDQoNCmxvY2FsZTrmjInlk6rnp43or63oqIDkuaDmg6/mjpLluo8NCg0KYGBge3J9DQpkb2cgPC0gIkxvb2sgdGhlIHF1aWNrIGJyb3duIGRvZyEiDQpzdHJfdG9fdXBwZXIoZG9nKQ0Kc3RyX3RvX2xvd2VyKGRvZykNCnN0cl90b190aXRsZShkb2cpDQpzdHJfdG9fc2VudGVuY2UoImxvb2sgdGhlIHF1aWNrIGJyb3duIGRvZyEiKQ0KYGBgDQoNCiMjIyBgc3RyX2NvdW50KClgIOWtl+espuS4suiuoeaVsA0KDQo+IHN0cl9jb3VudChzdHJpbmcsIHBhdHRlcm4gPSAiIikNCg0KYGBge3J9DQojIOazqOaEj+ato+WImeihqOi+vuW8j+eahOeJueauiuWtl+espg0Kc3RyX2NvdW50KGMoImEuIiwgIi4iLCAiLmEuIiwgTkEpLCAiLiIpDQoNCiMg55SoZml4ZWTljLnphY3lrZfnrKYNCnN0cl9jb3VudChjKCJhLiIsICIuIiwgIi5hLiIsIE5BKSwgZml4ZWQoIi4iKSkNCg0KIyDnlKhcXOWMuemFjeWtl+espg0Kc3RyX2NvdW50KGMoImEuIiwgIi4iLCAiLmEuIiwgTkEpLCAiXFwuIikNCmBgYA0KDQojIyMgYHN0cl9zb3J0KClgIOWtl+espuS4suaOkuW6jw0KDQo+IHN0cl9zb3J0KHgsIGRlY3JlYXNpbmcgPSBGQUxTRSwgbmFfbGFzdCA9IFRSVUUsIGxvY2FsZSA9ICIiLCAuLi4pIHN0cl9vcmRlcih4LCBkZWNyZWFzaW5nID0gRkFMU0UsIG5hX2xhc3QgPSBUUlVFLCBsb2NhbGUgPSAiIiwgLi4uKQ0KDQp4OiDlrZfnrKbkuLLvvIzlrZfnrKbkuLLlkJHph4/jgIIgZGVjcmVhc2luZzog5o6S5bqP5pa55ZCR44CCIG5hX2xhc3Q6IE5B5YC855qE5a2Y5pS+5L2N572u77yM5LiA5YWxM+S4quWAvO+8jFRSVUXmlL7liLDmnIDlkI7vvIxGQUxTReaUvuWIsOacgOWJje+8jE5B6L+H5ruk5aSE55CGIGxvY2FsZTog5oyJ5ZOq56eN6K+t6KiA5Lmg5oOv5o6S5bqPDQoNCmBgYHtyfQ0KIyDmjIlBU0NJSeWtl+avjeaOkuW6jw0Kc3RyX3NvcnQoYygiYSIsIDEsIDIsICIxMSIpLCBsb2NhbGUgPSAiZW4iKQ0KDQojIOWAkuW6j+aOkuW6jw0Kc3RyX3NvcnQobGV0dGVycywgZGVjcmVhc2luZyA9IFRSVUUpDQoNCiMg5oyJ5ou86Z+z5o6S5bqPDQpzdHJfc29ydChjKCLkvaAiLCAi5aW9IiwgIueyiSIsICLkuJ0iLCAi5pelIiwgIuW/lyIpLCBsb2NhbGUgPSAiemgiKQ0KYGBgDQoNCuWvuU5B55qE5o6S5bqP5aSE55CG77yaDQoNCmBgYHtyfQ0KIyDmiopOQeaUvuacgOWQjumdog0Kc3RyX3NvcnQoYyhOQSwgIjEiLCBOQSksIG5hX2xhc3QgPSBUUlVFKQ0KDQojIOaKik5B5pS+5pyA5YmN6Z2iDQpzdHJfc29ydChjKE5BLCAiMSIsIE5BKSwgbmFfbGFzdCA9IEZBTFNFKQ0KDQojIOWOu+aOiU5B5YC8DQpzdHJfc29ydChjKE5BLCAiMSIsIE5BKSwgbmFfbGFzdCA9IE5BKQ0KYGBgDQoNCiMjIyBgc3RyX2RldGVjdCgpYCDmo4DmtYvmmK/lkKbljLnphY3vvIzov5Tlm55UL0YNCg0KYGBge3J9DQp2YWwgPC0gYygiYWJjYTQiLCAxMjMsICJjYmEyIikNCg0KIyDmo4Dmn6XlrZfnrKbkuLLlkJHph4/vvIzmmK/lkKbljIXmi6xhDQpzdHJfZGV0ZWN0KHZhbCwgImEiKQ0KDQojIOajgOafpeWtl+espuS4suWQkemHj++8jOaYr+WQpuS7pWHkuLrlvIDlpLQNCnN0cl9kZXRlY3QodmFsLCAiXmEiKQ0KDQoNCiMg5qOA5p+l5a2X56ym5Liy5ZCR6YeP77yM5piv5ZCm5LulYeS4uue7k+Wwvg0Kc3RyX2RldGVjdCh2YWwsICJhJCIpDQpgYGANCg0KIyMjIGBzdHJfc3Vic2V0KClgIOi/lOWbnuaIkOWKn+WMuemFjeeahOWtl+espuS4sg0KDQpgYGB7cn0NCnZhbCA8LSBjKCJhYmMiLCAxMjMsICJjYmEiKQ0KDQojIOWFqOaWh+WMuemFjQ0Kc3RyX3N1YnNldCh2YWwsICJhIikNCg0KDQojIOW8gOWktOWMuemFjQ0Kc3RyX3N1YnNldCh2YWwsICJeYSIpDQoNCg0KIyDnu5PlsL7ljLnphY0NCnN0cl9zdWJzZXQodmFsLCAiYSQiKQ0KYGBgDQoNCiMjIyBgc3RyX21hdGNoKCkvc3RyX2V4dHJhY3QoKWAg5LuO5a2X56ym5Liy5Lit5o+Q5Y+W5Yy56YWN5qih5byPDQoNCuS4u+imgeS4juato+WImeihqOi+vuW8j+mFjeWQiOS9v+eUqA0KDQo+IHN0cl9tYXRjaChzdHJpbmcsIHBhdHRlcm4pIA0KPiBzdHJfbWF0Y2hfYWxsKHN0cmluZywgcGF0dGVybikgDQoNCuS7peWtl+espuS4sm1hdHJpeOagvOW8j+i/lOWbng0KDQpgYGB7cn0NCnZhbCA8LSBjKCJhYmMiLCAxMjMsICJjYmEiKQ0KDQojIOWMuemFjeWtl+espmHvvIzlubbov5Tlm57lr7nlupTnmoTlrZfnrKYNCnN0cl9tYXRjaCh2YWwsICJhIikNCg0KIyDljLnphY3lrZfnrKYwLTnvvIzpmZAx5Liq77yM5bm26L+U5Zue5a+55bqU55qE5a2X56ymDQpzdHJfbWF0Y2godmFsLCAiWzAtOV0iKQ0KDQojIOWMuemFjeWtl+espjAtOe+8jOS4jemZkOaVsOmHj++8jOW5tui/lOWbnuWvueW6lOeahOWtl+espg0Kc3RyX21hdGNoKHZhbCwgIlswLTldKiIpDQoNCiMg6L+U5ZuebWF0cml4DQpzdHJfbWF0Y2hfYWxsKHZhbCwgImEiKQ0Kc3RyX21hdGNoX2FsbCh2YWwsICJbMC05XSIpDQpgYGANCg0KPiBzdHJfZXh0cmFjdChzdHJpbmcsIHBhdHRlcm4pIA0KPiBzdHJfZXh0cmFjdF9hbGwoc3RyaW5nLCBwYXR0ZXJuLCBzaW1wbGlmeSA9IEZBTFNFKQ0KDQpzaW1wbGlmeTogVFJVRei/lOWbnm1hdHJpeO+8jEZBTFNF6L+U5Zue5YiX6KGoDQoNCmBgYHtyfQ0KdmFsIDwtIGMoImFiY2E0IiwgMTIzLCAiY2JhMiIpDQoNCiMg6L+U5Zue5Yy56YWN55qE5pWw5a2XDQpzdHJfZXh0cmFjdCh2YWwsICJcXGQiKQ0KDQojIOi/lOWbnuWMuemFjeeahOWtl+espg0Kc3RyX2V4dHJhY3QodmFsLCAiW2Etel0rIikNCg0KdmFsIDwtIGMoImFiY2E0IiwgMTIzLCAiY2JhMiIpDQpzdHJfZXh0cmFjdF9hbGwodmFsLCAiXFxkIikNCg0Kc3RyX2V4dHJhY3RfYWxsKHZhbCwgIlthLXpdKyIpDQpgYGANCg0KDQojIyMgYHdvcmQoKWAg5LuO5paH5pys5Lit5o+Q5Y+W5Y2V6K+N77yI5Lul5Y2V6K+N5Li65Y2V5L2N55yL5b6F5a2X56ym5Liy77yJDQoNCj4gd29yZChzdHJpbmcsIHN0YXJ0ID0gMUwsIGVuZCA9IHN0YXJ0LCBzZXAgPSBmaXhlZCgiICIpKQ0KDQpzdGFydDog5LuO56ys5Yeg5Liq6K+N5byA5aeL44CCIGVuZDog5Yiw56ys5Yeg5Liq6K+N57uT5p2f44CCIHNlcDog5YiG6K+N6Ze06ZqU5a2X56ym77yM6buY6K6k5Li656m65qC844CCDQoNCmBgYHtyfQ0KdmFsIDwtIGMoIkkgYW0gQ29uYW4uIiwgImh0dHA6Ly9mZW5zLm1lLCBvayIpDQoNCiMg6buY6K6k5Lul56m65qC85YiG5Ymy77yM5Y+W56ys5LiA5Liq5L2N572u55qE5a2X56ym5LiyDQp3b3JkKHZhbCwgMSkNCndvcmQodmFsLCAtMSkNCndvcmQodmFsLCAyLCAtMSkNCg0KIyDku6Us5YiG5Ymy77yM5Y+W56ys5LiA5Liq5L2N572u55qE5a2X56ym5LiyDQp2YWwgPC0gIjExMSwyMjIsMzMzLDQ0NCINCndvcmQodmFsLCAxLCBzZXAgPSBmaXhlZCgiLCIpKQ0Kd29yZCh2YWwsIDMsIHNlcCA9IGZpeGVkKCIsIikpDQpgYGANCg0KIyMjIGBzdHJfcmVwbGFjZSgpYCDlrZfnrKbkuLLmm7/mjaINCg0KPiBzdHJfcmVwbGFjZShzdHJpbmcsIHBhdHRlcm4sIHJlcGxhY2VtZW50KSAgDQo+IHN0cl9yZXBsYWNlX2FsbChzdHJpbmcsIHBhdHRlcm4sIHJlcGxhY2VtZW50KSAgDQo+IHN0cl9yZXBsYWNlX25hKHN0cmluZywgcmVwbGFjZW1lbnQgPSAiTkEiKSwg5bCGTkHvvIjpu5jorqTvvInmm7/mjaLkuLonTkEnDQoNCioq5Y+C5pWwIHJlcGxhY2VtZW50IOWPr+S7peaYr+S4gOS4quWHveaVsO+8jOS9v+abv+aNoueahOinhOWImeabtOWKoOWkjeadgioqDQoNCmBgYHtyfQ0KdmFsIDwtIGMoImFiYyIsIDEyMywgImNiYSIpDQoNCiMg5oqK55uu5qCH5a2X56ym5Liy56ys5LiA5Liq5Ye6546w55qEYeaIlmLvvIzmm7/mjaLkuLotDQpzdHJfcmVwbGFjZSh2YWwsICJbYWJdIiwgIi0iKQ0KDQojIOaKiuebruagh+Wtl+espuS4suaJgOacieWHuueOsOeahGHmiJZi77yM5pu/5o2i5Li6LQ0Kc3RyX3JlcGxhY2VfYWxsKHZhbCwgIlthYl0iLCAiLSIpDQoNCiMg5oqK55uu5qCH5a2X56ym5Liy5omA5pyJ5Ye6546w55qEYe+8jOabv+aNouS4uuiiq+i9rOS5ieeahOWtl+espg0Kc3RyX3JlcGxhY2VfYWxsKHZhbCwgIlthXSIsICJcXCIpDQoNCg0KDQpwaWdJdCA8LSBmdW5jdGlvbihzdHJpbmcpIHsNCiAgc3RyX3JlcGxhY2VfYWxsKHN0cmluZywgIlxcdysiLCBmdW5jdGlvbih3b3JkKSB7DQogICAgc3RyX2Moc3RyX3N1Yih3b3JkLCAyKSwgc3RyX3N1Yih3b3JkLCAxLCAxKSwgImF5IikNCiAgfSkNCn0NCg0KbGlicmFyeSh0ZXN0dGhhdCkNCnRlc3RfdGhhdCgiU2FtcGxlIFRlc3RzIiwgew0KICBleHBlY3RfZXF1YWwocGlnSXQoIlBpZyBsYXRpbiBpcyBjb29sIiksICJpZ1BheSBhdGlubGF5IHNpYXkgb29sY2F5IikNCiAgZXhwZWN0X2VxdWFsKHBpZ0l0KCJIZWxsbyB3b3JsZCAhIiksICJlbGxvSGF5IG9ybGR3YXkgISIpDQp9KQ0KYGBgDQoNCiMjIyBgc3RyX2xvY2F0ZSgpYCDmib7liLDmqKHlvI/lnKjlrZfnrKbkuLLkuK3nmoTlp4vmnKvkvY3nva4NCg0KPiBzdHJfbG9jYXRlKHN0cmluZywgcGF0dGVybikgc3RyX2xvY2F0ZV9hbGwoc3RyaW5nLCBwYXR0ZXJuKQ0KDQpgYGB7cn0NCnZhbCA8LSBjKCJhYmNhIiwgMTIzLCAiY2JhIikNCg0KIyDljLnphY1h5Zyo5a2X56ym5Liy5Lit55qE5L2N572uDQpzdHJfbG9jYXRlKHZhbCwgImEiKQ0KDQojIOeUqOWQkemHj+WMuemFjQ0Kc3RyX2xvY2F0ZSh2YWwsIGMoImEiLCAxMiwgImIiKSkNCg0KIyDku6XlrZfnrKbkuLJtYXRyaXjmoLzlvI/ov5Tlm54NCnN0cl9sb2NhdGVfYWxsKHZhbCwgImEiKQ0KDQojIOWMuemFjWHmiJZi5a2X56ym77yM5Lul5a2X56ym5LiybWF0cml45qC85byP6L+U5ZueDQpzdHJfbG9jYXRlX2FsbCh2YWwsICJbYWJdIikNCmBgYA0KDQojIyMgYHN0cl9jb252YCDlrZfnrKbnvJbnoIHovazmjaINCg0KPiBzdHJfY29udihzdHJpbmcsIGVuY29kaW5nKQ0KDQpgYGB7cn0NCiMg5oqK5Lit5paH5a2X56ym5a2X6IqC5YyWDQp4IDwtIGNoYXJUb1Jhdygi5L2g5aW9IikNCngNCg0KIyDpu5jorqR3aW7ns7vnu5/lrZfnrKbpm4bkuLpHQkvvvIxHQjIzMTLkuLpHQkvlrZfpm4bvvIzovaznoIHmraPluLgNCnN0cl9jb252KHgsICJHQksiKQ0Kc3RyX2NvbnYoeCwgIkdCMjMxMiIpDQoNCiMg6L2sVVRGLTjlpLHotKUNCnN0cl9jb252KHgsICJVVEYtOCIpDQoNCiMg5oqKdW5pY29kZei9rFVURi04DQpzdHJfY29udigiXHU1MzE3XHU0ZWFjIiwgIlVURi04IikNCmBgYA0KDQojIyMgYHN0cl9nbHVlKClgIOaooeadv+Wtl+espuS4sg0KDQpgYGB7cn0NCm5hbWUgPC0gIkZyZWQiDQphZ2UgPC0gNTANCmFubml2ZXJzYXJ5IDwtIGFzLkRhdGUoIjE5OTEtMTAtMTIiKQ0Kc3RyX2dsdWUoDQogICJNeSBuYW1lIGlzIHtuYW1lfSwgIiwNCiAgIm15IGFnZSBuZXh0IHllYXIgaXMge2FnZSArIDF9LCAiLA0KICAiYW5kIG15IGFubml2ZXJzYXJ5IGlzIHtmb3JtYXQoYW5uaXZlcnNhcnksICclQSwgJUIgJWQsICVZJyl9LiINCikNCnN0cl9nbHVlKCJNeSBuYW1lIGlzIHtuYW1lfSwgbm90IHt7bmFtZX19LiIpDQpgYGANCg0KDQoNCiMjIGJhc2U6Og0KDQojIyMgYGNoYXJ0cigpYCDlrZfnrKbmm7/mjaINCg0KYGNoYXJ0cihvbGQsIG5ldywgeClg77yM6Z2e5bi45aW955So55qE5Ye95pWw77yM55u45b2T5LqO5oyJ5LiA5Liq5ZOI5biM6KGo6L+b6KGM5a2X56ym6L2s5o2iDQoNCmBgYHtyIGNoYXJ0cn0NCmNoYXJ0cihvbGQgPSAiYSIsIG5ldyA9ICJjIiwgeCA9ICJhMTIzIikNCiMg5rOo5oSP77yMb2xk5ZKMbmV35Y+C5pWw5Y+v5Lul6YO95piv5a2X56ym5Liy77yMaW5kZXgg5a+55bqU55qE5a2X56ym6L+b6KGM5Lu75oSP5qyh5pWw55qE5pu/5o2iDQpjaGFydHIoIlR0IiwgIlV1IiwgIkF0R0N0dHRBQ0MiKQ0KYGBgDQoNCiMjIyDlrZfnrKbkuLLliIblibINCg0KYHN0cnNwbGl0KHgsIHNwbGl0LCBmaXhlZCA9IEZBTFNFKWANCg0KYGBge3Igc3Ryc3BsaXR9DQojIGZpeGVkPUYsIOesrDLkuKrlj4LmlbDkuLrmraPliJnooajovr7lvI/jgIInLiflj6/ljLnphY3pmaTigJxcbuKAneWSjCJcciLkuYvlpJbnmoTku7vkvZXljZXkuKrlrZfnrKbjgIINCnNwbGl0ZWQgPC0gdW5saXN0KHN0cnNwbGl0KCJhLmIuYyIsICIuIikpDQpzcGxpdGVkDQojIGZpeGVkPVTvvIznrKwy5Liq5Y+C5pWw5Li65paH5pys5a2X56ym5LiyDQpzcGxpdGVkIDwtIHVubGlzdChzdHJzcGxpdCgiYS5iLmMiLCAiLiIsIGZpeGVkID0gVCkpDQpzcGxpdGVkDQpgYGANCg0KIyMjIOWtl+espuS4suWMuemFjQ0KDQrlrZfnrKbkuLLljLnphY3lh73mlbAgZ3JlcChwYXR0ZXJuLCB4LCBmaXhlZD1GQUxTRSnlkoxncmVwbCgpDQoNCmBgYHtyIGdyZXB9DQpjc3RyIDwtIGMoImIiLCAiQSIsICJjIiwgImEuYSIpDQojIGZpeGVkPVTvvIznrKwx5Liq5Y+C5pWw5Li65paH5pys5a2X56ym5LiyDQpncmVwKCIuIiwgY3N0ciwgZml4ZWQgPSBUUlVFKQ0KIyBmaXhlZD1G77yM56ysMeS4quWPguaVsOS4uuato+WImeihqOi+vuW8jw0KZ3JlcCgiLiIsIGNzdHIsIGZpeGVkID0gRikNCiMgZ3JlcOS7hei/lOWbnuWMuemFjemhueeahOS4i+agh++8m+iAjGdyZXBs6L+U5Zue6YC76L6R5ZCR6YeP6KGo56S65pyJ5rKh5pyJ5om+5Yiw5Yy56YWNDQpncmVwbCgiLiIsIGNzdHIsIGZpeGVkID0gVFJVRSkNCiMg55So5LqO5o+Q5Y+W5a2Q6ZuG5piv5LiA5qC355qEDQpjc3RyW2dyZXAoIi4iLCBjc3RyLCBmaXhlZCA9IFRSVUUpXQ0KY3N0cltncmVwbCgiLiIsIGNzdHIsIGZpeGVkID0gVFJVRSldDQpgYGANCg0KIyMjIOWtl+espuS4suabv+aNog0KDQrlrZfnrKbkuLLmm7/mjaLlh73mlbAgc3ViKHBhdHRlcm4sIHJlcGxhY2VtZW50LCB4LCBmaXhlZD1GQUxTRSkNCg0KYGBge3Igc3VifQ0KIyBmaXhlZD1GLCDnrKwx5Liq5Y+C5pWw5Li65q2j5YiZ6KGo6L6+5byP77yMJ1xccyfooajnpLrnqbrnmb0NCnN1YigiXFxzIiwgIi4iLCAiSGVsbG8gVGhlcmUiKQ0KIyBmaXhlZD1ULCDnrKwx5Liq5Y+C5pWw5Li65paH5pys5a2X56ym5Liy77yM5ZyoJ0hlbGxvIFRoZXJlJ+S4reaJvuS4jeWIsCdcXHMnDQpzdWIoIlxccyIsICIuIiwgIkhlbGxvIFRoZXJlIiwgZml4ZWQgPSBUKQ0KIyBzdWIoKeS4jmdzdWIoKeeahOWMuuWIq++8jOabv+aNouS4gOasoeWSjOabv+aNouS7u+aEj+asoe+8iOWPquimgeWMuemFjeaIkOWKn++8iQ0Kc3ViKCJlIiwgIkUiLCAiSGVsbG8gVGhlcmUiLCBmaXhlZCA9IFQpDQpnc3ViKCJlIiwgIkUiLCAiSGVsbG8gVGhlcmUiLCBmaXhlZCA9IFQpDQpgYGA=</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("0203-character-string.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

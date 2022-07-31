@@ -1,0 +1,216 @@
+---
+title: "Numerical Analysis in Julia"
+author: "Humoon"
+date: "2022-07-29"
+format:
+  html:
+    toc: true
+    # toc-depth: 3
+    number-sections: true
+    code-tools: true
+    highlight-style: monokai
+    code-copy: true
+    self-contained: true
+execute: 
+  cache: true
+  daemon: true
+  output: asis
+jupyter: julia-1.7
+---
+
+
+# Root Solving
+
+文档：[NLsolve.jl](https://github.com/JuliaNLSolvers/NLsolve.jl)
+
+`nlsolve(f![, j!], x_initial, ...)`，其中 `f!` 为方程组，`j!` 为 Jacobian Matrix
+
+```{julia}
+#| eval: false
+
+using NLsolve
+```
+
+## Jacobian Matrix
+
+显式给出最好，可以提高求解性能，否则，有两种情况：
+
+1. 默认使用有限差分（finite differencing）
+2. 参数 autodiff= :forward，自动微分
+
+
+
+
+## 可选参数
+
+- `xtol`: norm difference in `x` between two successive iterates under which convergence is declared. Default: `0.0`. 两次迭代，x 的相对变化小于多少时，被认为是收敛的。
+- `ftol`: infinite norm of residuals under which convergence is declared. Default: `1e-8`. 方程残差小于多少时，被认为是收敛的。
+- `iterations`: maximum number of iterations. Default: `1_000`. 最大迭代次数。
+- `store_trace`: should a trace of the optimization algorithm's state be stored? Default: `false`. 是否储存收敛轨迹。
+- `show_trace`: should a trace of the optimization algorithm's state be shown on `STDOUT`? Default: `false`. 是否显示收敛轨迹。
+- `extended_trace`: should additional algorithm internals be added to the state trace? Default: `false`.
+
+```{julia}
+# 注意，不能写成向量形式，F = ...
+# 必须用分量形式
+function f!(F, x)
+    F[1] = (x[1]+3)*(x[2]^3-7)+18
+    F[2] = sin(x[2]*exp(x[1])-1)
+end
+
+function j!(J, x)
+    J[1, 1] = x[2]^3-7
+    J[1, 2] = 3*x[2]^2*(x[1]+3)
+    u = exp(x[1])*cos(x[2]*exp(x[1])-1)
+    J[2, 1] = x[2]*u
+    J[2, 2] = u
+end
+
+# nlsolve 会迭代f!的第二个参数（向量），不断地修改f!的第一个参数（向量）
+# 直到其所有分量为0，最后返回第二个参数，即为方程组的解
+nlsolve(f!, j!, [ 0.1; 1.2])
+```
+
+```{julia}
+# 给 Jacobian Matrix 性能会好一些，但也可以不给 Jacobian Matrix
+solve1 = nlsolve(f!, [0.1; 1.2])
+solve1.zero
+```
+
+```{julia}
+# 自动微分
+solve2 = nlsolve(f!, [0.1; 1.2], autodiff=:forward)
+solve2.zero
+```
+
+## 迭代算法
+
+- 默认算法：Trust region method, `method = :trust_region`
+- Newton method with linesearch, `method = :newton`
+- Anderson acceleration, `method = :anderson`
+
+## 不动点方程（组）
+
+`fixedpoint(f!, init_x; method = :newton, autodiff = :true, iterations = 500, ...)`
+
+普通方程到不动点方程相当于将 `f` 映射为 `f-x`，则 `j` 也应当映射为 `j-I`
+
+# 导数与微分
+
+[Calculus.jl](https://github.com/JuliaMath/Calculus.jl)
+
+```{julia}
+using Calculus
+```
+
+```{julia}
+names(Calculus)
+```
+
+## API
+
+- `derivative()`: Use this for functions from R to R
+- `second_derivative()`: Use this for functions from R to R
+- `Calculus.gradient()`: Use this for functions from R^n to R
+- `hessian()`: Use this for functions from R^n to R
+- `differentiate()`: Use this to perform symbolic differentiation
+- `simplify()`: Use this to perform symbolic simplification
+- `deparse()`: Use this to get usual infix representation of expressions
+
+这些函数的第一个参数是函数，第二个可选参数是自变量的取值
+
+## 计算某个点的导数
+
+```{julia}
+f(x) = sin(x)
+```
+
+```{julia}
+derivative(f, pi/2) # f'(pi/2) == cos(pi/2)
+```
+
+## 创建导函数
+
+```{julia}
+g1 = derivative(sin) # 导函数
+```
+
+```{julia}
+g1(0.0)
+```
+
+```{julia}
+g1(1.0)
+```
+
+```{julia}
+g1(pi)
+```
+
+```{julia}
+g2 = Calculus.gradient(x -> sin(x[1]) + cos(x[2])) # 梯度函数
+```
+
+```{julia}
+g2([0.0, 0.0])
+```
+
+```{julia}
+g2([1.0, 1.0])
+```
+
+```{julia}
+g2([pi, pi])
+```
+
+```{julia}
+h1 = second_derivative(sin) # 二阶导函数
+```
+
+```{julia}
+h1(0.0)
+```
+
+```{julia}
+h1(1.0)
+```
+
+```{julia}
+h1(pi/2) 
+```
+
+```{julia}
+h2 = hessian(x -> sin(x[1]) + cos(x[2])) # hessian 矩阵函数
+```
+
+```{julia}
+h2([0.0, 0.0])
+```
+
+```{julia}
+h2([1.0, 1.0])
+```
+
+## 符号微分 symbolic differentiation
+
+仅适用于一些比较简单的函数
+
+```{julia}
+differentiate("cos(x) + sin(x) + exp(-x) * cos(x)", :x)
+```
+
+```{julia}
+differentiate("cos(x) + sin(y) + exp(-x) * cos(y)", [:x, :y])
+```
+
+# 数值积分
+
+[QuadGK.jl](https://github.com/JuliaMath/QuadGK.jl)
+
+```{julia}
+using QuadGK
+```
+
+```{julia}
+integral, err = quadgk(x -> exp(-x^2), 0, 1, rtol=1e-8)
+```

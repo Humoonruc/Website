@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Humoon" />
+
+<meta name="date" content="2022-05-02" />
+
+<title>Object: Name and Value</title>
+
+<script src="libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="libs/navigation-1.1/tabsets.js"></script>
+<script src="libs/navigation-1.1/codefolding.js"></script>
+<script src="libs/navigation-1.1/sourceembed.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; } /* Alert */
+code span.an { color: #008000; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #0000ff; } /* ControlFlow */
+code span.ch { color: #008080; } /* Char */
+code span.cn { } /* Constant */
+code span.co { color: #008000; } /* Comment */
+code span.cv { color: #008000; } /* CommentVar */
+code span.do { color: #008000; } /* Documentation */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.im { } /* Import */
+code span.in { color: #008000; } /* Information */
+code span.kw { color: #0000ff; } /* Keyword */
+code span.op { } /* Operator */
+code span.ot { color: #ff4000; } /* Other */
+code span.pp { color: #ff4000; } /* Preprocessor */
+code span.sc { color: #008080; } /* SpecialChar */
+code span.ss { color: #008080; } /* SpecialString */
+code span.st { color: #008080; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #008080; } /* VerbatimString */
+code span.wa { color: #008000; font-weight: bold; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+<link rel="stylesheet" href="../css/style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Object: Name and Value</h1>
+<h4 class="author">Humoon</h4>
+<h4 class="date">2022-05-02</h4>
+
+</div>
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(lobstr)</span></code></pre></div>
+<div id="name-and-value-of-objects" class="section level2">
+<h2>Name and Value of Objects</h2>
+<div id="name" class="section level3">
+<h3>Name</h3>
+<div id="指针" class="section level4">
+<h4>指针</h4>
+<p>对象的变量名是一个常量指针，指向一个对象所在的地址。</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> x <span class="co"># x, y 为指向同一个向量的指针</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">3</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="fu">obj_addr</span>(x) <span class="co"># 对象的唯一标识符，并非内存中真正的地址</span></span></code></pre></div>
+<pre><code>#&gt; [1] &quot;0x1daa7956720&quot;</code></pre>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">obj_addr</span>(y)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;0x1daa7956720&quot;</code></pre>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="fu">obj_addr</span>(z) <span class="co"># 可见，z 指向的是另一个对象</span></span></code></pre></div>
+<pre><code>#&gt; [1] &quot;0x1daa79fb1d0&quot;</code></pre>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 几种访问函数的方式，第二个指向的不是同一个潜在函数对象</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 可能是因为某个包的 mean() 覆盖了 base::mean()</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>mean <span class="sc">%&gt;%</span> <span class="fu">obj_addr</span>()</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;0x1daa79f6c38&quot;</code></pre>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>base<span class="sc">::</span>mean <span class="sc">%&gt;%</span> <span class="fu">obj_addr</span>()</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;0x1da9cf7eff0&quot;</code></pre>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">get</span>(<span class="st">&quot;mean&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">obj_addr</span>()</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;0x1daa79f6c38&quot;</code></pre>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="fu">evalq</span>(mean) <span class="sc">%&gt;%</span> <span class="fu">obj_addr</span>()</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;0x1daa79f6c38&quot;</code></pre>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="fu">match.fun</span>(<span class="st">&quot;mean&quot;</span>) <span class="sc">%&gt;%</span> <span class="fu">obj_addr</span>()</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;0x1da9cf7eff0&quot;</code></pre>
+</div>
+<div id="不规则变量名" class="section level4">
+<h4>不规则变量名</h4>
+<p>R 中变量的命名规则：名称只能包含 <code>a～z</code>,
+<code>A～Z</code>,
+下划线<code>_</code>和句点<code>.</code>，不能有空格，也不能以下划线<code>_</code>开头，而且不能是
+R 中的 reserved word</p>
+<p>违反命名规则的变量名，要用反引号括起来，才能被识别</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>c <span class="sc">%&gt;%</span> <span class="fu">class</span>() <span class="co"># c是一个内置函数，所以一般变量不能以&#39;c&#39;命名</span></span></code></pre></div>
+<pre><code>#&gt; [1] &quot;function&quot;</code></pre>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>c</span></code></pre></div>
+<pre><code>#&gt; function (...)  .Primitive(&quot;c&quot;)</code></pre>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">x+1</span><span class="st">`</span> <span class="ot">&lt;-</span> <span class="cf">function</span>(n) n <span class="sc">+</span> <span class="dv">1</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">x+1</span><span class="st">`</span></span></code></pre></div>
+<pre><code>#&gt; function(n) n + 1</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">x+1</span><span class="st">`</span>(<span class="dv">3</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] 4</code></pre>
+</div>
+</div>
+<div id="修改时复制copy-on-modify" class="section level3">
+<h3>修改时复制（Copy on Modify）</h3>
+<p>R 中的对象<strong>一般</strong>不允许被修改（就像 JS
+中的<code>const</code>常量），这对数据安全有好处。</p>
+<p>一旦涉及数据修改，R 常常会 copy
+一份数据的副本，然后在副本上修改数据——这是 R 速度慢的一个重要原因。</p>
+<p>特别是 for 循环，每次迭代都会对数据产生一次或多次拷贝。purrr
+包的高阶函数比较快就是因为避免了这一点。</p>
+<div id="数字向量" class="section level4">
+<h4>数字向量</h4>
+<ol style="list-style-type: decimal">
+<li><p>有<strong>多个指针</strong>指向同一个对象，且通过其中一个指针修改该对象时，会生成该对象的一个副本（一个新对象）。修改作用在这个副本上，然后使被修改的指针指向这个副本。</p>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">tracemem</span>(x), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>) <span class="co"># tracemen()跟踪指针指向的对象，每当这个对象被复制，会打印一条说明</span></span></code></pre></div>
+<pre><code>#&gt; &lt;000001DAAE36C0B8&gt;</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> x</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>y[<span class="dv">3</span>] <span class="ot">&lt;-</span> 4L <span class="co"># x, y 均指向对象，通过 y 修改对象时，发生 copy</span></span></code></pre></div>
+<pre><code>#&gt; tracemem[0x000001daae36c0b8 -&gt; 0x000001daae3843f8]: eval eval eval_with_user_handlers withVisible withCallingHandlers handle timing_fn evaluate_call &lt;Anonymous&gt; evaluate in_dir in_input_dir eng_r block_exec call_block process_group.block process_group withCallingHandlers process_file &lt;Anonymous&gt; &lt;Anonymous&gt; do.call eval eval eval eval eval.parent local</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="fu">obj_addr</span>(x)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;0x1daae36c0b8&quot;</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a><span class="fu">obj_addr</span>(y)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;0x1daae3843f8&quot;</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>y[<span class="dv">3</span>] <span class="ot">&lt;-</span> 5L <span class="co"># 不会 copy，因为只有唯一指针 y 指向对象</span></span>
+<span id="cb34-2"><a href="#cb34-2" aria-hidden="true" tabindex="-1"></a><span class="fu">obj_addr</span>(y)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;0x1daae3843f8&quot;</code></pre>
+<div class="sourceCode" id="cb36"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a><span class="fu">untracemem</span>(y) <span class="co"># 关闭跟踪</span></span></code></pre></div></li>
+<li><p>对象作为参数传递给函数，并在函数内部修改对象时，也会创建对象的副本。函数外部的变量名仍指向未被修改的原对象</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>v1 <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a><span class="fu">cat</span>(<span class="fu">tracemem</span>(v1), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt; &lt;000001DAAE624AE8&gt;</code></pre>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>modify1 <span class="ot">&lt;-</span> <span class="cf">function</span>(x) {</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  x[<span class="dv">1</span>] <span class="ot">&lt;-</span> <span class="dv">0</span></span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  x</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a><span class="fu">modify1</span>(v1) <span class="sc">%&gt;%</span> <span class="fu">obj_addr</span>()</span></code></pre></div>
+<pre><code>#&gt; tracemem[0x000001daae624ae8 -&gt; 0x000001daae640e48]: modify1 obj_addr_ obj_addr %&gt;% eval eval eval_with_user_handlers withVisible withCallingHandlers handle timing_fn evaluate_call &lt;Anonymous&gt; evaluate in_dir in_input_dir eng_r block_exec call_block process_group.block process_group withCallingHandlers process_file &lt;Anonymous&gt; &lt;Anonymous&gt; do.call eval eval eval eval eval.parent local</code></pre>
+<pre><code>#&gt; [1] &quot;0x1daae640e48&quot;</code></pre>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a>v1 <span class="co"># 外部的 v1 未被修改</span></span></code></pre></div>
+<pre><code>#&gt; [1] 1 2 3</code></pre>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tracemem</span>(v1)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;&lt;000001DAAE624AE8&gt;&quot;</code></pre></li>
+</ol>
+</div>
+<div id="列表" class="section level4">
+<h4>列表</h4>
+<p>为了节省空间，列表储存的不是对象，而是指针。修改列表时，只有变化的元素会复制。</p>
+<div class="sourceCode" id="cb46"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb46-1"><a href="#cb46-1" aria-hidden="true" tabindex="-1"></a>l1 <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>)</span>
+<span id="cb46-2"><a href="#cb46-2" aria-hidden="true" tabindex="-1"></a>l2 <span class="ot">&lt;-</span> l1</span>
+<span id="cb46-3"><a href="#cb46-3" aria-hidden="true" tabindex="-1"></a>l2[[<span class="dv">3</span>]] <span class="ot">&lt;-</span> <span class="dv">4</span> <span class="co"># 拷贝机制启动，但拷贝的是指针，而不是 value，这是浅拷贝</span></span>
+<span id="cb46-4"><a href="#cb46-4" aria-hidden="true" tabindex="-1"></a>lobstr<span class="sc">::</span><span class="fu">ref</span>(l1, l2)</span></code></pre></div>
+<pre><code>#&gt; █ [1:0x1daa6c99b68] &lt;list&gt; 
+#&gt; ├─[2:0x1daa56f8ce0] &lt;dbl&gt; 
+#&gt; ├─[3:0x1daa56f8d18] &lt;dbl&gt; 
+#&gt; └─[4:0x1daa56f8d50] &lt;dbl&gt; 
+#&gt;  
+#&gt; █ [5:0x1daa6db2de8] &lt;list&gt; 
+#&gt; ├─[2:0x1daa56f8ce0] 
+#&gt; ├─[3:0x1daa56f8d18] 
+#&gt; └─[6:0x1daa56f8e30] &lt;dbl&gt;</code></pre>
+<p><img src="http://humoon-image-hosting-service.oss-cn-beijing.aliyuncs.com/img/typora/JavaScript/l-modify-1.png" alt="img" style="zoom:50%;"/></p>
+<p><img src="http://humoon-image-hosting-service.oss-cn-beijing.aliyuncs.com/img/typora/JavaScript/l-modify-2.png" alt="img" style="zoom:50%;"/></p>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a>b <span class="ot">&lt;-</span> <span class="fu">list</span>(a, a)</span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a>c <span class="ot">&lt;-</span> <span class="fu">list</span>(b, a, <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
+<span id="cb48-4"><a href="#cb48-4" aria-hidden="true" tabindex="-1"></a>lobstr<span class="sc">::</span><span class="fu">ref</span>(a)</span></code></pre></div>
+<pre><code>#&gt; [1:0x1daa2978200] &lt;int&gt;</code></pre>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 第一行是指向列表的指针，2、3行是指向列表元素的指针</span></span>
+<span id="cb50-2"><a href="#cb50-2" aria-hidden="true" tabindex="-1"></a><span class="co"># b的两个元素，指向同一个向量</span></span>
+<span id="cb50-3"><a href="#cb50-3" aria-hidden="true" tabindex="-1"></a>lobstr<span class="sc">::</span><span class="fu">ref</span>(b) </span></code></pre></div>
+<pre><code>#&gt; █ [1:0x1daab074838] &lt;list&gt; 
+#&gt; ├─[2:0x1daa2978200] &lt;int&gt; 
+#&gt; └─[2:0x1daa2978200]</code></pre>
+<div class="sourceCode" id="cb52"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb52-1"><a href="#cb52-1" aria-hidden="true" tabindex="-1"></a>lobstr<span class="sc">::</span><span class="fu">ref</span>(c) <span class="co"># c的第三个元素不同于a指向的向量</span></span></code></pre></div>
+<pre><code>#&gt; █ [1:0x1daa9c9cbf8] &lt;list&gt; 
+#&gt; ├─█ [2:0x1daab074838] &lt;list&gt; 
+#&gt; │ ├─[3:0x1daa2978200] &lt;int&gt; 
+#&gt; │ └─[3:0x1daa2978200] 
+#&gt; ├─[3:0x1daa2978200] 
+#&gt; └─[4:0x1daa2724f90] &lt;int&gt;</code></pre>
+<p><img src="https://advanced-r-solutions.rbind.io/images/names_values/copy_on_modify_fig3.png" alt="img" style="zoom:20%;"/></p>
+<div class="sourceCode" id="cb54"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb54-1"><a href="#cb54-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)</span>
+<span id="cb54-2"><a href="#cb54-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ref</span>(x)</span></code></pre></div>
+<pre><code>#&gt; █ [1:0x1daa5fa5d68] &lt;list&gt; 
+#&gt; └─[2:0x1daa57534c8] &lt;int&gt;</code></pre>
+<div class="sourceCode" id="cb56"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb56-1"><a href="#cb56-1" aria-hidden="true" tabindex="-1"></a>x[[<span class="dv">2</span>]] <span class="ot">&lt;-</span> x</span>
+<span id="cb56-2"><a href="#cb56-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ref</span>(x)</span></code></pre></div>
+<pre><code>#&gt; █ [1:0x1daaca3e858] &lt;list&gt; 
+#&gt; ├─[2:0x1daa57534c8] &lt;int&gt; 
+#&gt; └─█ [3:0x1daa5fa5d68] &lt;list&gt; 
+#&gt;   └─[2:0x1daa57534c8]</code></pre>
+<p><img src="https://advanced-r-solutions.rbind.io/images/names_values/copy_on_modify_fig2.png" alt="img" style="zoom:20%;"/></p>
+</div>
+<div id="数据框" class="section level4">
+<h4>数据框</h4>
+<p>数据框本质上是一个列表，储存的都是指向列向量的指针。</p>
+<p><img
+src="http://humoon-image-hosting-service.oss-cn-beijing.aliyuncs.com/img/typora/JavaScript/v2-2011de6f14aeeb477c91516ef289b32c_720w.jpg" /></p>
+<div class="sourceCode" id="cb58"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb58-1"><a href="#cb58-1" aria-hidden="true" tabindex="-1"></a>d1 <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">x =</span> <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">6</span>), <span class="at">y =</span> <span class="fu">c</span>(<span class="dv">2</span>, <span class="dv">4</span>, <span class="dv">3</span>))</span>
+<span id="cb58-2"><a href="#cb58-2" aria-hidden="true" tabindex="-1"></a>d2 <span class="ot">&lt;-</span> d1</span>
+<span id="cb58-3"><a href="#cb58-3" aria-hidden="true" tabindex="-1"></a>d3 <span class="ot">&lt;-</span> d1</span>
+<span id="cb58-4"><a href="#cb58-4" aria-hidden="true" tabindex="-1"></a><span class="fu">ref</span>(d1, d2, d3)</span></code></pre></div>
+<pre><code>#&gt; █ [1:0x1daa7c31cd8] &lt;df[,2]&gt; 
+#&gt; ├─x = [2:0x1daad9f05c8] &lt;dbl&gt; 
+#&gt; └─y = [3:0x1daad9f0578] &lt;dbl&gt; 
+#&gt;  
+#&gt; [1:0x1daa7c31cd8] 
+#&gt;  
+#&gt; [1:0x1daa7c31cd8]</code></pre>
+<div class="sourceCode" id="cb60"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb60-1"><a href="#cb60-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 修改列，该列复制；其他列扔指向原对象</span></span>
+<span id="cb60-2"><a href="#cb60-2" aria-hidden="true" tabindex="-1"></a>d2[, <span class="dv">2</span>] <span class="ot">&lt;-</span> d2[, <span class="dv">2</span>] <span class="sc">*</span> <span class="dv">2</span></span>
+<span id="cb60-3"><a href="#cb60-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ref</span>(d1, d2)</span></code></pre></div>
+<pre><code>#&gt; █ [1:0x1daa7c31cd8] &lt;df[,2]&gt; 
+#&gt; ├─x = [2:0x1daad9f05c8] &lt;dbl&gt; 
+#&gt; └─y = [3:0x1daad9f0578] &lt;dbl&gt; 
+#&gt;  
+#&gt; █ [4:0x1daa7c518d8] &lt;df[,2]&gt; 
+#&gt; ├─x = [2:0x1daad9f05c8] 
+#&gt; └─y = [5:0x1daadb21b68] &lt;dbl&gt;</code></pre>
+<p><img
+src="http://humoon-image-hosting-service.oss-cn-beijing.aliyuncs.com/img/typora/JavaScript/v2-215964869b3a1831e898cdf97795b94e_720w.jpg" /></p>
+<div class="sourceCode" id="cb62"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb62-1"><a href="#cb62-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 修改行，必须复制每一列</span></span>
+<span id="cb62-2"><a href="#cb62-2" aria-hidden="true" tabindex="-1"></a>d3[<span class="dv">1</span>, ] <span class="ot">&lt;-</span> d3[<span class="dv">1</span>, ] <span class="sc">*</span> <span class="dv">3</span></span>
+<span id="cb62-3"><a href="#cb62-3" aria-hidden="true" tabindex="-1"></a><span class="fu">ref</span>(d1, d3)</span></code></pre></div>
+<pre><code>#&gt; █ [1:0x1daa7c31cd8] &lt;df[,2]&gt; 
+#&gt; ├─x = [2:0x1daad9f05c8] &lt;dbl&gt; 
+#&gt; └─y = [3:0x1daad9f0578] &lt;dbl&gt; 
+#&gt;  
+#&gt; █ [4:0x1daad6bf358] &lt;df[,2]&gt; 
+#&gt; ├─x = [5:0x1daadc39218] &lt;dbl&gt; 
+#&gt; └─y = [6:0x1daadc39178] &lt;dbl&gt;</code></pre>
+<p><img
+src="http://humoon-image-hosting-service.oss-cn-beijing.aliyuncs.com/img/typora/JavaScript/v2-eea06589af18217eecda405f7ef0e781_r.jpg" /></p>
+</div>
+<div id="字符串向量" class="section level4">
+<h4>字符串向量</h4>
+<p>也是指针的向量。每个指针指向一个字符串，这些字符串位于全局字符串池中。</p>
+<div class="sourceCode" id="cb64"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb64-1"><a href="#cb64-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;a&quot;</span>, <span class="st">&quot;abc&quot;</span>, <span class="st">&quot;d&quot;</span>)</span>
+<span id="cb64-2"><a href="#cb64-2" aria-hidden="true" tabindex="-1"></a><span class="fu">ref</span>(x, <span class="at">character =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>#&gt; █ [1:0x1daadcf9028] &lt;chr&gt; 
+#&gt; ├─[2:0x1da9a6ebb08] &lt;string: &quot;a&quot;&gt; 
+#&gt; ├─[2:0x1da9a6ebb08] 
+#&gt; ├─[3:0x1daa8c4ef08] &lt;string: &quot;abc&quot;&gt; 
+#&gt; └─[4:0x1da9a9402e8] &lt;string: &quot;d&quot;&gt;</code></pre>
+<p><img
+src="http://humoon-image-hosting-service.oss-cn-beijing.aliyuncs.com/img/typora/JavaScript/v2-be504b8fb9460aecea72cd2cb21c811e_720w.jpg" /></p>
+</div>
+<div id="唯一指针" class="section level4">
+<h4>唯一指针</h4>
+<p>只有一个指针指向对象时，修改对象不会发生复制。</p>
+<p>但 Rstudio 中与 Console 中不同，Rstudio 中仍要复制。本文件是在
+Rstudio 中生成的，因此下面的代码段仍然含有复制。</p>
+<div class="sourceCode" id="cb66"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb66-1"><a href="#cb66-1" aria-hidden="true" tabindex="-1"></a>v <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">1</span>,<span class="dv">2</span>)</span>
+<span id="cb66-2"><a href="#cb66-2" aria-hidden="true" tabindex="-1"></a><span class="fu">obj_addr</span>(v)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;0x1daadbd5f08&quot;</code></pre>
+<div class="sourceCode" id="cb68"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb68-1"><a href="#cb68-1" aria-hidden="true" tabindex="-1"></a>v[[<span class="dv">2</span>]] <span class="ot">&lt;-</span> <span class="dv">5</span></span>
+<span id="cb68-2"><a href="#cb68-2" aria-hidden="true" tabindex="-1"></a><span class="fu">obj_addr</span>(v)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;0x1daadbf5648&quot;</code></pre>
+<p>但是，R
+对指针数量的判断不够智能。如两个指针指向一个对象，其中一个被删除后，R
+却不知道，仍然以为有两个指针。因此会产生很多不必要的对象拷贝。</p>
+</div>
+<div id="环境对象" class="section level4">
+<h4>环境对象</h4>
+<p>总是被就地修改，不会 copy</p>
+<p>此功能非常有用，可以实现闭包、R6类型系统，等等</p>
+</div>
+</div>
+<div id="解构赋值unpacking-assignment" class="section level3">
+<h3>解构赋值（Unpacking Assignment）</h3>
+<p><strong>zeallot 包提供的 <code>%&lt;-%</code> 和 <code>%&gt;-%</code>
+函数</strong></p>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(zeallot)</span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb70-3"><a href="#cb70-3" aria-hidden="true" tabindex="-1"></a><span class="co"># unpack vector</span></span>
+<span id="cb70-4"><a href="#cb70-4" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(lat, lng) <span class="sc">%&lt;-%</span> <span class="fu">c</span>(<span class="fl">38.061944</span>, <span class="sc">-</span><span class="fl">122.643889</span>)</span>
+<span id="cb70-5"><a href="#cb70-5" aria-hidden="true" tabindex="-1"></a>lat</span></code></pre></div>
+<pre><code>#&gt; [1] 38.06194</code></pre>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a>lng</span></code></pre></div>
+<pre><code>#&gt; [1] -122.6439</code></pre>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="co"># unpack list</span></span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>coords_list <span class="ot">&lt;-</span> <span class="cf">function</span>() {</span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="fl">38.061944</span>, <span class="sc">-</span><span class="fl">122.643889</span>)</span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb74-5"><a href="#cb74-5" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(lat, lng) <span class="sc">%&lt;-%</span> <span class="fu">coords_list</span>()</span>
+<span id="cb74-6"><a href="#cb74-6" aria-hidden="true" tabindex="-1"></a>lat</span></code></pre></div>
+<pre><code>#&gt; [1] 38.06194</code></pre>
+<div class="sourceCode" id="cb76"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb76-1"><a href="#cb76-1" aria-hidden="true" tabindex="-1"></a>lng</span></code></pre></div>
+<pre><code>#&gt; [1] -122.6439</code></pre>
+<div class="sourceCode" id="cb78"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb78-1"><a href="#cb78-1" aria-hidden="true" tabindex="-1"></a><span class="co"># unpack regression result</span></span>
+<span id="cb78-2"><a href="#cb78-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(inter, slope) <span class="sc">%&lt;-%</span> <span class="fu">coef</span>(<span class="fu">lm</span>(mpg <span class="sc">~</span> cyl, <span class="at">data =</span> mtcars))</span>
+<span id="cb78-3"><a href="#cb78-3" aria-hidden="true" tabindex="-1"></a>inter</span></code></pre></div>
+<pre><code>#&gt; [1] 37.88458</code></pre>
+<div class="sourceCode" id="cb80"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb80-1"><a href="#cb80-1" aria-hidden="true" tabindex="-1"></a>slope</span></code></pre></div>
+<pre><code>#&gt; [1] -2.87579</code></pre>
+<div class="sourceCode" id="cb82"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb82-1"><a href="#cb82-1" aria-hidden="true" tabindex="-1"></a><span class="co"># unpack data.frame</span></span>
+<span id="cb82-2"><a href="#cb82-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(mpg, cyl, disp, hp) <span class="sc">%&lt;-%</span> mtcars[, <span class="dv">1</span><span class="sc">:</span><span class="dv">4</span>]</span>
+<span id="cb82-3"><a href="#cb82-3" aria-hidden="true" tabindex="-1"></a><span class="fu">head</span>(mpg)</span></code></pre></div>
+<pre><code>#&gt; [1] 21.0 21.0 22.8 21.4 18.7 18.1</code></pre>
+<div class="sourceCode" id="cb84"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb84-1"><a href="#cb84-1" aria-hidden="true" tabindex="-1"></a><span class="co"># unpack nested values</span></span>
+<span id="cb84-2"><a href="#cb84-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(a, <span class="fu">c</span>(b, d), e) <span class="sc">%&lt;-%</span> <span class="fu">list</span>(<span class="st">&quot;begin&quot;</span>, <span class="fu">list</span>(<span class="st">&quot;middle1&quot;</span>, <span class="st">&quot;middle2&quot;</span>), <span class="st">&quot;end&quot;</span>)</span>
+<span id="cb84-3"><a href="#cb84-3" aria-hidden="true" tabindex="-1"></a>a</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;begin&quot;</code></pre>
+<div class="sourceCode" id="cb86"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb86-1"><a href="#cb86-1" aria-hidden="true" tabindex="-1"></a>b</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;middle1&quot;</code></pre>
+<div class="sourceCode" id="cb88"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb88-1"><a href="#cb88-1" aria-hidden="true" tabindex="-1"></a>d</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;middle2&quot;</code></pre>
+<div class="sourceCode" id="cb90"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb90-1"><a href="#cb90-1" aria-hidden="true" tabindex="-1"></a>e</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;end&quot;</code></pre>
+<div class="sourceCode" id="cb92"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb92-1"><a href="#cb92-1" aria-hidden="true" tabindex="-1"></a><span class="co"># unpack character string</span></span>
+<span id="cb92-2"><a href="#cb92-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(ch1, ch2, ch3) <span class="sc">%&lt;-%</span> <span class="st">&quot;abc&quot;</span></span>
+<span id="cb92-3"><a href="#cb92-3" aria-hidden="true" tabindex="-1"></a>ch1</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;a&quot;</code></pre>
+<div class="sourceCode" id="cb94"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb94-1"><a href="#cb94-1" aria-hidden="true" tabindex="-1"></a>ch2</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;b&quot;</code></pre>
+<div class="sourceCode" id="cb96"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb96-1"><a href="#cb96-1" aria-hidden="true" tabindex="-1"></a>ch3</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;c&quot;</code></pre>
+<div class="sourceCode" id="cb98"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb98-1"><a href="#cb98-1" aria-hidden="true" tabindex="-1"></a><span class="co"># unpack Date</span></span>
+<span id="cb98-2"><a href="#cb98-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(y, m, d) <span class="sc">%&lt;-%</span> <span class="fu">Sys.Date</span>()</span>
+<span id="cb98-3"><a href="#cb98-3" aria-hidden="true" tabindex="-1"></a>y</span></code></pre></div>
+<pre><code>#&gt; [1] 2022</code></pre>
+<div class="sourceCode" id="cb100"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb100-1"><a href="#cb100-1" aria-hidden="true" tabindex="-1"></a>m</span></code></pre></div>
+<pre><code>#&gt; [1] 5</code></pre>
+<div class="sourceCode" id="cb102"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb102-1"><a href="#cb102-1" aria-hidden="true" tabindex="-1"></a>d</span></code></pre></div>
+<pre><code>#&gt; [1] 2</code></pre>
+<div class="sourceCode" id="cb104"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb104-1"><a href="#cb104-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ... rest of</span></span>
+<span id="cb104-2"><a href="#cb104-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(begin, ...middle, end) <span class="sc">%&lt;-%</span> <span class="fu">list</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>)</span>
+<span id="cb104-3"><a href="#cb104-3" aria-hidden="true" tabindex="-1"></a>begin</span></code></pre></div>
+<pre><code>#&gt; [1] 1</code></pre>
+<div class="sourceCode" id="cb106"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb106-1"><a href="#cb106-1" aria-hidden="true" tabindex="-1"></a>middle</span></code></pre></div>
+<pre><code>#&gt; [[1]]
+#&gt; [1] 2
+#&gt; 
+#&gt; [[2]]
+#&gt; [1] 3
+#&gt; 
+#&gt; [[3]]
+#&gt; [1] 4</code></pre>
+<div class="sourceCode" id="cb108"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb108-1"><a href="#cb108-1" aria-hidden="true" tabindex="-1"></a><span class="co"># place holder</span></span>
+<span id="cb108-2"><a href="#cb108-2" aria-hidden="true" tabindex="-1"></a><span class="fu">c</span>(min_wt, ., ., mean_wt, ., max_wt) <span class="sc">%&lt;-%</span> <span class="fu">summary</span>(mtcars<span class="sc">$</span>wt)</span>
+<span id="cb108-3"><a href="#cb108-3" aria-hidden="true" tabindex="-1"></a>min_wt</span></code></pre></div>
+<pre><code>#&gt; [1] 1.513</code></pre>
+<div class="sourceCode" id="cb110"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb110-1"><a href="#cb110-1" aria-hidden="true" tabindex="-1"></a>mean_wt</span></code></pre></div>
+<pre><code>#&gt; [1] 3.21725</code></pre>
+<div class="sourceCode" id="cb112"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb112-1"><a href="#cb112-1" aria-hidden="true" tabindex="-1"></a>max_wt</span></code></pre></div>
+<pre><code>#&gt; [1] 5.424</code></pre>
+<div class="sourceCode" id="cb114"><pre
+class="sourceCode r"><code class="sourceCode r"><span id="cb114-1"><a href="#cb114-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 向右的解构赋值符号 %-&gt;%</span></span>
+<span id="cb114-2"><a href="#cb114-2" aria-hidden="true" tabindex="-1"></a>mtcars <span class="sc">%&gt;%</span></span>
+<span id="cb114-3"><a href="#cb114-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">subset</span>(hp <span class="sc">&gt;</span> <span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb114-4"><a href="#cb114-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">aggregate</span>(. <span class="sc">~</span> cyl, <span class="at">data =</span> ., <span class="at">FUN =</span> . <span class="sc">%&gt;%</span> <span class="fu">mean</span>() <span class="sc">%&gt;%</span> <span class="fu">round</span>(<span class="dv">2</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb114-5"><a href="#cb114-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">transform</span>(<span class="at">kpl =</span> mpg <span class="sc">%&gt;%</span> <span class="fu">multiply_by</span>(<span class="fl">0.4251</span>)) <span class="sc">%-&gt;%</span></span>
+<span id="cb114-6"><a href="#cb114-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(cyl, mpg, ...rest)</span>
+<span id="cb114-7"><a href="#cb114-7" aria-hidden="true" tabindex="-1"></a>cyl</span></code></pre></div>
+<pre><code>#&gt; [1] 4 6 8</code></pre>
+</div>
+</div>
+
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIk9iamVjdDogTmFtZSBhbmQgVmFsdWUiDQpzdWJ0aXRsZTogIiINCmF1dGhvcjogIkh1bW9vbiINCmRhdGU6ICJgciBTeXMuRGF0ZSgpYCINCm91dHB1dDogaHRtbF9kb2N1bWVudA0KZG9jdW1lbnRjbGFzczogY3RleGFydA0KY2xhc3NvcHRpb246IGh5cGVycmVmLA0KLS0tDQoNCmBgYHtyIHNldHVwLCBpbmNsdWRlID0gRkFMU0V9DQpzb3VyY2UoIi4uL1JtYXJrZG93bi10ZW1wbGF0ZS9SbWFya2Rvd25fY29uZmlnLlIiKQ0KDQojIyBnbG9iYWwgb3B0aW9ucyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0Ka25pdHI6Om9wdHNfY2h1bmskc2V0KA0KICB3aWR0aCA9IGNvbmZpZyR3aWR0aCwNCiAgZmlnLndpZHRoID0gY29uZmlnJGZpZy53aWR0aCwNCiAgZmlnLmFzcCA9IGNvbmZpZyRmaWcuYXNwLA0KICBvdXQud2lkdGggPSBjb25maWckb3V0LndpZHRoLA0KICBmaWcuYWxpZ24gPSBjb25maWckZmlnLmFsaWduLA0KICBmaWcucGF0aCA9IGNvbmZpZyRmaWcucGF0aCwNCiAgZmlnLnNob3cgPSBjb25maWckZmlnLnNob3csDQogIHdhcm4gPSBjb25maWckd2FybiwNCiAgd2FybmluZyA9IGNvbmZpZyR3YXJuaW5nLA0KICBtZXNzYWdlID0gY29uZmlnJG1lc3NhZ2UsDQogIGVjaG8gPSBjb25maWckZWNobywNCiAgZXZhbCA9IGNvbmZpZyRldmFsLA0KICB0aWR5ID0gY29uZmlnJHRpZHksDQogIGNvbW1lbnQgPSBjb25maWckY29tbWVudCwNCiAgY29sbGFwc2UgPSBjb25maWckY29sbGFwc2UsDQogIGNhY2hlID0gY29uZmlnJGNhY2hlLA0KICBjYWNoZS5jb21tZW50cyA9IGNvbmZpZyRjYWNoZS5jb21tZW50cywNCiAgYXV0b2RlcCA9IGNvbmZpZyRhdXRvZGVwDQopDQpgYGANCg0KYGBge3J9DQpsaWJyYXJ5KGxvYnN0cikNCmBgYA0KDQojIyBOYW1lIGFuZCBWYWx1ZSBvZiBPYmplY3RzDQoNCiMjIyBOYW1lDQoNCiMjIyMg5oyH6ZKIDQoNCuWvueixoeeahOWPmOmHj+WQjeaYr+S4gOS4quW4uOmHj+aMh+mSiO+8jOaMh+WQkeS4gOS4quWvueixoeaJgOWcqOeahOWcsOWdgOOAgg0KDQpgYGB7cn0NCnggPC0gMTozDQp5IDwtIHggIyB4LCB5IOS4uuaMh+WQkeWQjOS4gOS4quWQkemHj+eahOaMh+mSiA0KeiA8LSAxOjMNCg0Kb2JqX2FkZHIoeCkgIyDlr7nosaHnmoTllK/kuIDmoIfor4bnrKbvvIzlubbpnZ7lhoXlrZjkuK3nnJ/mraPnmoTlnLDlnYANCm9ial9hZGRyKHkpDQpvYmpfYWRkcih6KSAjIOWPr+inge+8jHog5oyH5ZCR55qE5piv5Y+m5LiA5Liq5a+56LGhDQoNCiMg5Yeg56eN6K6/6Zeu5Ye95pWw55qE5pa55byP77yM56ys5LqM5Liq5oyH5ZCR55qE5LiN5piv5ZCM5LiA5Liq5r2c5Zyo5Ye95pWw5a+56LGhDQojIOWPr+iDveaYr+WboOS4uuafkOS4quWMheeahCBtZWFuKCkg6KaG55uW5LqGIGJhc2U6Om1lYW4oKQ0KbWVhbiAlPiUgb2JqX2FkZHIoKQ0KYmFzZTo6bWVhbiAlPiUgb2JqX2FkZHIoKQ0KZ2V0KCJtZWFuIikgJT4lIG9ial9hZGRyKCkNCmV2YWxxKG1lYW4pICU+JSBvYmpfYWRkcigpDQptYXRjaC5mdW4oIm1lYW4iKSAlPiUgb2JqX2FkZHIoKQ0KYGBgDQoNCiMjIyMg5LiN6KeE5YiZ5Y+Y6YeP5ZCNDQoNClIg5Lit5Y+Y6YeP55qE5ZG95ZCN6KeE5YiZ77ya5ZCN56ew5Y+q6IO95YyF5ZCrIGBh772eemAsIGBB772eWmAsIOS4i+WIkue6v2BfYOWSjOWPpeeCuWAuYO+8jOS4jeiDveacieepuuagvO+8jOS5n+S4jeiDveS7peS4i+WIkue6v2BfYOW8gOWktO+8jOiAjOS4lOS4jeiDveaYryBSIOS4reeahCByZXNlcnZlZCB3b3JkDQoNCui/neWPjeWRveWQjeinhOWImeeahOWPmOmHj+WQje+8jOimgeeUqOWPjeW8leWPt+aLrOi1t+adpe+8jOaJjeiDveiiq+ivhuWIqw0KDQpgYGB7cn0NCmMgJT4lIGNsYXNzKCkgIyBj5piv5LiA5Liq5YaF572u5Ye95pWw77yM5omA5Lul5LiA6Iis5Y+Y6YeP5LiN6IO95LulJ2Mn5ZG95ZCNDQpjDQoNCmB4KzFgIDwtIGZ1bmN0aW9uKG4pIG4gKyAxDQpgeCsxYA0KYHgrMWAoMykNCmBgYA0KDQojIyMg5L+u5pS55pe25aSN5Yi277yIQ29weSBvbiBNb2RpZnnvvIkNCg0KUiDkuK3nmoTlr7nosaEqKuS4gOiIrCoq5LiN5YWB6K646KKr5L+u5pS577yI5bCx5YOPIEpTIOS4reeahGBjb25zdGDluLjph4/vvInvvIzov5nlr7nmlbDmja7lronlhajmnInlpb3lpITjgIINCg0K5LiA5pem5raJ5Y+K5pWw5o2u5L+u5pS577yMUiDluLjluLjkvJogY29weSDkuIDku73mlbDmja7nmoTlia/mnKzvvIznhLblkI7lnKjlia/mnKzkuIrkv67mlLnmlbDmja4tLS0tLS3ov5nmmK8gUiDpgJ/luqbmhaLnmoTkuIDkuKrph43opoHljp/lm6DjgIINCg0K54m55Yir5pivIGZvciDlvqrnjq/vvIzmr4/mrKHov63ku6Ppg73kvJrlr7nmlbDmja7kuqfnlJ/kuIDmrKHmiJblpJrmrKHmi7fotJ3jgIJwdXJyciDljIXnmoTpq5jpmLblh73mlbDmr5TovoPlv6vlsLHmmK/lm6DkuLrpgb/lhY3kuobov5nkuIDngrnjgIINCg0KIyMjIyDmlbDlrZflkJHph48NCg0KMS4gIOaciSoq5aSa5Liq5oyH6ZKIKirmjIflkJHlkIzkuIDkuKrlr7nosaHvvIzkuJTpgJrov4flhbbkuK3kuIDkuKrmjIfpkojkv67mlLnor6Xlr7nosaHml7bvvIzkvJrnlJ/miJDor6Xlr7nosaHnmoTkuIDkuKrlia/mnKzvvIjkuIDkuKrmlrDlr7nosaHvvInjgILkv67mlLnkvZznlKjlnKjov5nkuKrlia/mnKzkuIrvvIznhLblkI7kvb/ooqvkv67mlLnnmoTmjIfpkojmjIflkJHov5nkuKrlia/mnKzjgIINCg0KICAgIGBgYHtyfQ0KICAgIHggPC0gYygxLCAyLCAzKQ0KICAgIGNhdCh0cmFjZW1lbSh4KSwgIlxuIikgIyB0cmFjZW1lbigp6Lef6Liq5oyH6ZKI5oyH5ZCR55qE5a+56LGh77yM5q+P5b2T6L+Z5Liq5a+56LGh6KKr5aSN5Yi277yM5Lya5omT5Y2w5LiA5p2h6K+05piODQogICAgeSA8LSB4DQogICAgeVszXSA8LSA0TCAjIHgsIHkg5Z2H5oyH5ZCR5a+56LGh77yM6YCa6L+HIHkg5L+u5pS55a+56LGh5pe277yM5Y+R55SfIGNvcHkNCiAgICBvYmpfYWRkcih4KQ0KICAgIG9ial9hZGRyKHkpDQogICAgeVszXSA8LSA1TCAjIOS4jeS8miBjb3B577yM5Zug5Li65Y+q5pyJ5ZSv5LiA5oyH6ZKIIHkg5oyH5ZCR5a+56LGhDQogICAgb2JqX2FkZHIoeSkNCiAgICB1bnRyYWNlbWVtKHkpICMg5YWz6Zet6Lef6LiqDQogICAgYGBgDQoNCjIuICDlr7nosaHkvZzkuLrlj4LmlbDkvKDpgJLnu5nlh73mlbDvvIzlubblnKjlh73mlbDlhoXpg6jkv67mlLnlr7nosaHml7bvvIzkuZ/kvJrliJvlu7rlr7nosaHnmoTlia/mnKzjgILlh73mlbDlpJbpg6jnmoTlj5jph4/lkI3ku43mjIflkJHmnKrooqvkv67mlLnnmoTljp/lr7nosaENCg0KICAgIGBgYHtyfQ0KICAgIHYxIDwtIGMoMSwgMiwgMykNCiAgICBjYXQodHJhY2VtZW0odjEpLCAiXG4iKQ0KDQogICAgbW9kaWZ5MSA8LSBmdW5jdGlvbih4KSB7DQogICAgICB4WzFdIDwtIDANCiAgICAgIHgNCiAgICB9DQogICAgbW9kaWZ5MSh2MSkgJT4lIG9ial9hZGRyKCkNCiAgICB2MSAjIOWklumDqOeahCB2MSDmnKrooqvkv67mlLkNCiAgICB0cmFjZW1lbSh2MSkNCiAgICBgYGANCg0KIyMjIyDliJfooagNCg0K5Li65LqG6IqC55yB56m66Ze077yM5YiX6KGo5YKo5a2Y55qE5LiN5piv5a+56LGh77yM6ICM5piv5oyH6ZKI44CC5L+u5pS55YiX6KGo5pe277yM5Y+q5pyJ5Y+Y5YyW55qE5YWD57Sg5Lya5aSN5Yi244CCDQoNCmBgYHtyfQ0KbDEgPC0gbGlzdCgxLCAyLCAzKQ0KbDIgPC0gbDENCmwyW1szXV0gPC0gNCAjIOaLt+i0neacuuWItuWQr+WKqO+8jOS9huaLt+i0neeahOaYr+aMh+mSiO+8jOiAjOS4jeaYryB2YWx1Ze+8jOi/meaYr+a1heaLt+i0nQ0KbG9ic3RyOjpyZWYobDEsIGwyKQ0KYGBgDQoNCjxpbWcgc3JjPSJodHRwOi8vaHVtb29uLWltYWdlLWhvc3Rpbmctc2VydmljZS5vc3MtY24tYmVpamluZy5hbGl5dW5jcy5jb20vaW1nL3R5cG9yYS9KYXZhU2NyaXB0L2wtbW9kaWZ5LTEucG5nIiBhbHQ9ImltZyIgc3R5bGU9Inpvb206NTAlOyIvPg0KDQo8aW1nIHNyYz0iaHR0cDovL2h1bW9vbi1pbWFnZS1ob3N0aW5nLXNlcnZpY2Uub3NzLWNuLWJlaWppbmcuYWxpeXVuY3MuY29tL2ltZy90eXBvcmEvSmF2YVNjcmlwdC9sLW1vZGlmeS0yLnBuZyIgYWx0PSJpbWciIHN0eWxlPSJ6b29tOjUwJTsiLz4NCg0KYGBge3J9DQphIDwtIDE6MTANCmIgPC0gbGlzdChhLCBhKQ0KYyA8LSBsaXN0KGIsIGEsIDE6MTApDQpsb2JzdHI6OnJlZihhKQ0KIyDnrKzkuIDooYzmmK/mjIflkJHliJfooajnmoTmjIfpkojvvIwy44CBM+ihjOaYr+aMh+WQkeWIl+ihqOWFg+e0oOeahOaMh+mSiA0KIyBi55qE5Lik5Liq5YWD57Sg77yM5oyH5ZCR5ZCM5LiA5Liq5ZCR6YePDQpsb2JzdHI6OnJlZihiKSANCmxvYnN0cjo6cmVmKGMpICMgY+eahOesrOS4ieS4quWFg+e0oOS4jeWQjOS6jmHmjIflkJHnmoTlkJHph48NCmBgYA0KDQo8aW1nIHNyYz0iaHR0cHM6Ly9hZHZhbmNlZC1yLXNvbHV0aW9ucy5yYmluZC5pby9pbWFnZXMvbmFtZXNfdmFsdWVzL2NvcHlfb25fbW9kaWZ5X2ZpZzMucG5nIiBhbHQ9ImltZyIgc3R5bGU9Inpvb206MjAlOyIvPg0KDQoNCmBgYHtyfQ0KeCA8LSBsaXN0KDE6MTApDQpyZWYoeCkNCnhbWzJdXSA8LSB4DQpyZWYoeCkNCmBgYA0KDQo8aW1nIHNyYz0iaHR0cHM6Ly9hZHZhbmNlZC1yLXNvbHV0aW9ucy5yYmluZC5pby9pbWFnZXMvbmFtZXNfdmFsdWVzL2NvcHlfb25fbW9kaWZ5X2ZpZzIucG5nIiBhbHQ9ImltZyIgc3R5bGU9Inpvb206MjAlOyIvPg0KDQojIyMjIOaVsOaNruahhg0KDQrmlbDmja7moYbmnKzotKjkuIrmmK/kuIDkuKrliJfooajvvIzlgqjlrZjnmoTpg73mmK/mjIflkJHliJflkJHph4/nmoTmjIfpkojjgIINCg0KIVtdKGh0dHA6Ly9odW1vb24taW1hZ2UtaG9zdGluZy1zZXJ2aWNlLm9zcy1jbi1iZWlqaW5nLmFsaXl1bmNzLmNvbS9pbWcvdHlwb3JhL0phdmFTY3JpcHQvdjItMjAxMWRlNmYxNGFlZWI0NzdjOTE1MTZlZjI4OWIzMmNfNzIwdy5qcGcpDQoNCmBgYHtyfQ0KZDEgPC0gZGF0YS5mcmFtZSh4ID0gYygxLCA1LCA2KSwgeSA9IGMoMiwgNCwgMykpDQpkMiA8LSBkMQ0KZDMgPC0gZDENCnJlZihkMSwgZDIsIGQzKQ0KDQojIOS/ruaUueWIl++8jOivpeWIl+WkjeWItu+8m+WFtuS7luWIl+aJlOaMh+WQkeWOn+WvueixoQ0KZDJbLCAyXSA8LSBkMlssIDJdICogMg0KcmVmKGQxLCBkMikNCmBgYA0KDQohW10oaHR0cDovL2h1bW9vbi1pbWFnZS1ob3N0aW5nLXNlcnZpY2Uub3NzLWNuLWJlaWppbmcuYWxpeXVuY3MuY29tL2ltZy90eXBvcmEvSmF2YVNjcmlwdC92Mi0yMTU5NjQ4NjliM2ExODMxZTg5OGNkZjk3Nzk1Yjk0ZV83MjB3LmpwZykNCg0KYGBge3J9DQojIOS/ruaUueihjO+8jOW/hemhu+WkjeWItuavj+S4gOWIlw0KZDNbMSwgXSA8LSBkM1sxLCBdICogMw0KcmVmKGQxLCBkMykNCmBgYA0KDQohW10oaHR0cDovL2h1bW9vbi1pbWFnZS1ob3N0aW5nLXNlcnZpY2Uub3NzLWNuLWJlaWppbmcuYWxpeXVuY3MuY29tL2ltZy90eXBvcmEvSmF2YVNjcmlwdC92Mi1lZWEwNjU4OWFmMTgyMTdlZWNkYTQwNWY3ZWYwZTc4MV9yLmpwZykNCg0KIyMjIyDlrZfnrKbkuLLlkJHph48NCg0K5Lmf5piv5oyH6ZKI55qE5ZCR6YeP44CC5q+P5Liq5oyH6ZKI5oyH5ZCR5LiA5Liq5a2X56ym5Liy77yM6L+Z5Lqb5a2X56ym5Liy5L2N5LqO5YWo5bGA5a2X56ym5Liy5rGg5Lit44CCDQoNCmBgYHtyfQ0KeCA8LSBjKCJhIiwgImEiLCAiYWJjIiwgImQiKQ0KcmVmKHgsIGNoYXJhY3RlciA9IFRSVUUpDQpgYGANCg0KIVtdKGh0dHA6Ly9odW1vb24taW1hZ2UtaG9zdGluZy1zZXJ2aWNlLm9zcy1jbi1iZWlqaW5nLmFsaXl1bmNzLmNvbS9pbWcvdHlwb3JhL0phdmFTY3JpcHQvdjItYmU1MDRiOGZiOTQ2MGFlY2VhNzJjZDJjYjIxYzgxMWVfNzIwdy5qcGcpDQoNCiMjIyMg5ZSv5LiA5oyH6ZKIDQoNCuWPquacieS4gOS4quaMh+mSiOaMh+WQkeWvueixoeaXtu+8jOS/ruaUueWvueixoeS4jeS8muWPkeeUn+WkjeWItuOAgg0KDQrkvYYgUnN0dWRpbyDkuK3kuI4gQ29uc29sZSDkuK3kuI3lkIzvvIxSc3R1ZGlvIOS4reS7jeimgeWkjeWItuOAguacrOaWh+S7tuaYr+WcqCBSc3R1ZGlvIOS4reeUn+aIkOeahO+8jOWboOatpOS4i+mdoueahOS7o+eggeauteS7jeeEtuWQq+acieWkjeWItuOAgg0KDQpgYGB7cn0NCnYgPC0gYygxLDIpDQpvYmpfYWRkcih2KQ0KdltbMl1dIDwtIDUNCm9ial9hZGRyKHYpDQpgYGANCg0K5L2G5piv77yMUiDlr7nmjIfpkojmlbDph4/nmoTliKTmlq3kuI3lpJ/mmbrog73jgILlpoLkuKTkuKrmjIfpkojmjIflkJHkuIDkuKrlr7nosaHvvIzlhbbkuK3kuIDkuKrooqvliKDpmaTlkI7vvIxSIOWNtOS4jeefpemBk++8jOS7jeeEtuS7peS4uuacieS4pOS4quaMh+mSiOOAguWboOatpOS8muS6p+eUn+W+iOWkmuS4jeW/heimgeeahOWvueixoeaLt+i0neOAgg0KDQojIyMjIOeOr+Wig+WvueixoQ0KDQrmgLvmmK/ooqvlsLHlnLDkv67mlLnvvIzkuI3kvJogY29weQ0KDQrmraTlip/og73pnZ7luLjmnInnlKjvvIzlj6/ku6Xlrp7njrDpl63ljIXjgIFSNuexu+Wei+ezu+e7n++8jOetieetiQ0KDQojIyMg6Kej5p6E6LWL5YC877yIVW5wYWNraW5nIEFzc2lnbm1lbnTvvIkNCg0KKip6ZWFsbG90IOWMheaPkOS+m+eahCBgJTwtJWAg5ZKMIGAlPi0lYCDlh73mlbAqKg0KDQpgYGB7cn0NCmxpYnJhcnkoemVhbGxvdCkNCg0KIyB1bnBhY2sgdmVjdG9yDQpjKGxhdCwgbG5nKSAlPC0lIGMoMzguMDYxOTQ0LCAtMTIyLjY0Mzg4OSkNCmxhdA0KbG5nDQoNCiMgdW5wYWNrIGxpc3QNCmNvb3Jkc19saXN0IDwtIGZ1bmN0aW9uKCkgew0KICBsaXN0KDM4LjA2MTk0NCwgLTEyMi42NDM4ODkpDQp9DQpjKGxhdCwgbG5nKSAlPC0lIGNvb3Jkc19saXN0KCkNCmxhdA0KbG5nDQoNCiMgdW5wYWNrIHJlZ3Jlc3Npb24gcmVzdWx0DQpjKGludGVyLCBzbG9wZSkgJTwtJSBjb2VmKGxtKG1wZyB+IGN5bCwgZGF0YSA9IG10Y2FycykpDQppbnRlcg0Kc2xvcGUNCg0KIyB1bnBhY2sgZGF0YS5mcmFtZQ0KYyhtcGcsIGN5bCwgZGlzcCwgaHApICU8LSUgbXRjYXJzWywgMTo0XQ0KaGVhZChtcGcpDQoNCiMgdW5wYWNrIG5lc3RlZCB2YWx1ZXMNCmMoYSwgYyhiLCBkKSwgZSkgJTwtJSBsaXN0KCJiZWdpbiIsIGxpc3QoIm1pZGRsZTEiLCAibWlkZGxlMiIpLCAiZW5kIikNCmENCmINCmQNCmUNCg0KIyB1bnBhY2sgY2hhcmFjdGVyIHN0cmluZw0KYyhjaDEsIGNoMiwgY2gzKSAlPC0lICJhYmMiDQpjaDENCmNoMg0KY2gzDQoNCiMgdW5wYWNrIERhdGUNCmMoeSwgbSwgZCkgJTwtJSBTeXMuRGF0ZSgpDQp5DQptDQpkDQoNCiMgLi4uIHJlc3Qgb2YNCmMoYmVnaW4sIC4uLm1pZGRsZSwgZW5kKSAlPC0lIGxpc3QoMSwgMiwgMywgNCwgNSkNCmJlZ2luDQptaWRkbGUNCg0KIyBwbGFjZSBob2xkZXINCmMobWluX3d0LCAuLCAuLCBtZWFuX3d0LCAuLCBtYXhfd3QpICU8LSUgc3VtbWFyeShtdGNhcnMkd3QpDQptaW5fd3QNCm1lYW5fd3QNCm1heF93dA0KDQojIOWQkeWPs+eahOino+aehOi1i+WAvOespuWPtyAlLT4lDQptdGNhcnMgJT4lDQogIHN1YnNldChocCA+IDEwMCkgJT4lDQogIGFnZ3JlZ2F0ZSguIH4gY3lsLCBkYXRhID0gLiwgRlVOID0gLiAlPiUgbWVhbigpICU+JSByb3VuZCgyKSkgJT4lDQogIHRyYW5zZm9ybShrcGwgPSBtcGcgJT4lIG11bHRpcGx5X2J5KDAuNDI1MSkpICUtPiUNCiAgYyhjeWwsIG1wZywgLi4ucmVzdCkNCmN5bA0KYGBg</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("Name-and-Value.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

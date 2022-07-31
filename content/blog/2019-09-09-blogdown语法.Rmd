@@ -1,0 +1,46 @@
+---
+title: blogdown语法
+author: ''
+date: '2019-09-09'
+slug: blogdown语法
+categories:
+  - R
+tags:
+  - blogdown
+  - website
+---
+
+
+# Step 1 安装
+
+```{r}
+# install.packages("blogdown")
+# blogdown::install_hugo() 
+```
+
+# Step 2 初始化
+打开 Rstudio->File->New Project->New Directory 
+
+选择 Website using blogdown 创建一个项目
+
+或使用代码：
+```{r}
+# blogdown::new_site(theme = "yihui/hugo-lithium")
+# blogdown::new_site(theme = 'imzeuk/hugo-theme-zozo')
+```
+
+# Step 3 编辑和编译
+```{r}
+# 添加新文章
+# blogdown:::new_post_addin()
+# 编译，生成新博客
+# blogdown::serve_site()
+```
+
+# Step 4 部署 (deploy)
+打开 GitHub Desktop，选择 Add existing repository，将 blogdown 所创建的网站项目添加到 GitHub Desktop 中，然后 Push 到自己的 GitHub 网页上。
+
+登陆 Netlify 网站，选择 New site from Git，一步步选择刚刚 Push 到 GitHub上的项目。Build Command 填 "hugo" 或不填，Publish directory 填 "Public"，然后部署即可，Netlify 会为用户分配一个可以自定义的免费域名。
+
+每次对网站有所修改，都要用`blogdown::serve_site()`重新编译，然后用 GitHub Desktop 将更新 push 到 GitHub 上，Netlify 上的网页便会自动更新，非常方便。
+

@@ -1,0 +1,778 @@
+---
+title: "2-3 复杂数据结构"
+subtitle: ''
+author: "Humoon"
+date: "`r Sys.Date()`"
+output:
+  html_document: 
+    code_download: true
+    fig_caption: yes
+    theme: united
+    highlight: haddock
+    number_sections: yes
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: yes
+      smooth_scroll: yes
+  rticles::ctex:
+    df_print: default
+    fig_caption: yes
+    number_sections: false
+  word_document:
+    fig_caption: yes
+    toc: yes
+    toc_depth: 3
+    reference_docx: 
+  pdf_document: 
+    toc: yes
+    toc_depth: 2
+    latex_engine: xelatex
+documentclass: ctexart
+classoption: hyperref,
+---
+
+```{css, echo=FALSE}
+/* 除了直接在Rmd中写css，还可以在 yaml 头部加入 css:"style.css" 来使用外部css文件 */
+  
+  
+/* 全局 */
+
+body {
+    font-size: 16px;
+    color: #333333;
+    font-family: sans-serif, 'Segoe UI', Tahoma, Geneva, Verdana, SimSun;
+}
+
+p,
+blockquote,
+ul,
+ol,
+dl,
+table {
+    margin: 0.8em 0;
+}
+
+
+/* 多级标题 */
+
+h1 {
+    font-size: 32px;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    color: red;
+    font-weight: bold;
+}
+
+h2 {
+    font-size: 28px;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    color: purple;
+    font-weight: bold;
+}
+
+h3 {
+    color: darkslateblue;
+    font-size: 24px;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    font-weight: bold;
+}
+
+h4 {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+h1.title,
+h3.subtitle,
+h4.author,
+h4.date {
+    margin-top: 0.5em;
+    margin-bottom: 0em;
+}
+
+h4.date {
+  margin-bottom: 2em;
+}
+
+/* 链接 */
+
+a {
+  color: blue;
+}
+
+/* 代码 */
+
+code,
+.md-fences {
+  color: darkred;
+  font-family: Courier;
+  font-weight: bold;
+}
+
+div.sourceCode code {
+  font-size: 14px;
+  color: black;
+  font-family: Consolas;
+  font-weight: normal;
+}
+
+div.sourceCode code.sourceCode span.fu {
+  color: #F75000;
+}
+
+div.sourceCode code.sourceCode span.sc {
+  color: blue;
+}
+
+div.sourceCode code.sourceCode span.st {
+  color: green;
+}
+
+div.sourceCode code.sourceCode span.co {
+  color: grey;
+}
+
+div.sourceCode code.sourceCode span.dv {
+  color: BlueViolet;
+}
+
+div.sourceCode code.sourceCode span.cn {
+  color: darkcyan;
+}
+
+div.sourceCode code.sourceCode span.at {
+  color: royalblue;
+}
+
+/* 粗体 */
+strong {
+  font-family: 'Microsoft YaHei';
+}
+
+/* 列表项 */
+
+ul,
+ol {
+    margin: 0 0 1.5em 0.5em;
+}
+
+h3+ul,
+h4+ul,
+h5+ul,
+h6+ul,
+h3+ol,
+h4+ol,
+h5+ol,
+h6+ol {
+    margin-top: 0.5em;
+}
+
+p+ul,
+p+ol {
+    margin-top: 0.5em;
+}
+
+li>ul,
+li>ol {
+    margin-top: inherit;
+    margin-bottom: 0;
+    margin-left: 0.5em;
+}
+
+ul>li {
+    list-style-type: disc;
+    list-style-position: outside;
+}
+
+li ul>li {
+    list-style-type: circle;
+}
+
+ol>li {
+    list-style-type: decimal;
+    list-style-position: outside;
+}
+
+li ol>li {
+    list-style-type: upper-alpha;
+}
+
+li li ol>li {
+    list-style-type: lower-greek;
+}
+
+
+/* 首行缩进 */
+
+p {
+    text-indent: 0em;
+}
+
+
+/* 表格 */
+  
+div.pagedtable{
+  font-size:12px;
+}
+
+table {
+    padding: 0;
+    word-break: initial;
+}
+
+table tr {
+    border-top: 1px solid #dfe2e5;
+    margin: 0;
+    padding: 0;
+}
+
+table tr:nth-child(2n),
+thead {
+    background-color: #fafafa;
+}
+
+table tr th {
+    font-weight: bold;
+    border: 1px solid #dfe2e5;
+    border-bottom: 0;
+    text-align: left;
+    margin: 0;
+    padding: 6px 13px;
+}
+
+table tr td {
+    border: 1px solid #dfe2e5;
+    text-align: left;
+    margin: 0;
+    padding: 6px 13px;
+}
+
+table tr th:first-child,
+table tr td:first-child {
+    margin-top: 0;
+}
+
+table tr th:last-child,
+table tr td:last-child {
+    margin-bottom: 0;
+}
+
+
+/* 侧边栏 */
+div.col-lg-3 {
+  width: 25%;
+  max-width: 250px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 200px;
+  max-height: 90%;
+  font-size: 16px;
+}
+
+div.toc-content {
+  padding-left: 0px;
+  padding-right: 40px;
+}
+```
+
+```{r setup, include = FALSE}
+## global options
+knitr::opts_chunk$set(
+  fig.width = 7,
+  fig.asp = 0.618,
+  out.width = "90%",
+  fig.align = "center",
+  fig.path = 'Figures/',
+  fig.show = "hold",
+  warn = 1,
+  warning = FALSE,
+  message = FALSE,
+  echo = TRUE, # 是否显示代码
+  eval = TRUE, # 是否运行代码块
+  tidy = TRUE, # 代码排版
+  comment = '>>>',
+  collapse = F, # 代码与结果是否显示在同一代码块
+  cache = T,
+  cache.comments = F,
+  autodep = TRUE
+)
+
+## use necessary packages
+library('pacman')
+p_load(
+  # data processing
+  tidyverse, lubridate, data.table, magrittr,
+  # visualization
+  ggthemes, showtext, gridExtra, r2d3, 
+  # 可交互表格 DT::datatable()
+  DT,
+  # I/O 
+  sqldf,
+  # web crawler
+  rvest, httr, reticulate
+  )
+
+## database engine
+options(sqldf.driver = "SQLite")
+
+# d3绘图的前景色和背景色
+options(r2d3.theme = list(background = "white", foreground = "royalblack"))
+
+## plotting
+pdf.options(family = "GB1")
+# 包含图的代码块需要fig.showtext = TRUE选项
+showtext_auto(enable = TRUE)
+
+
+## 自定义图形主题
+# common template
+mytheme <- theme_economist_white() +
+  theme(
+    text = element_text(family = 'YaHei'),
+    plot.title = element_text(face = 'bold', size = 14),
+    plot.subtitle = element_text(size = 12),
+    plot.caption = element_text(
+      hjust = 0,
+      size = 10,
+      margin = margin(2, 0, 0, 0, 'pt')
+    ),
+    plot.margin = margin(12, 10, 12, 0, 'pt'),
+    legend.position = 'top',
+    legend.justification = 'left',
+    legend.margin = margin(4, 0, 0, 0, 'pt'),
+    legend.key.size = unit(1, 'lines'),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 10, margin = margin(0, 0, 0, 0, 'pt')),
+    axis.text = element_text(size = 10, margin = margin(2, 0, 2, 0, 'pt')),
+    axis.ticks.length = unit(-4, 'pt')
+  )
+# histogram template
+theme_bar <- theme_economist_white() +
+  theme(
+    text = element_text(family = 'YaHei'),
+    plot.title = element_text(face = 'bold', size = 14),
+    plot.subtitle = element_text(size = 12),
+    plot.caption = element_text(
+      hjust = 0,
+      size = 10,
+      margin = margin(0, 0, 0, 0, 'pt')
+    ),
+    plot.margin = margin(12, 0, 12, 10, 'pt'),
+    legend.position = 'top',
+    legend.justification = 'left',
+    legend.margin = margin(4, 0, 0, 0, 'pt'),
+    legend.key.size = unit(0.7, 'lines'),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 10, margin = margin(0, 8, 0, 4, 'pt')),
+    axis.text = element_text(size = 10),
+    axis.ticks.length = unit(0, 'pt') # 不要坐标轴须
+  )
+```
+
+
+
+# 复杂数据结构
+
+
+## 集合
+
+### 元素性质
+
+- 无序
+- 唯一^[DISTINCT.]
+- 元素类型必须为不可变的数据类型^[因此，列表就不能作为集合元素。] 
+
+### 建立集合
+
+`{x, y, z, ...}`或`set()`，建立空集合必须用`set()`，因为`{}`是留给创建字典类型的
+
+```{python}
+B = set('python123')
+B # set()将字符串拆分，每个字符作为集合的一个元素
+C = {'A', 123, 'A', 123}
+C # 元素唯一性
+```
+
+### 集合操作
+`A op B`|返回
+--|--
+`|`|并
+`-`|差^[在 A 但不在 B 中的元素。] 
+`&`|交
+`^`|交集的补集，A 与 B 中的非共有元素
+`<=`或`<`|判断 A 与 B 的被包含关系
+`>=`或`>`|判断 A 与 B 的包含关系
+**二元增强操作符**|运算且赋值
+`|=`|
+`-=`|
+`&=`|
+`^=`|
+
+### 集合类的方法和相关函数
+
+方法和函数|说明
+--|--
+S.add(x)|添加元素
+S.discard(x)|删除，若 x 不在 S 中，不报错
+S.remove(x)|删除，若 x 不在 S 中，报错
+S.clear()|清空
+S.pop()|随机返回 S 的一个元素，将其从 S 中移除；若 S 为空，产生 KeyError 异常
+S.copy()|返回集合的一个副本
+len(S)|返回集合规模
+x in S|判断是否在其中
+x not in S|判断是否不在其中
+set(x)|将其他类型转变为集合类型
+
+```{python}
+A = {'python', 'R', 123}
+
+try:
+    while True:
+        print(A.pop(), end = ' ')
+except:
+    pass
+```
+
+
+### 应用场景：数据去重
+```{python}
+ls = [1, 2, 3, 2, 1]
+s = set(ls)
+s
+```
+
+
+## 序列
+
+包括**字符串**、**元组**和**列表**
+
+### 操作符、方法和函数
+
+操作、方法和函数|描述
+--|--
+x (not) in s|是否为元素
+s + t|连接
+`s*n` 或 `n*s`|重复 n 次
+s[i]|索引
+s[m:n:k]|切片
+len(s)|序列长度
+min(s), max(s)|返回最值
+s.index(x)|返回位置索引
+s.index(x, i, j)|i 到 j 之间第一次出现 x 的位置索引
+s.count(x)|出现 x 的总次数
+
+### 序列封包和序列解包
+
+多对一、一对多、多对多的赋值方式
+
+```{python}
+# 序列封包
+vals = 10, 20, 30 # 将10、20、30封装成元组后赋值给vals
+print(vals) 
+print(type(vals)) 
+print(vals[1]) 
+a_tuple = tuple(range(1, 10, 2))
+
+# 序列解包
+a, b, c, d, e = a_tuple # 将a_tuple元组的各元素依次赋值给a、b、c、d、e变量
+print(a, b, c, d, e) 
+a_list = ['fkit', 'crazyit']
+a_str, b_str = a_list
+print(a_str, b_str) 
+
+# 部分解包，用*代表列表（注意，不会是元组）
+first, second, *rest = range(10) # first、second保存前2个元素，rest列表包含剩下的元素
+print(first) 
+print(second) 
+print(rest) 
+*begin, last = range(10) # last保存最后一个元素，begin保存前面剩下的元素
+print(begin) 
+print(last) 
+first, *middle, last = range(10) # first保存第一个元素，last保存最后一个元素，middle保存中间剩下的元素
+print(first) 
+print(middle) 
+print(last)
+```
+
+
+### 元组
+
+一旦用`()`或`tuple()`创建，不得被修改
+
+`tuple()`可以将列表、区间（`range`）等对象转换为元组
+
+```{python}
+# 基数转化为序数：同时对元组使用加法、乘法
+order_endings = ('st', 'nd', 'rd') + ('th',)*17 + ('st', 'nd', 'rd') + ('th',)*7 + ('st',)
+print(order_endings)
+day1 = 21
+day2 = 25
+print(day1, '==>', str(day1) + order_endings[day1 - 1], end='')
+print(day2, '==>', str(day2) + order_endings[day2 - 1], end='')
+```
+
+**当元组只有一个元素时，要在元素后面加逗号**`('th',)`，否则就不是元组，而只是字符串加圆括号，`('th')`等同于`'th'`
+
+### 列表
+
+列表用`[]`或`list()`创建后可以被修改
+
+`list()`可以将元组、区间（`range`）等对象转换为列表
+
+当你将列表赋给一个变量时，实际上是将列表的“引用”赋给了该变量。^[相比之下，R语言在赋值时始终要复制变量，而非传递引用。] 
+
+```{python}
+# pthon代码
+ls = [1, 2, 3]
+lt = ls # 仅赋值未创建，并没有拷贝，而是两个名字指向同一个对象
+lt.append(4)
+ls
+lt # lt 与 ls 是相同的
+```
+
+```{r}
+# r代码
+ls <- c(1, 2, 3)
+lt <- ls # 复制即拷贝
+lt[4] <- 4
+ls
+lt # lt 与 ls 是不同的
+```
+
+在变量必须保存可变数据类型的值时，例如列表或字典，Python 变量就保存对列表的“引用”。对于不可变的数据类型的值，例如字符串、整型或元组，Python 变量就保存值本身。
+
+#### 列表的方法
+
+```{python}
+dir(list)
+```
+
+
+函数|描述
+--|--
+`ls.copy()`|创建一个新列表并**复制**
+`ls += lt`|将 lt 增加到 ls 中
+`ls.append(x)`|添加元素 x，**即使 x 为元组、列表，也将其作为元素添加，形成嵌套列表**
+`ls.extend(x)`|添加 x 中的所有元素，避免形成嵌套列表
+`ls.insert(index, x)`|x 作为一个元素（无论其本身是什么结构），在 index 的位置插入
+`del ls[m:n:k]`|删除相应切片的子列。注意，del 不是函数，而是一个语句，可以删除任意对象
+`ls.pop(i)`|i 位置元素取出并在原列表中删除；若不指定参数，则为出栈功能，取出最后一个元素
+`ls.remove(x)`|将 ls 中出现的第一个 x 删除，若找不到将产生 ValueError 错误
+`ls.clear()`|清空列表
+`ls.reverse()`|反转列表
+`ls.sort(str, key, reverse=False)`|排序。sort()方法当场对列表排序。不要写出`spam = spam.sort()`这样的代码，试图记录返回值。
+
+
+```{python}
+ls = ['cat', 'dog', 'tiger', 1024]
+ls[1:2] = [1, 2, 3, 4]
+ls
+del ls[::3]
+ls
+ls * 2
+ls
+ls.insert(3, 'add') # 在 3 的位置插入
+ls
+```
+
+##### 排序函数的参数
+```{python}
+b_list = ['Python', 'Swift', 'Ruby', 'Go', 'Kotlin', 'Erlang']
+
+b_list.sort() # 默认按字符串首字符的编码大小比较
+print(b_list)
+
+b_list.sort(key=len) # 指定key为len，指定使用len函数对集合元素生成比较的键，也就是按字符串的长度比较大小
+print(b_list) 
+
+b_list.sort(key=len, reverse=True) # 指定反向排序
+print(b_list)
+```
+
+
+#### 修改列表元素
+```{python}
+b_list = list(range(1,5))
+print(b_list)
+b_list[1:3] = ['a', 'b'] # 将第2个到第4个（不包含）元素赋值为新列表的元素
+print(b_list)
+
+# 插入
+b_list[2:2] = ['x', 'y'] # 将第3个到第3个（不包含）元素赋值为新列表的元素
+print(b_list)
+
+# 删除
+b_list[2:5] = [] # 将第3个到第6个（不包含）元素赋值为空列表，就是删除
+print(b_list)
+
+# 以单一字符串赋值时，Python会自动将字符串分解成序列
+b_list[1:3] = 'Charlie'
+print(b_list) # [1, 'C', 'h', 'a', 'r', 'l', 'i', 'e']
+
+c_list = list(range(1,10))
+# 指定step为2，被赋值的元素有4个，因此用于赋值的列表也必须有4个元素
+c_list[2:9:2] = ['a', 'b', 'c', 'd']
+print(c_list) # [1, 2, 'a', 4, 'b', 6, 'c', 8, 'd']
+```
+
+### 应用场景
+
+若不希望数据被程序修改，可以转换为元组类型
+
+## 字典 dict
+
+### 结构
+- 字典类型是“映射”的体现
+- 字典是键值对的集合，键值对之间无序
+```{python}
+eggs = {'name': 'Zophie', 'species': 'cat', 'age': '8'}
+ham = {'species': 'cat', 'age': '8', 'name': 'Zophie'}
+eggs == ham
+```
+- key 不允许重复
+- key 必须是不可变的数据类型，因此元组可以作为 key，而列表不可以
+- `{}`和`dict()`创建，`:`区分键和值，`,`区分键值对
+- key 是索引的扩展。list 相当于 key 只能是整数的 dict，但也有一个重要的区别：list 不允许对不存在的索引赋值，而 dict 允许。
+
+### 创建字典
+```{python}
+de = {} # 创建空字典
+print(de)
+type(de)
+
+dict6 = dict(spinach = 1.39, cabbage = 2.59) # 使用关键字参数来创建字典
+print(dict6) # {'spinach': 1.39, 'cabbage': 2.59}
+
+vegetables = [('celery', 1.58), ('brocoli', 1.29), ('lettuce', 2.19)] 
+dict3 = dict(vegetables) # 将嵌套列表转换为字典
+print(dict3)
+cars = [['BMW', 8.5], ['BENS', 8.3], ['AUDI', 7.9]] 
+dict4 = dict(cars)
+print(dict4) 
+```
+
+### 字典的索引语法
+
+通过 key 访问、添加、删除、修改键值对
+
+```{python}
+scores = {'语文': 89}
+print(scores['语文']) # 通过key访问value，结构与 list[n] 是很相似的，因此说键是索引的扩展
+
+scores['数学'] = 93 # 对不存在的key赋值，就是添加key-value对
+scores[92] = 5.7
+print(scores)
+ 
+del scores['语文'] # 使用del语句删除key-value对
+del scores['数学']
+print(scores)
+
+cars = {'BMW': 8.5, 'BENS': 8.3, 'AUDI': 7.9} 
+cars['BENS'] = 4.3 # 对存在的key-value对赋值，即修改
+cars['AUDI'] = 3.8
+print(cars) 
+ 
+print('AUDI' in cars) # 判断cars是否包含名为'AUDI'的key
+print('PORSCHE' in cars) # 判断cars是否包含名为'PORSCHE'的key
+print('LAMBORGHINI' not in cars)
+```
+
+
+### 字典的方法
+
+```{python}
+dir(dict)
+```
+
+方法|描述
+--|--
+`d.keys()`|返回字典 d 中所有的键信息
+`d.values()`|返回字典 d 中所有的值信息
+`d.items()`|返回字典 d 中所有的键值对信息
+|**这3个字典方法返回的分别是dict_keys、dict_values和dict_items对象，不是真正的列表，不能被修改，没有append()方法。但这些数据类型（1）可以通过for循环遍历；（2）可以通过list()或[]生成列表；（3）也可以利用多重赋值的技巧，在for循环中将键和值赋给不同的变量。**
+`k in d`|判断键 k 是否在字典 d 中，语法上可以省略`.keys()`
+`k in d.keys()`|判断键 k 是否在字典 d 中
+`v in d.values()`|判断值 v 是否在字典 d 中
+`(k, v) in d.items()`|判断键值对 (k, v) 是否在字典 d 中
+`d.get(k, <default>)`|索引语法的增强版，**这个函数非常重要，可以防止因键不存在产生错误**：<font color = 'red'>键 k 存在，则返回相应值；不存在，则返回`<default>`值</font>
+`d.update()`|更新键值对，已存在则覆盖，不存在则添加
+`d.pop(k, <default>)`|键 k 存在，则取出相应值，并删除该键值对；不存在，则返回`<default>`值
+`d.popitem()`|随机从字典中取出一个键值对，以元组形式返回
+`d.setdefault(k, v)`|若键k不在字典d中，添加键值对(k, v)；若键k在字典d中，则不作反应
+`del d[k]`|删除键 k 对应的值
+`d.clear()`|清空
+`len(d)`|字典的规模
+`pprint.pprint(d)`|打印字典，每个键值对为一行
+`pprint.pformat(d)`|将字典转化为一个格式化好的大字符串，print() 可获得与 pprint() 相同的效果
+
+```{python}
+cars = {'BMW': 8.5, 'BENS': 8.3, 'AUDI': 7.9}
+ims = cars.items() # 获取字典所有的key-value对，返回一个dict_items对象
+print(ims) # 返回结构可以遍历，但不是列表类型
+print(type(ims)) 
+print(list(ims)) # 将dict_items转换成列表
+print(list(ims)[1]) # 访问第2个key-value对
+
+kys = cars.keys() # 获取字典所有的key，返回一个dict_keys对象
+print(kys)
+print(type(kys)) 
+print(list(kys)) # 将dict_keys转换成列表
+print(list(kys)[1]) # 访问第2个key
+
+vals = cars.values() # 获取字典所有的value，返回一个dict_values对象
+print(vals)
+print(type(vals)) 
+print(list(vals)) # 将dict_values转换成列表
+print(list(vals)[1]) # 访问第2个value
+
+for k, v in cars.items():
+    print('Key: ' + k + ' Value: ' + str(v))
+```
+
+
+```{python}
+picnicItems = {'apples': 5, 'cups': 2}
+'I am bringing ' + str(picnicItems.get('cups', 0)) + ' cups.'
+'I am bringing ' + str(picnicItems.get('eggs', 0)) + ' eggs.'
+
+d = {'中国':'北京', '美国':'华盛顿', '法国':'巴黎'}
+'中国' in d
+d.popitem()
+print(d)
+```
+
+```{python}
+import pprint
+
+# 统计字母或单字频数的程序
+message = 'It was a bright cold day in April, and the clocks were striking thirteen.'
+count = {} # 空字典
+
+for character in message:
+    count.setdefault(character, 0) # 对于新字母，加入字典，频数为0
+    count[character] = count[character] + 1 # 频数加1
+
+print(count)
+pprint.pprint(count)
+count_format = pprint.pformat(count)
+print(count_format)
+count_format
+type(count_format)
+```
+
+
+### 应用场景
+
+表达键值对数据
+
+#### 元素遍历
+
+```
+for k in d:
+    <代码块>
+```

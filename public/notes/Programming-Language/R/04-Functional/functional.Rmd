@@ -1,0 +1,507 @@
+---
+title: "Functional"
+subtitle: ''
+author: "Humoon"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+source("../Rmarkdown-template/Rmarkdown_config.R")
+
+## global options ===================================
+knitr::opts_chunk$set(
+  width = config$width,
+  fig.width = config$fig.width,
+  fig.asp = config$fig.asp,
+  out.width = config$out.width,
+  fig.align = config$fig.align,
+  fig.path = config$fig.path,
+  fig.show = config$fig.show,
+  warn = config$warn,
+  warning = config$warning,
+  message = config$message,
+  echo = config$echo,
+  eval = config$eval,
+  tidy = config$tidy,
+  comment = config$comment,
+  collapse = config$collapse,
+  cache = config$cache,
+  cache.comments = config$cache.comments,
+  autodep = config$autodep
+)
+```
+
+## 高阶函数
+
+将函数按照参数和返回值是否是函数进行分类，如下图。
+
+除了 regular function，其他三种函数统称为高阶函数。
+
+![](https://d33wubrfki0l68.cloudfront.net/1dff819e743f280bbab1c55f8f063e60b6a0d2fb/2269e/diagrams/fp.png)
+
+在数学上，泛函（functional）是从函数到实数的映射；在 R 中，将接受函数作为参数、返回向量的函数称为泛函。
+
+将处理数据的代码段写入函数的函数参数中，**泛函就可以代替循环/迭代**[^泛函与迭代]------减少显式循环的使用是高质量代码的标志之一
+
+[^泛函与迭代]: 一些数学上的泛函，如求极限、求根、定积分，实现算法中都包含迭代。
+
+新版本的 R base 包含了一些原生的泛函，但不如 purrr 包的泛函更丰富、在语法上更具有内在一致性
+
+| `R base`                                                | `purrr::`               | 功能                                      |
+|------------------------------|------------------|------------------------|
+| `Filter(f, x)`                                          | `keep()`, `discard()`   | 筛选                                      |
+| `Map(f, …)`                                             | `map()`                 | 依次作用                                  |
+| `Find(f, x, right = FALSE, nomatch = NULL)`             | `detect()`              | 给出符合条件的第一个或最后一个元素        |
+| `Position(f, x, right = FALSE, nomatch = NA_integer_)`  | `detect_index()`        | 给出符合条件的第一个或最后一个元素的index |
+| `Reduce(f, x, init, right = FALSE, accumulate = FALSE)` | `reduce()`              | 串行操作                                  |
+|                                                         | 还有更多，见 cheatsheet |                                           |
+
+<a href="../pdf/cheatsheet-purrr.pdf"><strong>purrr cheatsheet.pdf</strong></a>
+
+<object data="../pdf/cheatsheet-purrr.pdf" type="application/pdf" width="100%" height="100%">
+
+</object>
+
+## 并行操作的映射泛函
+
+### `map*(.x, .f, ...)`
+
+`map*()`使用一个向量（包括列表、数据框）作为输入，并对其每个元素应用`.f`，所得结果组合成新向量或列表后返回。**`...` 是 `.f()` 的可选参数[^...]**
+
+[^...]: 之所以 `map*()` 的参数设计为 .x, .f 这样的形式，是为了避免与 .f() 的参数 x, f 产生冲突。同理，`*apply()` 使用了 FUN 这样的参数形式以避免冲突。
+
+```{r}
+# 求每列平均值
+df <- data.table(x = 1:10, y = 11:20)
+df %>% map_dbl(sum)
+
+
+## map 通过 ... 传递 .f 参数的优雅
+l <- list(x = 1:5, y = c(1:10, NA))
+
+# 两种写法等价
+l %>% map_dbl(.f = ~ mean(.x, na.rm = TRUE))
+l %>% map_dbl(mean, na.rm = TRUE)
+
+
+trims <- c(0, 0.1, 0.2, 0.5)
+x <- rcauchy(1000) # Cauchy distribution
+
+# 两种写法等价
+trims %>% map_dbl(mean, x = x)
+trims %>% map_dbl(~ mean(x, trim = .))
+```
+
+#### `map*()`的伪代码示意
+
+```{r, eval=FALSE}
+simple_map <- function(x, f, ...) {
+  out <- vector("list", length(x))
+  for (i in seq_along(x)) {
+    out[[i]] <- f(x[[i]], ...)
+  }
+  out
+}
+```
+
+#### `map*()`的变体
+
+-   `map()` 返回列表
+-   `map_lgl()` 返回逻辑型 atomic 向量
+-   `map_int()` 返回整型 atomic 向量
+-   `map_dbl()` 返回双精度型 atomic 向量
+-   `map_chr()` 返回字符型 atomic 向量
+-   `modify()` 获得**与输入相同类型的输出**，如输入和输出均为数据框
+-   `map_dfr()` 对各元素的运算产生若干个行向量，并把它们粘在一起，返回数据框
+-   `map_dfc()` 对各元素的运算产生若干个列向量，并把它们粘在一起，返回数据框
+-   `imap()` 遍历向量及其索引
+-   `walk()`，无输出，只是为了执行函数内部某些指令的操作过程（如保存、打印）
+-   `map_at(.x, .at, .f, ...)`, `map_if(.x, .p, .f, ...)`，对筛选出的部分元素执行 .f 操作，其他元素不进行任何操作，返回对象的长度与 .x 相同
+
+#### 匿名函数
+
+`map()` 的第二个参数可以是匿名函数。
+
+```{r}
+models <- mtcars %>%
+  split(.$cyl) %>%
+  map(function(df) lm(mpg ~ wt, data = df))
+```
+
+purrr 给出了一种匿名函数的简写语法：
+
+![](img/Function-Shortcuts.png)
+
+```{r}
+models <- mtcars %>%
+  split(.$cyl) %>%
+  map(~ lm(mpg ~ wt, data = .)) # ~表明这是一个匿名函数, .(或.x)是代词，指传入的参数
+
+class(models)
+
+models
+
+# 提取三个模型的 R^2
+models %>%
+  map(summary.lm) %>%
+  map_dbl(~ .$r.squared) # ~表明这是一个函数，.代指参数，故返回: 参数$r.squared
+```
+
+```{r}
+# 批量建模及查看结果
+mtcars %>%
+  group_by(cyl) %>%
+  nest() %>%
+  mutate(model = map(data, ~ lm(mpg ~ wt, data = .))) %>%
+  mutate(result = map(model, ~ broom::tidy(.))) %>%
+  unnest(result)
+```
+
+**最好不要使用超过一行的匿名函数**。超过一行，最好给出函数名，便于阅读和调试。
+
+#### 提取每个元素的部分成分
+
+`map_*()`的第二个参数还可以是字符串（作为 name）和整数（作为索引），表示**提取（extract）**每个元素的对应属性或分量的值
+
+该语法可以避免在一连串管道的中间或最后使用`[]`或`$`符号，破坏语法的统一
+
+```{r}
+models %>%
+  map(summary.lm) %>%
+  map_dbl("r.squared")
+
+x <- list(list(1, 2, 3), list(4, 5, 6), list(7, 8, 9))
+x %>% map_dbl(2)
+```
+
+两种方式也可以混用，通过 list() 实现嵌套提取的效果
+```{r}
+x <- list(
+  list(x = 1, y = c(2)),
+  list(x = 4, y = c(5, 6)),
+  list(x = 9, y = c(9, 10, 11))
+)
+
+map_dbl(x, list("y", 1)) # 提取name为"y"的元素中的第一个元素
+```
+
+### `map2_*(.x, .y, .f)`
+
+`map2()`的 .f 参数为二元函数
+
+```{r}
+# 获得均值分别为 5, 10, -3 的几个正态分布
+mu <- c(5, 10, -3)
+mu %>%
+  map(rnorm, n = 5) %>%
+  # rnorm(n, mean=0, sd=1) 产生正态分布
+  # n=5已经给了rnorm，所以 mu 的元素传给 rnorm 只能从第二个参数开始排，也就是 mean
+  str()
+```
+
+```{r}
+# 均值、方差都不同的几个正态分布
+sigma <- list(1, 5, 10)
+map2(mu, sigma, rnorm, n = 5) %>% str()
+```
+
+### `pmap_*(.l, .f, ...)`
+
+`pmap()`可以将一个可迭代对象的列表作为第一个参数，每个可迭代对象的 index 相同的元素作为一组，传递给`pmap()`的第二个参数（函数）。
+
+`map2()`是`pmap()`的特例，`map2(x, y, f)`等价于`pmap(list(x, y), f)`
+
+生成均值、标准差和样本数量都不相同的正态分布：
+
+```{r}
+n <- list(5, 10, 100)
+args1 <- list(n, mu, sigma)
+pmap(args1, rnorm) %>% str()
+```
+
+![](img/pmap1.png)
+
+为了让代码更易读，应该**为列表中的几个可迭代对象命名，名称分别为rnorm()的参数的名称。这样即使list中各向量的顺序不对，rnorm()也能正确识别**。
+
+```{r}
+args2 <- list(mean = mu, sd = sigma, n = n)
+args2 %>%
+  pmap(rnorm) %>%
+  str()
+```
+
+也可以将参数保存在数据框中，注意变量名称的匹配
+
+```{r}
+params <- tribble(
+  ~mean, ~sd, ~n,
+  5, 1, 1,
+  10, 5, 3,
+  -3, 10, 5
+)
+params %>%
+  pmap(rnorm)
+```
+
+### `invoke_map()`
+
+多个函数的并行操作
+
+```{r}
+f <- c("runif", "rnorm", "rpois")
+param <- list(
+  list(min = -1, max = 1),
+  list(sd = 5),
+  list(lambda = 10)
+)
+invoke_map(f, param, n = 5) %>% str()
+```
+
+![](img/pmap2.png)
+
+```{r}
+sim <- tribble(
+  ~f, ~params,
+  "runif", list(min = -1, max = 1),
+  "rnorm", list(sd = 5),
+  "rpois", list(lambda = 10)
+)
+sim %>% mutate(sim = invoke_map(f, params, n = 10))
+```
+
+### `imap()`遍历索引
+
+`imap_*(.x, .f)`, .f 为二元函数，其第一个参数为 .x 元素的值，第二个参数为 .x 元素的名称或 index（这很像 d3.js 中的 `(d, i) => ...`）
+
+若 x 的元素具有 names 属性，`imap(x, f)`等价于`map2(x, names(x), f)`；若 x 的元素没有 names 属性，`imap(x, f)`等价于`map2(x, seq_along(x), f)`
+
+```{r}
+v <- list("a" = 1, "b" = 2, "c" = 3)
+imap(v, ~ paste0(.y, ": ", .x))
+```
+
+### `walk*()`
+
+`walk(.x, .f)`, `walk2()`, `pwalk()`, `iwalk()`
+
+```{r}
+x <- list(1, "a", 3)
+x %>% walk(print)
+
+plots <- mtcars %>%
+  split(.$cyl) %>%
+  map(~ ggplot(., aes(mpg, wt)) +
+    geom_point())
+fileNames <- str_c(names(plots), ".pdf")
+pwalk(list(fileNames, plots), ggsave, path = getwd() %>% str_c("/figure/"))
+# ggsave()的第一个参数是要保存的文件名，第二个参数是图形对象，path参数是文件夹路径
+```
+
+`walk*()` 会隐式返回第一个参数 .x，这使得它们非常适用于**管道传输的中间步骤**，就像不会打断管道的`%T>%`一样。
+
+## `*apply()`泛函族
+
+![](img/applyFamily.png)
+
+
+| `*apply()`              | `map*()`                                         |
+|------------------------|-------------------------------------------------|
+| `lapply()`             | `map()`                                         |
+| `sapply()`, `vapply()` | `map_lgl()`/`map_int()`/`map_dbl()`/`map_chr()` |
+| `mapply()`             | `map2()`                                        |
+|                        |                                                 |
+
+: `*apply()`与`map*()`对应表
+
+**apply()函数有一个功能`map_*()`无法取代，那就是 `matrix %>% apply(1, f)` 允许将行作为元素传递给 `f()`，而`map_*()`在处理数据框时永远将列作为元素传递给 `f()`**
+
+更多内容详见 <http://blog.fens.me/r-apply/>
+
+#### apply: 遍历矩阵
+
+`apply(X, MARGIN, FUN, ...)`，其中`...`为 FUN 的可选参数
+
+参数为**矩阵或数组**。要求所有的元素都是同一种数据类型。如果误用于其它类型，如**数据框，则会自动转换为矩阵**再处理
+
+MARGIN 表示函数的作用维度，1为对行运算，2为对列运算。
+
+如 `apply(X = A, 2, FUN = sum)`，对A矩阵的列求和
+
+#### lapply: 从列表到列表
+
+`lapply(list,function,...)`，对列表、dataframe的每个对象/列分别进行操作，**返回一个新列表**
+
+#### sapply 和 vapply: 简化返回值
+
+`sapply(list,function,…,simplify=T)`，相比 lapply 的特点在于返回值可以被简化为 vector/matrix
+
+-   默认 simplify = T：返回值的类型由计算结果决定，如果 function 计算结果的长度为1，则sapply将list简化为vector；如果返回的列表中每个元素的长度都大于1且长度相同，那么sapply将其简化位一个矩阵
+
+-   simplify = F：返回值的类型是list，此时与lapply完全相同。
+
+```{r}
+# 意为提取数据框每一列的第一个元素，返回一个由这些元素组成的向量。
+# "[["函数的用法为："["(object, 元素位置)"
+sapply(iris, "[[", 1)
+```
+
+`vapply(x, function, fun.value, ..., USE.NAMES = TRUE)`，相比sapply可以在参数中通过fun.value设置输出形状（向量/矩阵/列表）
+
+```{r, eval=FALSE}
+vapply(x, mean, FUN.VALUE = double(1)) # 等价于 map_dbl(x, mean)
+```
+
+`vapply()` 是 `sapply()` 的安全升级版，如果不能按照既定模板进行输出，函数就会终止，并产生错误信息。因此，**尽量不要使用 `sapply()`**
+
+#### mapply: 多元函数版
+
+`mapply(function, object1, object2, ..., SIMPLIFY = TRUE)`，多参数计算，同样可能简化计算结果导致类型不匹配的错误
+
+`mapply(f, x, y, z)`返回 `list(f(x[1],y[1],z[1]), f(x[2],y[2],z[2]), ...)`
+
+```{r}
+set.seed(1)
+x <- 1:10
+y <- 5:-4
+z <- round(runif(10, -5, 5))
+z
+mapply(max, x, y, z)
+```
+
+```{r}
+firstlist <- list(A = matrix(1:16, 4), B = matrix(1:16, 2))
+secondlist <- list(A = matrix(1:16, 4), B = matrix(1:16, 8))
+mapply(identical, firstlist, secondlist) # identical()意为是否严格相等
+```
+
+#### tapply: 分组统计
+
+`tapply(X, INDEX, function, ..., simplify = TRUE)`
+
+INDEX 为用于分组的索引，对 X 按 INDEX 分组操作
+
+```{r}
+d <- data.frame(list(
+  gender = c("M", "M", "F", "M", "F", "F"),
+  age = c(47, 59, 21, 32, 33, 24),
+  income = c(55000, 88000, 32450, 76500, 123000, 45650)
+))
+tapply(d$income, d$gender, mean) # income先对gender分组，再求平均值
+```
+
+```{r}
+x <- 1:10
+t <- round(runif(10, 1, 100) %% 2)
+t
+tapply(x, t, sum)
+```
+
+#### rapply 递归遍历
+
+`rapply(object, function, classes = "ANY", deflt = NULL, how = c("unlist", "replace", "list"),...)`
+
+`lapply()` 的深度递归版，只接受list，如果list有子list，则继续遍历运用f处理
+
+#### eapply
+
+环境空间遍历
+
+## 并行操作的判断泛函
+
+predicate functional
+
+### 筛选泛函
+
+-   `keep(.x, .p)`，筛选 .p 参数（一个函数，通常是匿名函数）的返回值为 TRUE 的元素，长度通常比 .x 短
+-   `discard(.x, .p)`，筛选 .p 参数的返回值为 FALSE 的元素
+-   `detect(.x, .f, ..., dir)`, 返回符合条件的第一个或最后一个元素
+-   `detect_index(.x, .f, ..., dir)`, 返回符合条件的第一个或最后一个元素的 index
+-   `head_while()`
+-   `tail_while()`
+
+### 检测泛函
+
+-   `every(.x, .p)`, 计算出第一个 FALSE 时即返回 FALSE
+-   `some(.x, .p)`, 计算出第一个 TRUE 时即返回 TRUE
+-   `none(.x, .p)`, 是否没有元素通过检测
+-   `has_element(.x, .y)`, .x 中是否包含 .y
+
+## 串行操作的递归、累计泛函
+
+一个可迭代对象(iteratable object)，元素依次两两运算，每次运算得到一个结果，再与下一个元素运算。
+
+递归函数`purrr::reduce(.x, .f, ..., .init)`, `reduce2(.x, .y, .f, ..., .init)`直接得到最后的结果
+
+累计函数`purrr::accumulate(.x, f, ..., .init)`, `accumulate2(.x, .y, .f, ..., .init)`同时显示中间的步骤[^1] 。
+
+[^1]: 例如，一个list中储存着格式一致的数据框，用rbind()将他们合并在一起，reduce()返回合并的最终结果，而accumulate()返回一个list，每个元素是合并的某一步的结果，即前k个数据框的合并。
+
+```{r}
+# 求交集和并集
+vs <- list(
+  c(1, 3, 5, 6, 10),
+  c(1, 2, 3, 7, 8, 10),
+  c(1, 2, 3, 4, 8, 9, 10)
+)
+vs %>% reduce(intersect)
+vs %>% reduce(union)
+
+# 求连乘积
+1:10 %>% accumulate(`*`)
+```
+
+```{r}
+## config ===============================================
+x <- seq(0, 100, 5)
+y <- seq(100, 200, 5)
+params <- 1:5 * 10
+
+
+## plotting ===============================================
+library(plotly)
+
+# 图的框架
+p0 <- plot_ly(type = "surface", showscale = F)
+
+p <- params %>%
+  # 1. 参数由函数工厂加工成函数list
+  map(~ function(a, b) 0.02 * a + 0.015 * b - 0.0008 * a * b + 0.0007 * a^2 - 0.0002 * b^2 + .) %>%
+  # 2. 函数list作用于x, y, 得到 matrix list
+  map(~ outer(x, y, .)) %>%
+  # 3. 所有的 matrix 依次作为截面，叠加到 p0上
+  reduce(
+    .f = function(p, m) p %>% add_surface(x = x, y = y, z = ~m),
+    .init = p0
+  )
+p
+```
+
+## 其他泛函
+
+### `aggregate()`分组计算
+
+`aggregate(formula, data, FUN, ...,subset, na.action = na.omit)`
+
+```{r}
+# 按cut和color分组，将price作为参数传给mean()，数据来源为diamonds
+aggregate(price ~ cut + color, diamonds, mean)
+```
+
+```{r}
+# plyr包的each函数，可以使aggregate使用多个函数对数据进行计算
+aggregate(price ~ cut, diamonds, plyr::each(mean, median))
+```
+
+### `replicate(n, f)`
+
+多次执行并横向拼接为一个矩阵
+
+常用于随机数据的生成
+
+```{r}
+set.seed(1014)
+df <-
+  replicate(5, sample(c(1:10, -99), 6, replace = TRUE)) %>% # 5轮抽样形成矩阵. replicate(n, f), 即重复运行f函数n次
+  data.table() # 建立数据框
+```

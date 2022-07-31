@@ -1,0 +1,144 @@
+{
+  "main": {
+    "id": "f266b72e4c5dba6c",
+    "type": "split",
+    "children": [
+      {
+        "id": "291c8db5400ed925",
+        "type": "leaf",
+        "state": {
+          "type": "markdown",
+          "state": {
+            "file": "Basic-Grammar.md",
+            "mode": "source",
+            "source": false
+          }
+        }
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "6f2f39a532f7aab2",
+    "type": "split",
+    "children": [
+      {
+        "id": "a623a957da29e801",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "012d6eff807e3475",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {}
+            }
+          },
+          {
+            "id": "346ba5537cba34d1",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              }
+            }
+          },
+          {
+            "id": "2207e041d42766f8",
+            "type": "leaf",
+            "state": {
+              "type": "starred",
+              "state": {}
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 215.5
+  },
+  "right": {
+    "id": "5e59aa0b82c347c6",
+    "type": "split",
+    "children": [
+      {
+        "id": "804076dfcb51567c",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "5dc7ad8e52eb3337",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "Basic-Grammar.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": false
+              }
+            }
+          },
+          {
+            "id": "8d9d01b9f8d5391c",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "Basic-Grammar.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              }
+            }
+          },
+          {
+            "id": "3f9481f1826a4228",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true
+              }
+            }
+          },
+          {
+            "id": "20e81c7f9f331d2e",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "Basic-Grammar.md"
+              }
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "active": "291c8db5400ed925",
+  "lastOpenFiles": [
+    "Function.md",
+    "Basic-Grammar.md",
+    "Multiple-Dispatch.md",
+    "Date-Time.md",
+    "Control-Flow.md",
+    "Data-Structure.md",
+    "Debugging.md",
+    "Environment.md",
+    "Function-Frequently-Used.md",
+    "IO.md"
+  ]
+}

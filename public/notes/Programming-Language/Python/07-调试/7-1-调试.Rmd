@@ -1,0 +1,633 @@
+---
+title: "7-1 调试"
+subtitle: ''
+author: "Humoon"
+date: "`r Sys.Date()`"
+output:
+  html_document: 
+    code_download: true
+    fig_caption: yes
+    theme: united
+    highlight: haddock
+    number_sections: yes
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: yes
+      smooth_scroll: yes
+  rticles::ctex:
+    df_print: default
+    fig_caption: yes
+    number_sections: false
+  word_document:
+    fig_caption: yes
+    toc: yes
+    toc_depth: 3
+    reference_docx: 
+  pdf_document: 
+    toc: yes
+    toc_depth: 2
+    latex_engine: xelatex
+documentclass: ctexart
+classoption: hyperref,
+---
+
+```{css, echo=FALSE}
+/* 除了直接在Rmd中写css，还可以在 yaml 头部加入 css:"style.css" 来使用外部css文件 */
+  
+  
+/* 全局 */
+
+body {
+    font-size: 16px;
+    color: #333333;
+    font-family: sans-serif, 'Segoe UI', Tahoma, Geneva, Verdana, SimSun;
+}
+
+p,
+blockquote,
+ul,
+ol,
+dl,
+table {
+    margin: 0.8em 0;
+}
+
+
+/* 多级标题 */
+
+h1 {
+    font-size: 32px;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    color: red;
+    font-weight: bold;
+}
+
+h2 {
+    font-size: 28px;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    color: purple;
+    font-weight: bold;
+}
+
+h3 {
+    color: darkslateblue;
+    font-size: 24px;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    font-weight: bold;
+}
+
+h4 {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+h1.title,
+h3.subtitle,
+h4.author,
+h4.date {
+    margin-top: 0.5em;
+    margin-bottom: 0em;
+}
+
+h4.date {
+  margin-bottom: 2em;
+}
+
+/* 链接 */
+
+a {
+  color: blue;
+}
+
+/* 代码 */
+
+code,
+.md-fences {
+  color: darkred;
+  font-family: Courier;
+  font-weight: bold;
+}
+
+div.sourceCode code {
+  font-size: 14px;
+  color: black;
+  font-family: Consolas;
+  font-weight: normal;
+}
+
+div.sourceCode code.sourceCode span.fu {
+  color: #F75000;
+}
+
+div.sourceCode code.sourceCode span.sc {
+  color: blue;
+}
+
+div.sourceCode code.sourceCode span.st {
+  color: green;
+}
+
+div.sourceCode code.sourceCode span.co {
+  color: grey;
+}
+
+div.sourceCode code.sourceCode span.dv {
+  color: BlueViolet;
+}
+
+div.sourceCode code.sourceCode span.cn {
+  color: darkcyan;
+}
+
+div.sourceCode code.sourceCode span.at {
+  color: royalblue;
+}
+
+/* 粗体 */
+strong {
+  font-family: 'Microsoft YaHei';
+}
+
+/* 列表项 */
+
+ul,
+ol {
+    margin: 0 0 1.5em 0.5em;
+}
+
+h3+ul,
+h4+ul,
+h5+ul,
+h6+ul,
+h3+ol,
+h4+ol,
+h5+ol,
+h6+ol {
+    margin-top: 0.5em;
+}
+
+p+ul,
+p+ol {
+    margin-top: 0.5em;
+}
+
+li>ul,
+li>ol {
+    margin-top: inherit;
+    margin-bottom: 0;
+    margin-left: 0.5em;
+}
+
+ul>li {
+    list-style-type: disc;
+    list-style-position: outside;
+}
+
+li ul>li {
+    list-style-type: circle;
+}
+
+ol>li {
+    list-style-type: decimal;
+    list-style-position: outside;
+}
+
+li ol>li {
+    list-style-type: upper-alpha;
+}
+
+li li ol>li {
+    list-style-type: lower-greek;
+}
+
+
+/* 首行缩进 */
+
+p {
+    text-indent: 0em;
+}
+
+
+/* 表格 */
+  
+div.pagedtable{
+  font-size:12px;
+}
+
+table {
+    padding: 0;
+    word-break: initial;
+}
+
+table tr {
+    border-top: 1px solid #dfe2e5;
+    margin: 0;
+    padding: 0;
+}
+
+table tr:nth-child(2n),
+thead {
+    background-color: #fafafa;
+}
+
+table tr th {
+    font-weight: bold;
+    border: 1px solid #dfe2e5;
+    border-bottom: 0;
+    text-align: left;
+    margin: 0;
+    padding: 6px 13px;
+}
+
+table tr td {
+    border: 1px solid #dfe2e5;
+    text-align: left;
+    margin: 0;
+    padding: 6px 13px;
+}
+
+table tr th:first-child,
+table tr td:first-child {
+    margin-top: 0;
+}
+
+table tr th:last-child,
+table tr td:last-child {
+    margin-bottom: 0;
+}
+
+
+/* 侧边栏 */
+div.col-lg-3 {
+  width: 25%;
+  max-width: 250px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 200px;
+  max-height: 90%;
+  font-size: 16px;
+}
+
+div.toc-content {
+  padding-left: 0px;
+  padding-right: 40px;
+}
+```
+
+```{r setup, include = FALSE}
+## global options
+knitr::opts_chunk$set(
+  fig.width = 7,
+  fig.asp = 0.618,
+  out.width = "90%",
+  fig.align = "center",
+  fig.path = 'Figures/',
+  fig.show = "hold",
+  warn = 1,
+  warning = FALSE,
+  message = FALSE,
+  echo = TRUE, # 是否显示代码
+  eval = TRUE, # 是否运行代码块
+  tidy = TRUE, # 代码排版
+  comment = '>>>',
+  collapse = F, # 代码与结果是否显示在同一代码块
+  cache = T,
+  cache.comments = F,
+  autodep = TRUE
+)
+
+## use necessary packages
+library('pacman')
+p_load(
+  # data processing
+  tidyverse, lubridate, data.table, magrittr,
+  # visualization
+  ggthemes, showtext, gridExtra, r2d3, 
+  # 可交互表格 DT::datatable()
+  DT,
+  # I/O 
+  sqldf,
+  # web crawler
+  rvest, httr, reticulate
+  )
+
+## database engine
+options(sqldf.driver = "SQLite")
+
+# d3绘图的前景色和背景色
+options(r2d3.theme = list(background = "white", foreground = "royalblack"))
+
+## plotting
+pdf.options(family = "GB1")
+# 包含图的代码块需要fig.showtext = TRUE选项
+showtext_auto(enable = TRUE)
+
+
+## 自定义图形主题
+# common template
+mytheme <- theme_economist_white() +
+  theme(
+    text = element_text(family = 'YaHei'),
+    plot.title = element_text(face = 'bold', size = 14),
+    plot.subtitle = element_text(size = 12),
+    plot.caption = element_text(
+      hjust = 0,
+      size = 10,
+      margin = margin(2, 0, 0, 0, 'pt')
+    ),
+    plot.margin = margin(12, 10, 12, 0, 'pt'),
+    legend.position = 'top',
+    legend.justification = 'left',
+    legend.margin = margin(4, 0, 0, 0, 'pt'),
+    legend.key.size = unit(1, 'lines'),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 10, margin = margin(0, 0, 0, 0, 'pt')),
+    axis.text = element_text(size = 10, margin = margin(2, 0, 2, 0, 'pt')),
+    axis.ticks.length = unit(-4, 'pt')
+  )
+# histogram template
+theme_bar <- theme_economist_white() +
+  theme(
+    text = element_text(family = 'YaHei'),
+    plot.title = element_text(face = 'bold', size = 14),
+    plot.subtitle = element_text(size = 12),
+    plot.caption = element_text(
+      hjust = 0,
+      size = 10,
+      margin = margin(0, 0, 0, 0, 'pt')
+    ),
+    plot.margin = margin(12, 0, 12, 10, 'pt'),
+    legend.position = 'top',
+    legend.justification = 'left',
+    legend.margin = margin(4, 0, 0, 0, 'pt'),
+    legend.key.size = unit(0.7, 'lines'),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 10, margin = margin(0, 8, 0, 4, 'pt')),
+    axis.text = element_text(size = 10),
+    axis.ticks.length = unit(0, 'pt') # 不要坐标轴须
+  )
+```
+
+
+# 异常捕获
+
+## 基本形式
+
+```
+try:
+    raise Exception(字符串)
+except:
+    <>
+```
+
+- raise 语句抛出异常，将一个字符串传递给exception，返回一个 Exception 对象
+- 然后结束 try 代码块，跳转至 except 代码块
+- Exception 对象可以传递给 str()，转换成字符串
+
+```{python}
+def boxPrint(symbol, width, height):
+    if len(symbol) != 1:
+        raise Exception('Symbol must be a single character string.')
+    if width <= 2:
+        raise Exception('Width must be greater than 2.')
+    if height <= 2:
+        raise Exception('Height must be greater than 2.')
+
+    print(symbol * width)
+    for i in range(height - 2):
+        print(symbol + (' ' * (width - 2)) + symbol)
+    print(symbol * width)
+
+for sym, w, h in (('*', 4, 4), ('O', 20, 5), ('x', 1, 3), ('ZZ', 3, 3)):
+    try:
+        boxPrint(sym, w, h)
+    except Exception as err:
+        print(type(err))
+        print('An exception happened: ' + str(err))
+
+```
+
+
+## 高级形式
+
+```
+try:
+    <语句块1>
+except <标注异常类型，可选择>:
+    <语句块2>
+else:
+    <语句块3>
+finally:
+    <语句块4>
+```
+
+`finally`对应的语句块4一定执行，`else`对应的语句块3仅在不发生异常时执行，可以看做未发生异常的“奖励”。
+
+# 异常的反向跟踪
+
+通过 traceback 模块的`traceback.format_exc()`将错误信息及其来源记入日志文件，并让程序继续运行。稍后，在准备调试程序时，可以检查该日志文件。
+
+```{python}
+import traceback 
+
+try: 
+    raise Exception('This is the error message.')
+except: 
+    errorFile = open('errorInfo.txt', 'w') 
+    errorFile.write(traceback.format_exc()) 
+    errorFile.close()
+    print('The traceback info was written to errorInfo.txt.')
+```
+
+# 断言
+
+确保某条件符合要求，否则引发 AssertionError 错误，立即停止运行并提醒程序员
+
+结构：`assert <条件>, '条件为 False 时，程序崩溃显示的错误信息'`
+
+```{python, eval=F}
+# 这是一个切换红绿灯的程序
+
+market_2nd = {'ns':'green', 'ew':'red'} # market路与第二大道的交叉路口
+# 'ns'表示南北向红绿灯，'ew'表示东西向红绿灯
+
+def switchLights(stoplight):
+    for key in stoplight.keys():
+      if stoplight[key] == 'green':
+          stoplight[key] = 'yellow'
+      elif stoplight[key] == 'yellow': 
+          stoplight[key] = 'red' 
+      elif stoplight[key] == 'red': 
+          stoplight[key] = 'green'
+
+    assert 'red' in stoplight.values(), 'Neither light is red! ' + str(stoplight)
+    # 编程时加一条断言：两个路口中必须至少有一个是红灯，否则会发生交通事故
+
+switchLights(market_2nd)
+```
+
+这段程序返回的错误信息：
+```
+AssertionError: Neither light is red! {'ns': 'yellow', 'ew': 'green'}
+```
+这样便可以提醒程序员，程序设计的问题所在。
+
+断言所针对的错误，是程序不应该尝试恢复的，而是应该快速失败。否则，你应该抛出 异常。
+
+# 日志
+
+通过 logging 模块可以显示日志信息
+
+## 日志的级别
+
+级别|日志函数|描述
+--|--|--
+logging.DEBUG|logging.debug()|最低级别
+logging.INFO|logging.info()|
+logging.WARNING|logging.warning()|用于表示可能的问题
+logging.ERROR|logging.error()|导致程序做某事失败
+logging.CRITICAL|logging.critical()|致命的错误
+
+`logging.basicConfig()`中的 level 参数级别以上的日志会被显示，`logging.disable()`中 level 参数级别以下的日志会被禁用。
+
+开发初期，可以向`basicConfig()`函数传入 logging.DEBUG 作为 level 关键字参数，这将显示所有日志级别的消息（DEBUG是最低的级别）。但在开发的中后期，你可能只对错误感兴趣。在这种情况下，可以将 `basicConfig()` 的 level 参数设置为 logging.ERROR，这将只显示 ERROR 和 CRITICAL 消息，跳过 DEBUG、INFO 和 WARNING 消息。
+
+## 日志的启用和禁用
+
+### 启用
+
+要将日志信息打印在结果中，需要在脚本开始加入这样一行：
+```
+logging.basicConfig(level=<级别>, format='%(asctime)s - %(levelname)s - %(message)s')
+```
+
+1. 设计错误的程序
+```{python, eval=F}
+import logging
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+
+logging.debug('Start of program')
+def factorial(n):
+    logging.debug('Start of factorial({})'.format(str(n)))
+    total = 1
+    for i in range(n + 1):
+        total *= i
+        logging.debug('i is ' + str(i) + ', total is ' + str(total))
+    return total
+    logging.debug('End of factorial({})'.format(str(n)))
+print(factorial(5))
+logging.debug('End of program')
+```
+
+运行返回：
+```
+2019-10-10 17:15:48,889 - DEBUG - Start of program
+2019-10-10 17:15:48,899 - DEBUG - Start of factorial(5)
+2019-10-10 17:15:48,899 - DEBUG - i is 0, total is 0
+2019-10-10 17:15:48,899 - DEBUG - i is 1, total is 0
+2019-10-10 17:15:48,899 - DEBUG - i is 2, total is 0
+2019-10-10 17:15:48,899 - DEBUG - i is 3, total is 0
+2019-10-10 17:15:48,899 - DEBUG - i is 4, total is 0
+2019-10-10 17:15:48,899 - DEBUG - i is 5, total is 0
+0
+2019-10-10 17:15:48,899 - DEBUG - End of program
+```
+
+2. 修改后的程序
+```{python, eval=F}
+import logging
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+
+logging.debug('Start of program')
+def factorial(n):
+    logging.debug('Start of factorial({})'.format(str(n)))
+    total = 1
+    for i in range(1, n + 1):
+        total *= i
+        logging.debug('i is ' + str(i) + ', total is ' + str(total))
+    return total
+    logging.debug('End of factorial({})'.format(str(n)))
+print(factorial(5))
+logging.debug('End of program')
+```
+
+运行返回：
+```
+2019-10-10 17:20:19,566 - DEBUG - Start of program
+2019-10-10 17:20:19,567 - DEBUG - Start of factorial(5)
+2019-10-10 17:20:19,567 - DEBUG - i is 1, total is 1
+2019-10-10 17:20:19,567 - DEBUG - i is 2, total is 2
+2019-10-10 17:20:19,567 - DEBUG - i is 3, total is 6
+2019-10-10 17:20:19,567 - DEBUG - i is 4, total is 24
+2019-10-10 17:20:19,568 - DEBUG - i is 5, total is 120
+120
+2019-10-10 17:20:19,568 - DEBUG - End of program
+```
+
+### 禁用日志
+
+`logging.disable(<日志级别>)`语句将禁用该级别以下（包含该级别）的所有日志信息，可以灵活地选择放置它的位置。
+
+开发结束后，可以用`logging.disable(logging.CRITICAL)`禁用所有日志，避免日志信息影响用户
+
+```{python}
+import logging
+logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+logging.disable(logging.CRITICAL) # 禁用之后的所有日志
+
+logging.debug('Start of program')
+def factorial(n):
+    logging.debug('Start of factorial({})'.format(str(n)))
+    total = 1
+    for i in range(1, n + 1):
+        total *= i
+        logging.debug('i is ' + str(i) + ', total is ' + str(total))
+    return total
+    logging.debug('End of factorial({})'.format(str(n)))
+print(factorial(5))
+logging.debug('End of program')
+```
+
+## 日志的作用
+
+返回开发者需要的信息，而非用户的。给用户的信息，请用`print()`打印；给开发者的信息，用`logging.debug()`显示
+
+## 将日志记入文件
+
+将日志信息写入到文件，让屏幕保持干净，又能保存信息，这样在运行程序后，可以阅读这些信息。
+
+```{python, eval=F}
+import logging 
+logging.basicConfig(filename='myProgramLog.txt', level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
+
+logging.debug('Start of program')
+def factorial(n):
+    logging.debug('Start of factorial({})'.format(str(n)))
+    total = 1
+    for i in range(1, n + 1):
+        total *= i
+        logging.debug('i is ' + str(i) + ', total is ' + str(total))
+    return total
+    logging.debug('End of factorial({})'.format(str(n)))
+print(factorial(5))
+logging.debug('End of program')
+```
+
+# 调试
+
+主要概念：
+
+- 断点
+- go，全速执行直至到达断点或程序终止
+- over，执行一个函数
+- step，进入一个函数
+- out, 跳出一个函数
+- quit，停止调试
+
+

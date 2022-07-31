@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+<head>
+
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <title>2 markdown基本语法 | Rmarkdown 文本文件的语法</title>
+  <meta name="description" content="2 markdown基本语法 | Rmarkdown 文本文件的语法" />
+  <meta name="generator" content="bookdown 0.27 and GitBook 2.6.7" />
+
+  <meta property="og:title" content="2 markdown基本语法 | Rmarkdown 文本文件的语法" />
+  <meta property="og:type" content="book" />
+  
+  
+  
+
+  <meta name="twitter:card" content="summary" />
+  <meta name="twitter:title" content="2 markdown基本语法 | Rmarkdown 文本文件的语法" />
+  
+  
+  
+
+<meta name="author" content="黄蒙 ✉huangmeng@ucass.edu.cn" />
+
+
+<meta name="date" content="2022-07-06" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  
+  
+<link rel="prev" href="html-语法.html"/>
+<link rel="next" href="Rmarkdown.html"/>
+<style type="text/css">
+p.abstract{
+  text-align: center;
+  font-weight: bold;
+}
+div.abstract{
+  margin: auto;
+  width: 90%;
+}
+</style>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/fuse.js@6.4.6/dist/fuse.min.js"></script>
+<link href="libs/gitbook-2.6.7/css/style.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-table.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-bookdown.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-highlight.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-search.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-fontsettings.css" rel="stylesheet" />
+<link href="libs/gitbook-2.6.7/css/plugin-clipboard.css" rel="stylesheet" />
+
+
+
+
+
+
+
+
+<link href="libs/anchor-sections-1.1.0/anchor-sections.css" rel="stylesheet" />
+<link href="libs/anchor-sections-1.1.0/anchor-sections-hash.css" rel="stylesheet" />
+<script src="libs/anchor-sections-1.1.0/anchor-sections.js"></script>
+<script src="libs/kePrint-0.0.1/kePrint.js"></script>
+<link href="libs/lightable-0.0.1/lightable.css" rel="stylesheet" />
+<script src="libs/font-awesome-5.13.0/js/script.js"></script>
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  jax: ["input/TeX","output/SVG"],
+  extensions: ["tex2jax.js","MathMenu.js","MathZoom.js"],
+  TeX: {
+    extensions: ["AMSmath.js","AMSsymbols.js","noErrors.js","noUndefined.js"]
+  }
+});
+</script>
+<script type="text/javascript"
+   src="../../../MathJax/MathJax.js">
+</script>
+
+
+<style type="text/css">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+<style type="text/css">
+/* Used with Pandoc 2.11+ new --citeproc when CSL is used */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}
+</style>
+
+</head>
+
+<body>
+
+
+
+  <div class="book without-animation with-summary font-size-2 font-family-1" data-basepath=".">
+
+    <div class="book-summary">
+      <nav role="navigation">
+
+<ul class="summary">
+Rmarkdown 文本文件的语法
+<li class="divider"></li>
+<li class="chapter" data-level="" data-path="index.html"><a href="index.html"><i class="fa fa-check"></i>参考文献</a></li>
+<li class="chapter" data-level="1" data-path="html-语法.html"><a href="html-语法.html"><i class="fa fa-check"></i><b>1</b> html 语法</a>
+<ul>
+<li class="chapter" data-level="1.1" data-path="html-语法.html"><a href="html-语法.html#文字颜色"><i class="fa fa-check"></i><b>1.1</b> 文字颜色</a></li>
+<li class="chapter" data-level="1.2" data-path="html-语法.html"><a href="html-语法.html#字号"><i class="fa fa-check"></i><b>1.2</b> 字号</a></li>
+<li class="chapter" data-level="1.3" data-path="html-语法.html"><a href="html-语法.html#图片"><i class="fa fa-check"></i><b>1.3</b> 图片</a></li>
+</ul></li>
+<li class="chapter" data-level="2" data-path="markdown.html"><a href="markdown.html"><i class="fa fa-check"></i><b>2</b> markdown基本语法</a>
+<ul>
+<li class="chapter" data-level="2.1" data-path="markdown.html"><a href="markdown.html#段内换行"><i class="fa fa-check"></i><b>2.1</b> 段内换行</a></li>
+<li class="chapter" data-level="2.2" data-path="markdown.html"><a href="markdown.html#增加段间距"><i class="fa fa-check"></i><b>2.2</b> 增加段间距</a></li>
+<li class="chapter" data-level="2.3" data-path="markdown.html"><a href="markdown.html#注释"><i class="fa fa-check"></i><b>2.3</b> 注释</a></li>
+<li class="chapter" data-level="2.4" data-path="markdown.html"><a href="markdown.html#脚注"><i class="fa fa-check"></i><b>2.4</b> 脚注</a></li>
+<li class="chapter" data-level="2.5" data-path="markdown.html"><a href="markdown.html#参考文献-1"><i class="fa fa-check"></i><b>2.5</b> 参考文献</a></li>
+<li class="chapter" data-level="2.6" data-path="markdown.html"><a href="markdown.html#引用"><i class="fa fa-check"></i><b>2.6</b> 引用</a>
+<ul>
+<li class="chapter" data-level="2.6.1" data-path="markdown.html"><a href="markdown.html#单层和嵌套引用"><i class="fa fa-check"></i><b>2.6.1</b> 单层和嵌套引用</a></li>
+<li class="chapter" data-level="2.6.2" data-path="markdown.html"><a href="markdown.html#多行引用"><i class="fa fa-check"></i><b>2.6.2</b> 多行引用</a></li>
+</ul></li>
+<li class="chapter" data-level="2.7" data-path="markdown.html"><a href="markdown.html#分隔线"><i class="fa fa-check"></i><b>2.7</b> 分隔线</a></li>
+<li class="chapter" data-level="2.8" data-path="markdown.html"><a href="markdown.html#链接"><i class="fa fa-check"></i><b>2.8</b> 链接</a>
+<ul>
+<li class="chapter" data-level="2.8.1" data-path="markdown.html"><a href="markdown.html#直接表示"><i class="fa fa-check"></i><b>2.8.1</b> 直接表示：</a></li>
+<li class="chapter" data-level="2.8.2" data-path="markdown.html"><a href="markdown.html#行内链接"><i class="fa fa-check"></i><b>2.8.2</b> 行内链接</a></li>
+<li class="chapter" data-level="2.8.3" data-path="markdown.html"><a href="markdown.html#引用式链接"><i class="fa fa-check"></i><b>2.8.3</b> 引用式链接</a></li>
+</ul></li>
+<li class="chapter" data-level="2.9" data-path="markdown.html"><a href="markdown.html#图片-1"><i class="fa fa-check"></i><b>2.9</b> 图片</a></li>
+<li class="chapter" data-level="2.10" data-path="markdown.html"><a href="markdown.html#列表"><i class="fa fa-check"></i><b>2.10</b> 列表</a>
+<ul>
+<li class="chapter" data-level="2.10.1" data-path="markdown.html"><a href="markdown.html#列表嵌套"><i class="fa fa-check"></i><b>2.10.1</b> 列表嵌套</a></li>
+<li class="chapter" data-level="2.10.2" data-path="markdown.html"><a href="markdown.html#列表缩进"><i class="fa fa-check"></i><b>2.10.2</b> 列表缩进</a></li>
+<li class="chapter" data-level="2.10.3" data-path="markdown.html"><a href="markdown.html#列表项间空行"><i class="fa fa-check"></i><b>2.10.3</b> 列表项间空行</a></li>
+</ul></li>
+<li class="chapter" data-level="2.11" data-path="markdown.html"><a href="markdown.html#任务列表"><i class="fa fa-check"></i><b>2.11</b> 任务列表</a></li>
+<li class="chapter" data-level="2.12" data-path="markdown.html"><a href="markdown.html#管道表"><i class="fa fa-check"></i><b>2.12</b> 管道表</a></li>
+<li class="chapter" data-level="2.13" data-path="markdown.html"><a href="markdown.html#代码"><i class="fa fa-check"></i><b>2.13</b> 代码</a>
+<ul>
+<li class="chapter" data-level="2.13.1" data-path="markdown.html"><a href="markdown.html#行内代码"><i class="fa fa-check"></i><b>2.13.1</b> 行内代码</a></li>
+<li class="chapter" data-level="2.13.2" data-path="markdown.html"><a href="markdown.html#代码块"><i class="fa fa-check"></i><b>2.13.2</b> 代码块</a></li>
+</ul></li>
+<li class="chapter" data-level="2.14" data-path="markdown.html"><a href="markdown.html#转义"><i class="fa fa-check"></i><b>2.14</b> 转义</a></li>
+<li class="chapter" data-level="2.15" data-path="markdown.html"><a href="markdown.html#删除线"><i class="fa fa-check"></i><b>2.15</b> 删除线</a></li>
+<li class="chapter" data-level="2.16" data-path="markdown.html"><a href="markdown.html#公式"><i class="fa fa-check"></i><b>2.16</b> 公式</a>
+<ul>
+<li class="chapter" data-level="2.16.1" data-path="markdown.html"><a href="markdown.html#行内公式"><i class="fa fa-check"></i><b>2.16.1</b> 行内公式</a></li>
+<li class="chapter" data-level="2.16.2" data-path="markdown.html"><a href="markdown.html#独立成行的公式"><i class="fa fa-check"></i><b>2.16.2</b> 独立成行的公式</a></li>
+<li class="chapter" data-level="2.16.3" data-path="markdown.html"><a href="markdown.html#为公式手动编号"><i class="fa fa-check"></i><b>2.16.3</b> 为公式手动编号</a></li>
+</ul></li>
+<li class="chapter" data-level="2.17" data-path="markdown.html"><a href="markdown.html#锚点"><i class="fa fa-check"></i><b>2.17</b> 锚点</a></li>
+<li class="chapter" data-level="2.18" data-path="markdown.html"><a href="markdown.html#排版风格建议"><i class="fa fa-check"></i><b>2.18</b> 排版风格建议</a></li>
+<li class="chapter" data-level="2.19" data-path="markdown.html"><a href="markdown.html#mermaid"><i class="fa fa-check"></i><b>2.19</b> Mermaid</a>
+<ul>
+<li class="chapter" data-level="2.19.1" data-path="markdown.html"><a href="markdown.html#什么是mermaid"><i class="fa fa-check"></i><b>2.19.1</b> 什么是Mermaid？</a></li>
+<li class="chapter" data-level="2.19.2" data-path="markdown.html"><a href="markdown.html#图类型"><i class="fa fa-check"></i><b>2.19.2</b> 图类型</a></li>
+<li class="chapter" data-level="2.19.3" data-path="markdown.html"><a href="markdown.html#饼图"><i class="fa fa-check"></i><b>2.19.3</b> 饼图</a></li>
+<li class="chapter" data-level="2.19.4" data-path="markdown.html"><a href="markdown.html#流程图"><i class="fa fa-check"></i><b>2.19.4</b> 流程图</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="3" data-path="Rmarkdown.html"><a href="Rmarkdown.html"><i class="fa fa-check"></i><b>3</b> Rmarkdown语法</a>
+<ul>
+<li class="chapter" data-level="3.1" data-path="Rmarkdown.html"><a href="Rmarkdown.html#基本语法"><i class="fa fa-check"></i><b>3.1</b> 基本语法</a></li>
+<li class="chapter" data-level="3.2" data-path="Rmarkdown.html"><a href="Rmarkdown.html#编译pdf"><i class="fa fa-check"></i><b>3.2</b> 编译PDF</a></li>
+<li class="chapter" data-level="3.3" data-path="Rmarkdown.html"><a href="Rmarkdown.html#r-代码可执行"><i class="fa fa-check"></i><b>3.3</b> R 代码（可执行）</a></li>
+<li class="chapter" data-level="3.4" data-path="Rmarkdown.html"><a href="Rmarkdown.html#r表格"><i class="fa fa-check"></i><b>3.4</b> R表格</a>
+<ul>
+<li class="chapter" data-level="3.4.1" data-path="Rmarkdown.html"><a href="Rmarkdown.html#kableextra-package"><i class="fa fa-check"></i><b>3.4.1</b> kableExtra package</a></li>
+<li class="chapter" data-level="3.4.2" data-path="Rmarkdown.html"><a href="Rmarkdown.html#三线表"><i class="fa fa-check"></i><b>3.4.2</b> 三线表</a></li>
+<li class="chapter" data-level="3.4.3" data-path="Rmarkdown.html"><a href="Rmarkdown.html#formattable-包格式化数据框"><i class="fa fa-check"></i><b>3.4.3</b> formattable 包格式化数据框</a></li>
+<li class="chapter" data-level="3.4.4" data-path="Rmarkdown.html"><a href="Rmarkdown.html#可交互表格"><i class="fa fa-check"></i><b>3.4.4</b> 可交互表格</a></li>
+</ul></li>
+<li class="chapter" data-level="3.5" data-path="Rmarkdown.html"><a href="Rmarkdown.html#r图"><i class="fa fa-check"></i><b>3.5</b> R图</a></li>
+<li class="chapter" data-level="3.6" data-path="Rmarkdown.html"><a href="Rmarkdown.html#制表式截面"><i class="fa fa-check"></i><b>3.6</b> 制表式截面</a>
+<ul>
+<li class="chapter" data-level="3.6.1" data-path="Rmarkdown.html"><a href="Rmarkdown.html#by-product"><i class="fa fa-check"></i><b>3.6.1</b> By Product</a></li>
+<li class="chapter" data-level="3.6.2" data-path="Rmarkdown.html"><a href="Rmarkdown.html#by-region"><i class="fa fa-check"></i><b>3.6.2</b> By Region</a></li>
+</ul></li>
+<li class="chapter" data-level="3.7" data-path="Rmarkdown.html"><a href="Rmarkdown.html#下载资源文件文件夹"><i class="fa fa-check"></i><b>3.7</b> 下载资源文件/文件夹</a>
+<ul>
+<li class="chapter" data-level="3.7.1" data-path="Rmarkdown.html"><a href="Rmarkdown.html#xfun-package"><i class="fa fa-check"></i><b>3.7.1</b> <code>xfun</code> package</a></li>
+<li class="chapter" data-level="3.7.2" data-path="Rmarkdown.html"><a href="Rmarkdown.html#downloadthis-package"><i class="fa fa-check"></i><b>3.7.2</b> <code>downloadthis</code> package</a></li>
+</ul></li>
+</ul></li>
+<li class="chapter" data-level="4" data-path="metadata-config.html"><a href="metadata-config.html"><i class="fa fa-check"></i><b>4</b> Metadata &amp; Config</a>
+<ul>
+<li class="chapter" data-level="4.1" data-path="metadata-config.html"><a href="metadata-config.html#output"><i class="fa fa-check"></i><b>4.1</b> output</a></li>
+<li class="chapter" data-level="4.2" data-path="metadata-config.html"><a href="metadata-config.html#config"><i class="fa fa-check"></i><b>4.2</b> config</a></li>
+</ul></li>
+<li class="chapter" data-level="5" data-path="bookdown.html"><a href="bookdown.html"><i class="fa fa-check"></i><b>5</b> bookdown语法</a>
+<ul>
+<li class="chapter" data-level="5.1" data-path="bookdown.html"><a href="bookdown.html#章节编号和引用"><i class="fa fa-check"></i><b>5.1</b> 章节编号和引用</a>
+<ul>
+<li class="chapter" data-level="5.1.1" data-path="bookdown.html"><a href="bookdown.html#编号"><i class="fa fa-check"></i><b>5.1.1</b> 编号</a></li>
+<li class="chapter" data-level="5.1.2" data-path="bookdown.html"><a href="bookdown.html#引用-1"><i class="fa fa-check"></i><b>5.1.2</b> 引用</a></li>
+</ul></li>
+<li class="chapter" data-level="5.2" data-path="bookdown.html"><a href="bookdown.html#usage-writing-fig"><i class="fa fa-check"></i><b>5.2</b> 图形自动编号</a></li>
+<li class="chapter" data-level="5.3" data-path="bookdown.html"><a href="bookdown.html#usage-writing-tab"><i class="fa fa-check"></i><b>5.3</b> 表格自动编号</a></li>
+<li class="chapter" data-level="5.4" data-path="bookdown.html"><a href="bookdown.html#usage-writing-math"><i class="fa fa-check"></i><b>5.4</b> 数学公式编号</a></li>
+<li class="chapter" data-level="5.5" data-path="bookdown.html"><a href="bookdown.html#文献引用与文献列表"><i class="fa fa-check"></i><b>5.5</b> 文献引用与文献列表</a></li>
+<li class="chapter" data-level="5.6" data-path="bookdown.html"><a href="bookdown.html#索引"><i class="fa fa-check"></i><b>5.6</b> 索引</a></li>
+<li class="chapter" data-level="5.7" data-path="bookdown.html"><a href="bookdown.html#编译"><i class="fa fa-check"></i><b>5.7</b> 编译</a></li>
+</ul></li>
+<li class="chapter" data-level="6" data-path="Xaringan.html"><a href="Xaringan.html"><i class="fa fa-check"></i><b>6</b> Xaringan 语法</a>
+<ul>
+<li class="chapter" data-level="6.1" data-path="Xaringan.html"><a href="Xaringan.html#特点"><i class="fa fa-check"></i><b>6.1</b> 特点</a></li>
+<li class="chapter" data-level="6.2" data-path="Xaringan.html"><a href="Xaringan.html#快捷键"><i class="fa fa-check"></i><b>6.2</b> 快捷键</a></li>
+<li class="chapter" data-level="6.3" data-path="Xaringan.html"><a href="Xaringan.html#语法"><i class="fa fa-check"></i><b>6.3</b> 语法</a>
+<ul>
+<li class="chapter" data-level="6.3.1" data-path="Xaringan.html"><a href="Xaringan.html#slides-and-properties"><i class="fa fa-check"></i><b>6.3.1</b> Slides and Properties</a></li>
+<li class="chapter" data-level="6.3.2" data-path="Xaringan.html"><a href="Xaringan.html#yaml"><i class="fa fa-check"></i><b>6.3.2</b> YAML</a></li>
+<li class="chapter" data-level="6.3.3" data-path="Xaringan.html"><a href="Xaringan.html#content-classes"><i class="fa fa-check"></i><b>6.3.3</b> Content Classes</a></li>
+</ul></li>
+<li class="chapter" data-level="6.4" data-path="Xaringan.html"><a href="Xaringan.html#css-and-themes"><i class="fa fa-check"></i><b>6.4</b> CSS and Themes</a></li>
+</ul></li>
+<li class="chapter" data-level="" data-path="参考文献-2.html"><a href="参考文献-2.html"><i class="fa fa-check"></i>参考文献</a></li>
+<li class="divider"></li>
+黄蒙
+</ul>
+
+      </nav>
+    </div>
+
+    <div class="book-body">
+      <div class="body-inner">
+        <div class="book-header" role="navigation">
+          <h1>
+            <i class="fa fa-circle-o-notch fa-spin"></i><a href="./">Rmarkdown 文本文件的语法</a>
+          </h1>
+        </div>
+
+        <div class="page-wrapper" tabindex="-1" role="main">
+          <div class="page-inner">
+
+            <section class="normal" id="section-">
+<div id="markdown" class="section level1 hasAnchor" number="2">
+<h1><span class="header-section-number">2</span> markdown基本语法<a href="markdown.html#markdown" class="anchor-section" aria-label="Anchor link to header"></a></h1>
+<div id="段内换行" class="section level2 hasAnchor" number="2.1">
+<h2><span class="header-section-number">2.1</span> 段内换行<a href="markdown.html#段内换行" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>行末<code>&lt;br/&gt;</code>或两个以上空格 + 回车为段内换行，连续两个回车为新起一段</p>
+<p>我是第一段第一行<br />
+我是第一段第二行</p>
+<p>我是第二段，注意行间距和段间距的差异</p>
+</div>
+<div id="增加段间距" class="section level2 hasAnchor" number="2.2">
+<h2><span class="header-section-number">2.2</span> 增加段间距<a href="markdown.html#增加段间距" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>用<code>&lt;br&gt;</code>，每多一个就多一次换行；或<code>&amp;nbsp;</code>，表示一个空段落。</p>
+<p>正常段间距</p>
+<p>正常段间距<br/><br/>
+连续两次换行<code>&lt;br&gt;</code>后得到本行，虽然看上去行距很大，但仍在一段中</p>
+<p> </p>
+<p>中间隔了一个空段落，显然段间距更大。空段落可以叠加</p>
+</div>
+<div id="注释" class="section level2 hasAnchor" number="2.3">
+<h2><span class="header-section-number">2.3</span> 注释<a href="markdown.html#注释" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>用<code>&lt;!--  --&gt;</code>括住的内容会被注释掉，不显示在最终输出中。</p>
+<!--
+括住的内容会被注释掉，不显示在最终输出中。
+-->
+</div>
+<div id="脚注" class="section level2 hasAnchor" number="2.4">
+<h2><span class="header-section-number">2.4</span> 脚注<a href="markdown.html#脚注" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>markdown 脚注的标准格式为：</p>
+<ol style="list-style-type: decimal">
+<li>在需要加脚注处用 <code>[^footnote]</code> 标识。</li>
+<li>在下文任意处新起一行，用 <code>[^footnote]: blabla...</code> 将脚注补全。</li>
+</ol>
+</div>
+<div id="参考文献-1" class="section level2 hasAnchor" number="2.5">
+<h2><span class="header-section-number">2.5</span> 参考文献<a href="markdown.html#参考文献-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>markdown 其实并无格式化参考文献的语法，但可以利用 html 的脚注语法手动实现——只适合写简易文章的场合。</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb4-1"><a href="markdown.html#cb4-1" aria-hidden="true" tabindex="-1"></a>This is a test sentence.<span class="kw">&lt;sup&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;#ref1&quot;</span><span class="kw">&gt;</span>[101]<span class="kw">&lt;/a&gt;&lt;/sup&gt;</span></span>
+<span id="cb4-2"><a href="markdown.html#cb4-2" aria-hidden="true" tabindex="-1"></a>This is a test sentence.<span class="kw">&lt;sup&gt;&lt;a</span> <span class="er">href</span><span class="ot">=</span><span class="st">&quot;#ref2&quot;</span><span class="kw">&gt;</span>[102]<span class="kw">&lt;/a&gt;&lt;/sup&gt;</span></span></code></pre></div>
+<p>最后在文章结尾处写：</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode html"><code class="sourceCode html"><span id="cb5-1"><a href="markdown.html#cb5-1" aria-hidden="true" tabindex="-1"></a>Reference</span>
+<span id="cb5-2"><a href="markdown.html#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;a</span> <span class="er">name</span><span class="ot">=</span><span class="st">&quot;ref1&quot;</span><span class="kw">&gt;</span>[101] 文献引用1<span class="kw">&lt;/font&gt;&lt;/a&gt;</span></span>
+<span id="cb5-3"><a href="markdown.html#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="kw">&lt;a</span> <span class="er">name</span><span class="ot">=</span><span class="st">&quot;ref2&quot;</span><span class="kw">&gt;</span>[102] 文献引用2<span class="kw">&lt;/font&gt;&lt;/a&gt;</span></span></code></pre></div>
+<p>效果为：</p>
+<p>This is a test sentence.<sup><a href="#ref1">[101]</a></sup></p>
+<p>This is a test sentence.<sup><a href="#ref2">[102]</a></sup></p>
+<p>Reference</p>
+<p><a name="ref1">[101] 文献引用1</font></a></p>
+<p><a name="ref2">[102] 文献引用2</font></a></p>
+</div>
+<div id="引用" class="section level2 hasAnchor" number="2.6">
+<h2><span class="header-section-number">2.6</span> 引用<a href="markdown.html#引用" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>在引用中可以使用其他 Markdown 语法</p>
+<div id="单层和嵌套引用" class="section level3 hasAnchor" number="2.6.1">
+<h3><span class="header-section-number">2.6.1</span> 单层和嵌套引用<a href="markdown.html#单层和嵌套引用" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb6"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb6-1"><a href="markdown.html#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; 张三说：李四这样说过    </span></span>
+<span id="cb6-2"><a href="markdown.html#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; </span></span>
+<span id="cb6-3"><a href="markdown.html#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="at">&gt;&gt; 不想当将军的木匠不是好厨子。</span></span></code></pre></div>
+<blockquote>
+<p>张三说：李四这样说过</p>
+<blockquote>
+<p>不想当将军的木匠不是好厨子。</p>
+</blockquote>
+</blockquote>
+</div>
+<div id="多行引用" class="section level3 hasAnchor" number="2.6.2">
+<h3><span class="header-section-number">2.6.2</span> 多行引用<a href="markdown.html#多行引用" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>仍然是一段（推荐）：</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb7-1"><a href="markdown.html#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; 第一行</span>  </span>
+<span id="cb7-2"><a href="markdown.html#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; 第二行</span>  </span>
+<span id="cb7-3"><a href="markdown.html#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="markdown.html#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; 第一行</span></span>
+<span id="cb7-5"><a href="markdown.html#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; </span></span>
+<span id="cb7-6"><a href="markdown.html#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; 第二行</span></span></code></pre></div>
+<blockquote>
+<p>第一行<br />
+第二行</p>
+</blockquote>
+<blockquote>
+<p>第一行</p>
+<p>第二行</p>
+</blockquote>
+<p>变成了两段（不推荐）：</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb8-1"><a href="markdown.html#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; 第一段</span></span>
+<span id="cb8-2"><a href="markdown.html#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="markdown.html#cb8-3" aria-hidden="true" tabindex="-1"></a><span class="at">&gt; 第二段</span></span></code></pre></div>
+<blockquote>
+<p>第一段</p>
+</blockquote>
+<blockquote>
+<p>第二段</p>
+</blockquote>
+</div>
+</div>
+<div id="分隔线" class="section level2 hasAnchor" number="2.7">
+<h2><span class="header-section-number">2.7</span> 分隔线<a href="markdown.html#分隔线" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>三个以上的<code>*/-/_</code></p>
+<hr />
+</div>
+<div id="链接" class="section level2 hasAnchor" number="2.8">
+<h2><span class="header-section-number">2.8</span> 链接<a href="markdown.html#链接" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="直接表示" class="section level3 hasAnchor" number="2.8.1">
+<h3><span class="header-section-number">2.8.1</span> 直接表示：<a href="markdown.html#直接表示" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>格式为<code>&lt;地址&gt;</code>或<code>地址</code>(仅限 http 和 www 开头，这是 GFM 扩展语法)。如：百度的网址是 <a href="http://www.baidu.com" class="uri">http://www.baidu.com</a> 或 www.baidu.com，我的邮箱是 <a href="mailto:humoonruc@126.com" class="email">humoonruc@126.com</a>。</p>
+</div>
+<div id="行内链接" class="section level3 hasAnchor" number="2.8.2">
+<h3><span class="header-section-number">2.8.2</span> 行内链接<a href="markdown.html#行内链接" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>格式为<code>[链接名](地址)</code>。如：点击超链接<a href="http://www.baidu.com">百度</a></p>
+</div>
+<div id="引用式链接" class="section level3 hasAnchor" number="2.8.3">
+<h3><span class="header-section-number">2.8.3</span> 引用式链接<a href="markdown.html#引用式链接" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>当链接被重复使用时，最好使用引用链接形式。可以将链接标记理解为一个地址变量。</p>
+<p>在某处（比如文章结尾）定义一些链接标识符，语法为：<code>[链接标识符]:网址</code>。定义语句不会显示在输出中。正文中使用时，语法为：<code>[链接名][链接标识符]</code>，如：</p>
+<p>在<a href="https://www.google.com.hk">Google 首页</a>查询 IT 资料通常是第一步，虽然在中文搜索方面<a href="https://www.google.com.hk">这个国际巨头</a>的用户体验常常不如<a href="https://www.baidu.com">百度</a>。</p>
+</div>
+</div>
+<div id="图片-1" class="section level2 hasAnchor" number="2.9">
+<h2><span class="header-section-number">2.9</span> 图片<a href="markdown.html#图片-1" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ol style="list-style-type: decimal">
+<li><p>行内图片：<br />
+<code>![图片名称]("图片地址或网址")</code>
+不建议使用这种方法，编译pdf有时会报错。</p></li>
+<li><p>引用式图片：与链接类似，也可以在文章某处定义图片的标识符，然后把行内图片引用中图片地址替换成图片标识符即可。</p></li>
+</ol>
+</div>
+<div id="列表" class="section level2 hasAnchor" number="2.10">
+<h2><span class="header-section-number">2.10</span> 列表<a href="markdown.html#列表" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="列表嵌套" class="section level3 hasAnchor" number="2.10.1">
+<h3><span class="header-section-number">2.10.1</span> 列表嵌套<a href="markdown.html#列表嵌套" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>用<code>Tab</code>缩进表示下一级</p>
+<ul>
+<li>第一级
+<ul>
+<li>第二级
+<ul>
+<li>第三级</li>
+<li>第三级</li>
+</ul></li>
+<li>第二级</li>
+</ul></li>
+</ul>
+</div>
+<div id="列表缩进" class="section level3 hasAnchor" number="2.10.2">
+<h3><span class="header-section-number">2.10.2</span> 列表缩进<a href="markdown.html#列表缩进" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>若列表项无换行，一个空格即可；若列表项有换行，建议无序列表用三个空格如<code>-   xxx</code>，有序列表用两个空格如<code>1.  xxx</code></p>
+<ul>
+<li>这个列表项<br />
+有换行</li>
+<li>这个没有</li>
+</ul>
+<ol style="list-style-type: decimal">
+<li>这个有序列表项<br />
+有换行</li>
+<li>这个没有</li>
+</ol>
+</div>
+<div id="列表项间空行" class="section level3 hasAnchor" number="2.10.3">
+<h3><span class="header-section-number">2.10.3</span> 列表项间空行<a href="markdown.html#列表项间空行" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>无换行的列表项之间不建议空行；有换行的列表项之间建议空一行；列表开始和末尾都空一行</p>
+<p>无换行：</p>
+<ul>
+<li>抽烟</li>
+<li>喝酒</li>
+<li>烫头</li>
+</ul>
+<p>有换行：</p>
+<ul>
+<li><p>抽很多的<br />
+烟</p></li>
+<li><p>喝酒</p></li>
+<li><p>烫头</p></li>
+</ul>
+</div>
+</div>
+<div id="任务列表" class="section level2 hasAnchor" number="2.11">
+<h2><span class="header-section-number">2.11</span> 任务列表<a href="markdown.html#任务列表" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><strong>2019年读书计划</strong></p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb9-1"><a href="markdown.html#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[x]</span> 《R in Action》</span>
+<span id="cb9-2"><a href="markdown.html#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[x]</span> 《R for Data Science》 </span>
+<span id="cb9-3"><a href="markdown.html#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="ss">- </span><span class="va">[ ]</span> 《Python 疯狂讲义》</span></code></pre></div>
+<ul class="task-list">
+<li><input type="checkbox" disabled="" checked="" />
+《R in Action》</li>
+<li><input type="checkbox" disabled="" checked="" />
+《R for Data Science》</li>
+<li><input type="checkbox" disabled="" />
+《Python 疯狂讲义》</li>
+</ul>
+</div>
+<div id="管道表" class="section level2 hasAnchor" number="2.12">
+<h2><span class="header-section-number">2.12</span> 管道表<a href="markdown.html#管道表" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<table>
+<caption><span id="tab:easytable">Table 2.1: </span> 管道表</caption>
+<thead>
+<tr class="header">
+<th>Tables</th>
+<th align="center">Are</th>
+<th align="right">Cool</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>col 3 is</td>
+<td align="center">right-aligned</td>
+<td align="right">$1600</td>
+</tr>
+<tr class="even">
+<td>col 2 is</td>
+<td align="center">centered</td>
+<td align="right">$12</td>
+</tr>
+<tr class="odd">
+<td>zebra stripes</td>
+<td align="center">are neat</td>
+<td align="right">$1</td>
+</tr>
+</tbody>
+</table>
+<p>注：</p>
+<ol style="list-style-type: decimal">
+<li>英文冒号 : 使列获得了某种对齐方式。</li>
+<li>代码块和引用块不能插入表格。</li>
+<li>管道表不允许输入单元格换行，单元格内容太宽时转换结果可能自动换行。</li>
+<li><code>Table: (\#tab:label) text</code>，为markdown简易表自动加表编号和表名(text)，写在简易表的前后均可。</li>
+</ol>
+</div>
+<div id="代码" class="section level2 hasAnchor" number="2.13">
+<h2><span class="header-section-number">2.13</span> 代码<a href="markdown.html#代码" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>markdown 中的代码，只是显示，不可执行。</p>
+<div id="行内代码" class="section level3 hasAnchor" number="2.13.1">
+<h3><span class="header-section-number">2.13.1</span> 行内代码<a href="markdown.html#行内代码" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>写在两个反引号之间，例：</p>
+<p>在命令行中用<code>cd</code>命令切换目录</p>
+</div>
+<div id="代码块" class="section level3 hasAnchor" number="2.13.2">
+<h3><span class="header-section-number">2.13.2</span> 代码块<a href="markdown.html#代码块" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p><code>Tab</code>或四个空格<code></code>开头</p>
+<pre><code>pipenv shell</code></pre>
+<p>或使用成对的三个反引号包裹，并可以显示声明语言，这是 GFM 扩展语法</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python"><code class="sourceCode python"><span id="cb11-1"><a href="markdown.html#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> print_name():</span>
+<span id="cb11-2"><a href="markdown.html#cb11-2" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">&quot;Markdown&quot;</span>)</span></code></pre></div>
+</div>
+</div>
+<div id="转义" class="section level2 hasAnchor" number="2.14">
+<h2><span class="header-section-number">2.14</span> 转义<a href="markdown.html#转义" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><code>\</code> + 符号</p>
+<p>转义时要使用 \ 这个符号，比如美元符号 $，否则，$ 会表示嵌入行内的公式。</p>
+</div>
+<div id="删除线" class="section level2 hasAnchor" number="2.15">
+<h2><span class="header-section-number">2.15</span> 删除线<a href="markdown.html#删除线" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p>成对的双波浪线<code>~~</code>之间：</p>
+<p>他是个<del>天才</del>疯子。</p>
+</div>
+<div id="公式" class="section level2 hasAnchor" number="2.16">
+<h2><span class="header-section-number">2.16</span> 公式<a href="markdown.html#公式" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="行内公式" class="section level3 hasAnchor" number="2.16.1">
+<h3><span class="header-section-number">2.16.1</span> 行内公式<a href="markdown.html#行内公式" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>将公式包在<code>$ $</code>之间，如 <span class="math inline">\(\sin\pi/2=1\)</span></p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb12-1"><a href="markdown.html#cb12-1" aria-hidden="true" tabindex="-1"></a>$\sin\pi/2=1$ </span></code></pre></div>
+</div>
+<div id="独立成行的公式" class="section level3 hasAnchor" number="2.16.2">
+<h3><span class="header-section-number">2.16.2</span> 独立成行的公式<a href="markdown.html#独立成行的公式" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<p>将公式包含在<code>$$ $$</code>之间，如：</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb13-1"><a href="markdown.html#cb13-1" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb13-2"><a href="markdown.html#cb13-2" aria-hidden="true" tabindex="-1"></a>f(x)=\frac{1}{2} \sum_{j=1}^{\infty} \int_{0}^{1} \sin ^{2}(j t x) d t</span>
+<span id="cb13-3"><a href="markdown.html#cb13-3" aria-hidden="true" tabindex="-1"></a>$$</span></code></pre></div>
+<p><span class="math display">\[
+f(x)=\frac{1}{2} \sum_{j=1}^{\infty} \int_{0}^{1} \sin ^{2}(j t x) d t
+\]</span></p>
+<p>为了产生对齐的公式，或在某些 markdown 编辑器中成功渲染出独立成行的公式，可使用 aligned 环境。</p>
+<p>公式中的环境以<code>\begin{环境名}</code>开始，以<code>\end{环境名}</code>结束，用<code>\\</code>表示换行，用<code>&amp;</code>表示一个上下对齐位置。如：</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb14-1"><a href="markdown.html#cb14-1" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb14-2"><a href="markdown.html#cb14-2" aria-hidden="true" tabindex="-1"></a>\begin{aligned}</span>
+<span id="cb14-3"><a href="markdown.html#cb14-3" aria-hidden="true" tabindex="-1"></a>  f(x) =&amp; \sum_{k=0}^\infty \frac{1}{k!} x^k <span class="sc">\\</span></span>
+<span id="cb14-4"><a href="markdown.html#cb14-4" aria-hidden="true" tabindex="-1"></a>  =&amp; e^x</span>
+<span id="cb14-5"><a href="markdown.html#cb14-5" aria-hidden="true" tabindex="-1"></a>\end{aligned}</span>
+<span id="cb14-6"><a href="markdown.html#cb14-6" aria-hidden="true" tabindex="-1"></a>$$</span></code></pre></div>
+<p><span class="math display">\[
+\begin{aligned}
+  f(x) =&amp; \sum_{k=0}^\infty \frac{1}{k!} x^k \\
+  =&amp; e^x
+\end{aligned}
+\]</span></p>
+</div>
+<div id="为公式手动编号" class="section level3 hasAnchor" number="2.16.3">
+<h3><span class="header-section-number">2.16.3</span> 为公式手动编号<a href="markdown.html#为公式手动编号" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<div class="sourceCode" id="cb15"><pre class="sourceCode markdown"><code class="sourceCode markdown"><span id="cb15-1"><a href="markdown.html#cb15-1" aria-hidden="true" tabindex="-1"></a>$$</span>
+<span id="cb15-2"><a href="markdown.html#cb15-2" aria-hidden="true" tabindex="-1"></a>y = f(x) \tag{label}</span>
+<span id="cb15-3"><a href="markdown.html#cb15-3" aria-hidden="true" tabindex="-1"></a>$$</span></code></pre></div>
+<p><span class="math display">\[
+y = f(x) \tag{label}
+\]</span></p>
+</div>
+</div>
+<div id="锚点" class="section level2 hasAnchor" number="2.17">
+<h2><span class="header-section-number">2.17</span> 锚点<a href="markdown.html#锚点" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<p><code>[锚点描述](#锚点名)</code>，锚点名仅限完整的各级标题</p>
+<p><a href="markdown.html#单层和嵌套引用">跳转到引用</a></p>
+</div>
+<div id="排版风格建议" class="section level2 hasAnchor" number="2.18">
+<h2><span class="header-section-number">2.18</span> 排版风格建议<a href="markdown.html#排版风格建议" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<ol style="list-style-type: decimal">
+<li>中文字符和英文字符（不包括标点符号）之间加空格，</li>
+<li>使用半角符号时，无论是中文还是英文，都要在两边加空格。</li>
+<li>“/”表示路径时，前后都不加空格。</li>
+<li>负号后面接数字不加空格。</li>
+</ol>
+</div>
+<div id="mermaid" class="section level2 hasAnchor" number="2.19">
+<h2><span class="header-section-number">2.19</span> Mermaid<a href="markdown.html#mermaid" class="anchor-section" aria-label="Anchor link to header"></a></h2>
+<div id="什么是mermaid" class="section level3 hasAnchor" number="2.19.1">
+<h3><span class="header-section-number">2.19.1</span> 什么是Mermaid？<a href="markdown.html#什么是mermaid" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>Mermaid是一种基于Javascript的绘图工具，使用类似于Markdown的语法，使用户可以方便快捷地通过代码创建图表。</li>
+<li>项目地址：<a href="https://github.com/mermaid-js/mermaid" class="uri">https://github.com/mermaid-js/mermaid</a></li>
+</ul>
+</div>
+<div id="图类型" class="section level3 hasAnchor" number="2.19.2">
+<h3><span class="header-section-number">2.19.2</span> 图类型<a href="markdown.html#图类型" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>饼状图：使用<code>pie</code>关键字，具体用法后文将详细介绍</li>
+<li>流程图：使用<code>graph</code>关键字，具体用法后文将详细介绍</li>
+<li>序列图：使用<code>sequenceDiagram</code>关键字</li>
+<li>甘特图：使用<code>gantt</code>关键字</li>
+<li>类图：使用<code>classDiagram</code>关键字</li>
+<li>状态图：使用<code>stateDiagram</code>关键字</li>
+<li>用户旅程图：使用<code>journey</code>关键字</li>
+</ul>
+</div>
+<div id="饼图" class="section level3 hasAnchor" number="2.19.3">
+<h3><span class="header-section-number">2.19.3</span> 饼图<a href="markdown.html#饼图" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li><p>在线渲染器：<a href="https://mermaidjs.github.io/mermaid-live-editor/#/edit/eyJjb2RlIjoicGllXG5cIkRvZ3NcIiA6IDQyLjk2XG5cIkNhdHNcIiA6IDUwLjA1XG5cIlJhdHNcIiA6IDEwLjAxIiwibWVybWFpZCI6eyJ0aGVtZSI6ImRlZmF1bHQifX0">Online FlowChart &amp; Diagrams Editor</a></p></li>
+<li><p>语法</p>
+<ul>
+<li>从<code>pie</code>关键字开始图表</li>
+<li>然后使用<code>title</code>关键字及其在字符串中的值，为饼图赋予标题。（这是<strong>可选的</strong>）</li>
+<li>数据部分
+<ul>
+<li>在<code>" "</code>内写上分区名。</li>
+<li>分区名后使用<code>:</code>作为分隔符</li>
+<li>分隔符后写上数值，最多支持2位小数——数据会以百分比的形式展示</li>
+</ul></li>
+</ul></li>
+<li><p>实例</p></li>
+</ul>
+<pre class="mermaid"><code>pie
+    title 为什么总是宅在家里？
+    &quot;喜欢宅&quot; : 15
+    &quot;天气太热或太冷&quot; : 20
+    &quot;穷&quot; : 500</code></pre>
+</div>
+<div id="流程图" class="section level3 hasAnchor" number="2.19.4">
+<h3><span class="header-section-number">2.19.4</span> 流程图<a href="markdown.html#流程图" class="anchor-section" aria-label="Anchor link to header"></a></h3>
+<ul>
+<li>在线渲染器：<a href="https://mermaidjs.github.io/mermaid-live-editor/#/edit/eyJjb2RlIjoiZ3JhcGggVERcbiAgICBBW0hhcmRdIC0tPnxUZXh0fCBCKFJvdW5kKVxuICAgIEIgLS0-IEN7RGVjaXNpb259XG4gICAgQyAtLT58T25lfCBEW1Jlc3VsdCAxXVxuICAgIEMgLS0-fFR3b3wgRVtSZXN1bHQgMl0iLCJtZXJtYWlkIjp7InRoZW1lIjoiZGVmYXVsdCJ9fQ">Online FlowChart &amp; Diagrams Editor</a></li>
+</ul>
+<div id="实例" class="section level4 hasAnchor" number="2.19.4.1">
+<h4><span class="header-section-number">2.19.4.1</span> 实例<a href="markdown.html#实例" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<pre class="mermaid"><code>graph LR
+    A[Start] --&gt; B{Is it?};
+    B -- Yes --&gt; C[OK];
+    C --&gt; D[Rethink];
+    D --&gt; B;
+    B -- No ----&gt; E[End];</code></pre>
+</div>
+<div id="方向" class="section level4 hasAnchor" number="2.19.4.2">
+<h4><span class="header-section-number">2.19.4.2</span> 方向<a href="markdown.html#方向" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<p>用于开头，声明流程图的方向。</p>
+<ul>
+<li><code>graph</code>或<code>graph TB</code>或<code>graph TD</code>：从上往下</li>
+<li><code>graph BT</code>：从下往上</li>
+<li><code>graph LR</code>：从左往右</li>
+<li><code>graph RL</code>：从右往左</li>
+</ul>
+</div>
+<div id="结点" class="section level4 hasAnchor" number="2.19.4.3">
+<h4><span class="header-section-number">2.19.4.3</span> 结点<a href="markdown.html#结点" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<ul>
+<li>无名字的结点：直接写内容，此时结点边框为方形；节点内容不能有空格</li>
+<li>有名字的结点：节点名后书写内容，内容左右有特定符号，结点边框由符号决定；节点内容可以有空格</li>
+</ul>
+<blockquote>
+<p>下面的实例中，没有为graph指定方向，因此默认是从上往下的。但是由于各个结点之前没有箭头，所以他们都处于同一排。</p>
+</blockquote>
+<pre class="mermaid"><code>graph
+    默认方形
+    id1[方形]
+    id2(圆边矩形)
+    id3([体育场形])
+    id4[[子程序形]]
+    id5[(圆柱形)]
+    id6((圆形))</code></pre>
+<pre class="mermaid"><code>graph
+    id1{菱形}
+    id2{{六角形}}
+    id3[/平行四边形/]
+    id4[\反向平行四边形\]
+    id5[/梯形\]
+    id6[\反向梯形/]</code></pre>
+</div>
+<div id="连线样式" class="section level4 hasAnchor" number="2.19.4.4">
+<h4><span class="header-section-number">2.19.4.4</span> 连线样式<a href="markdown.html#连线样式" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<ul>
+<li>实线箭头：分为无文本箭头和有文本箭头，有文本箭头有2种书写格式</li>
+</ul>
+<pre class="mermaid"><code>graph LR
+a--&gt;b--文本1--&gt;c--&gt;|文本2|d</code></pre>
+<ul>
+<li>粗实线箭头：分为无文本箭头和有文本箭头</li>
+</ul>
+<pre class="mermaid"><code>graph LR
+a==&gt;b==文本==&gt;c</code></pre>
+<ul>
+<li>虚线箭头：分为无文本箭头和有文本箭头</li>
+</ul>
+<pre class="mermaid"><code>graph LR
+a-.-&gt;b-.文本.-&gt;c</code></pre>
+<ul>
+<li>无箭头线：即以上三种连线去掉箭头后的形式</li>
+</ul>
+<pre class="mermaid"><code>graph LR
+a---b
+b--文本1---c
+c---|文本2|d
+d===e
+e==文本3===f
+f-.-g
+g-.文本.-h</code></pre>
+<ul>
+<li>其他连线：需要将<code>graph</code>关键字改为<code>flowchart</code>，除了新增加的连线形式外，上面三种线的渲染效果也会不同</li>
+</ul>
+<pre class="mermaid"><code>flowchart LR
+    A o--o B
+    B &lt;--&gt; C
+    C x--x D
+    
+    旧连线 --文本--&gt; 也会不同</code></pre>
+<ul>
+<li>延长连线：增加相应字符即可，如下图中的B到E，连线中增加了一个<code>-</code>。字符可多次添加。</li>
+</ul>
+<pre class="mermaid"><code>graph LR
+    A[Start] --&gt; B{Is it?};
+    B --&gt;|Yes| C[OK];
+    C --&gt; D[Rethink];
+    D --&gt; B;
+    B ---&gt;|No| E[End];</code></pre>
+</div>
+<div id="连线形式" class="section level4 hasAnchor" number="2.19.4.5">
+<h4><span class="header-section-number">2.19.4.5</span> 连线形式<a href="markdown.html#连线形式" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<ul>
+<li>直链</li>
+</ul>
+<pre class="mermaid"><code>graph LR
+   A -- text --&gt; B -- text2 --&gt; C</code></pre>
+<ul>
+<li>多重链：可以使用<code>&amp;</code>字符，或单个描述</li>
+</ul>
+<pre class="mermaid"><code>graph 
+   a --&gt; b &amp; c--&gt; d
+   
+   A &amp; B--&gt; C &amp; D
+   
+    X --&gt; M
+    X --&gt; N
+    Y --&gt; M
+    Y --&gt; N</code></pre>
+</div>
+<div id="其他" class="section level4 hasAnchor" number="2.19.4.6">
+<h4><span class="header-section-number">2.19.4.6</span> 其他<a href="markdown.html#其他" class="anchor-section" aria-label="Anchor link to header"></a></h4>
+<ul>
+<li>子图：需要将<code>graph</code>关键字改为<code>flowchart</code>，在代码段的开始加入<code>subgraph</code>，尾部加入<code>end</code></li>
+</ul>
+<pre class="mermaid"><code>flowchart TB
+    c1--&gt;a2
+    subgraph one
+    a1--&gt;a2
+    end
+    subgraph two
+    b1--&gt;b2
+    end
+    subgraph three
+    c1--&gt;c2
+    end
+    one --&gt; two
+    three --&gt; two
+    two --&gt; c2</code></pre>
+<ul>
+<li>注释：在行首加入<code>%%</code>即可。</li>
+</ul>
+<pre class="mermaid"><code>graph LR
+%%这是一条注释，在渲染图中不可见
+    A[Hard edge] --&gt;|Link text| B(Round edge)
+    B --&gt; C{Decision}
+    C --&gt;|One| D[Result one]
+    C --&gt;|Two| E[Result two]</code></pre>
+</div>
+</div>
+</div>
+</div>
+            </section>
+
+          </div>
+        </div>
+      </div>
+<a href="html-语法.html" class="navigation navigation-prev " aria-label="Previous page"><i class="fa fa-angle-left"></i></a>
+<a href="Rmarkdown.html" class="navigation navigation-next " aria-label="Next page"><i class="fa fa-angle-right"></i></a>
+    </div>
+  </div>
+<script src="libs/gitbook-2.6.7/js/app.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/clipboard.min.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-search.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-sharing.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-fontsettings.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-bookdown.js"></script>
+<script src="libs/gitbook-2.6.7/js/jquery.highlight.js"></script>
+<script src="libs/gitbook-2.6.7/js/plugin-clipboard.js"></script>
+<script>
+gitbook.require(["gitbook"], function(gitbook) {
+gitbook.start({
+"sharing": {
+"github": false,
+"facebook": true,
+"twitter": true,
+"linkedin": false,
+"weibo": false,
+"instapaper": false,
+"vk": false,
+"whatsapp": false,
+"all": ["facebook", "twitter", "linkedin", "weibo", "instapaper"]
+},
+"fontsettings": {
+"theme": "white",
+"family": "sans",
+"size": 2
+},
+"edit": null,
+"history": {
+"link": null,
+"text": null
+},
+"view": {
+"link": null,
+"text": null
+},
+"download": null,
+"search": {
+"engine": "fuse",
+"options": null
+},
+"toc": {
+"collapse": "subsection"
+}
+});
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    var src = "true";
+    if (src === "" || src === "true") src = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML";
+    if (location.protocol !== "file:")
+      if (/^https?:/.test(src))
+        src = src.replace(/^https?:/, '');
+    script.src = src;
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+</body>
+
+</html>

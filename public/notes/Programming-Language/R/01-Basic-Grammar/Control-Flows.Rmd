@@ -1,0 +1,188 @@
+---
+title: "Control Flows"
+subtitle: ""
+author: "Humoon"
+date: "`r Sys.Date()`"
+output: html_document
+documentclass: ctexart
+classoption: hyperref,
+---
+
+```{r setup, include = FALSE}
+source("../Rmarkdown-template/Rmarkdown_config.R")
+
+## global options ===================================
+knitr::opts_chunk$set(
+  width = config$width,
+  fig.width = config$fig.width,
+  fig.asp = config$fig.asp,
+  out.width = config$out.width,
+  fig.align = config$fig.align,
+  fig.path = config$fig.path,
+  fig.show = config$fig.show,
+  warn = config$warn,
+  warning = config$warning,
+  message = config$message,
+  echo = config$echo,
+  eval = config$eval,
+  tidy = config$tidy,
+  comment = config$comment,
+  collapse = config$collapse,
+  cache = config$cache,
+  cache.comments = config$cache.comments,
+  autodep = config$autodep
+)
+```
+
+## 选择 Choice
+
+### `if...else if...else...`
+
+```{r, eval=FALSE}
+if (condition1) {
+  ...
+} else if (condition2) {
+  ...
+} else {
+  ...
+}
+```
+
+注意：
+
+1.  其中条件的长度应为1，长度大于1时报错！对于长度大于 1 的逻辑向量，要用`any(bool_vector)`和`all(bool_vector)`获得一个长度为 1 的 Boolean 向量（一个 bool 值），再配合`if(){}`和`else if(){}`使用。
+2.  虽然 `NA` 是长度为 1 的 logical 向量，但 `if(NA)` 也会报错，要注意防止这一点。
+    1.  可以充分利用`any()`和`all()`的 na.rm 参数，令其为 TRUE
+    2.  也可以使用 `if(isTRUE(condition))`，`isTRUE()`会在内部调用 `identical(TRUE,x)`，只有 x 是长度为1的 TRUE，才能返回 TRUE
+
+### 向量化形式：`ifelse()`
+
+三元选择函数`ifelse(condition, statement1, statement2)`中的三个参数可以是任意长度的向量，按各自分量执行向量化操作
+
+> R 中这个函数是向量化的，使用起来要慎之又慎！！！比如条件只有一个分量，则 statement1 和 statement2 就只有一个分量参与运算。
+
+### `switch(statement, list)`
+
+list 是一组键值对，statement 是一个键，返回 list 中与该键对应的值。
+
+```{r, eval=FALSE}
+switch(x,
+  a = "option 1",
+  b = "option 2",
+  c = "option 3",
+  stop("Invalid `x` value")
+)
+```
+
+```{r}
+result1 <- switch("fruit",
+  meat = "chicken",
+  fruit = "apple",
+  vegetable = "cucumber",
+  "soup"
+)
+result1
+
+
+result2 <- switch("final",
+  meat = "chicken",
+  fruit = "apple",
+  vegetable = "cucumber",
+  "soup"
+)
+result2 # 都不匹配时，返回无key的值
+```
+
+#### 简化形式
+
+`switch(k, para1, para2, ..., paran)`，根据整数 k 返回第 k 个参数值。k 在 1:n 的范围之外时，返回 NULL
+
+## 循环 Loop
+
+**能不用显式循环就不用，多用高阶函数实现迭代！**
+
+### `repeat {}`
+
+必须手动指定 break 条件，否则无限循环。这在创建交互式 app 时很有用。
+
+### `while (condition) {}`
+
+只要 condition 取值为 TRUE，就继续循环；取值为 FALSE 时，离开循环
+
+实践中， while 循环通常使用在迭代次数未知的情况下。例如从数据库的查询中分块地获取结果，相应的代码可能如下所示
+
+```{r, eval=FALSE}
+res <- dbSendQuery(con, "SELECT * FROM table1 WHERE type = 1")
+while (!dbHasCompleted(res)) {
+  chunk <- dbFetch(res, 10000)
+  process(chunk)
+}
+# 一小块一小块地处理查询结果，避免将一个（也许是巨大的）数据框读取到内存中
+# 这样，仅需占用很小的内存空间就可以处理大量的数据
+# 不过，前提条件是 process( ) 算法必须支持这种数据处理方式
+```
+
+### `for(iterator in sequence) {}`
+
+### `break` 关键字
+
+离开循环
+
+### `next` 关键字
+
+离开本轮循环，从下一轮循环开始
+
+### 提高循环速度：预先分配空间
+
+R 中如果对对象的 size 做了改动（如添加一个元素），要把整个数据结构都重新拷贝一份，这非常慢。如果在每次循环中都有这种语句，时间复杂度会是$\mathrm{O}\left(\mathrm{n}^{2}\right)$级的。
+
+所以最好在开始循环前，预先声明一个空向量/列表（`out <- vector("list", length(x))`），为输出结果分配足够的空间，避免频繁拷贝。循环结束后，可能需要打散并重组为我们需要的对象：对于向量用`unlist()`，数据框用`dplyr::bind_rows()`
+
+参考 JS 语法:
+
+```{js}
+const arr = [];
+for (let i = 0; i < 6; i++) {
+  arr.push(i ^ 2 % 11);
+}
+console.log(arr);
+```
+
+例：
+
+```{r}
+df <- tibble(
+  a = rnorm(10),
+  b = rnorm(10),
+  c = rnorm(10),
+  d = rnorm(10)
+)
+
+# 求df各列的中位数，先为输出分配空间，长度为ncol(df)的向量
+output <- numeric(ncol(df))
+for (i in 1:ncol(df)) {
+  output[[i]] <- median(df[[i]])
+}
+output
+```
+
+### 循环取元素通常会剥离属性
+
+```{r}
+xs <- as.Date(c("2020-01-01", "2010-01-01"))
+
+for (x in xs) { # 直接取元素，剥离 class 属性
+  str_c(x, x %>% class(), sep = ', ') %>% print()
+}
+
+for (i in seq_along(xs)) {
+  str_c(xs[[i]], xs[[i]] %>% class(), sep = ', ') %>% print()
+}
+
+# 还是 purrr 包的高阶函数安全
+xs %>% walk(function(x){
+  str_c(x, x %>% class(), sep = ', ') %>% print()
+})
+```
+
+## 条件系统 Condition

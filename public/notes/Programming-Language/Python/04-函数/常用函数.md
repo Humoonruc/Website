@@ -1,0 +1,49 @@
+## 环境
+
+#### `dir()`和`help()`   
+
+前者列出指定类或模块包含的全部内容，后者查看某个函数的帮助文档。一般配合使用，先用`dir(类名)`查阅类相关的所有方法，再用`help(类名.方法名)`查看函数的具体用法
+
+#### `id()`
+
+返回内存地址
+
+####  `del`
+
+删除变量。在实践中，几乎永远不需要删除简单变量。del 语句几乎总是用于删除列表中的值
+
+#### `print()`
+
+`print(*values, sep=' ', end='\n', file=sys.stdout)`
+
+values 可以接受任意多个变量的值（以逗号分开），因此`print()`可以输出多个值。默认以空格分开，输出结束后换行，sys.stdout 代表屏幕，可以修改为文件句柄
+
+`print()` 默认换行，相当于 Julia 的 `println()`
+
+`print(, end = " ")` 不换行，相当于 Julia 的 `print()`
+
+## Data Type
+
+#### `isinstance(变量，类型)`
+
+判断某变量是否为某类型
+
+## Iterator
+
+#### `range(m, n, k)`
+
+ 产生一个区间（range）类的对象，并非序列，专供循环使用，可以转换为列表或元组。`range(n)`即`range(0,n)`。          
+
+
+
+#### `itertools.groupby()`
+
+分割一个列表，make an iterator that returns consecutive keys and groups from the iterable
+
+```python
+from itertools import groupby
+groupby("aabbbcc")
+```
+
+
+

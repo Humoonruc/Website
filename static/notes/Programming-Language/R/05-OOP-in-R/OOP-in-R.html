@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Humoon" />
+
+<meta name="date" content="2022-03-31" />
+
+<title>Object Oriented Programming in R</title>
+
+<script src="libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="libs/navigation-1.1/tabsets.js"></script>
+<script src="libs/navigation-1.1/codefolding.js"></script>
+<script src="libs/navigation-1.1/sourceembed.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; } /* Alert */
+code span.an { color: #008000; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #0000ff; } /* ControlFlow */
+code span.ch { color: #008080; } /* Char */
+code span.cn { } /* Constant */
+code span.co { color: #008000; } /* Comment */
+code span.cv { color: #008000; } /* CommentVar */
+code span.do { color: #008000; } /* Documentation */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.im { } /* Import */
+code span.in { color: #008000; } /* Information */
+code span.kw { color: #0000ff; } /* Keyword */
+code span.op { } /* Operator */
+code span.ot { color: #ff4000; } /* Other */
+code span.pp { color: #ff4000; } /* Preprocessor */
+code span.sc { color: #008080; } /* SpecialChar */
+code span.ss { color: #008080; } /* SpecialString */
+code span.st { color: #008080; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #008080; } /* VerbatimString */
+code span.wa { color: #008000; font-weight: bold; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+<link rel="stylesheet" href="../css/style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Object Oriented Programming in R</h1>
+<h3 class="subtitle">《R的极客理想——高级开发篇》第四章</h3>
+<h4 class="author">Humoon</h4>
+<h4 class="date">2022-03-31</h4>
+
+</div>
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(R6)</span></code></pre></div>
+<div id="r6-类" class="section level2">
+<h2>R6 类</h2>
+<div id="创建-r6-类和实例化对象" class="section level3">
+<h3>创建 R6 类和实例化对象</h3>
+<div id="创建r6类" class="section level4">
+<h4>创建R6类：</h4>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="fu">R6Class</span>(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">classname =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">public =</span> <span class="fu">list</span>(),</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">private =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">active =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>  <span class="at">inherit =</span> <span class="cn">NULL</span>,</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>  <span class="at">lock =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>  <span class="at">class =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">portable =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">parent_env =</span> <span class="fu">parent.frame</span>()</span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<ul>
+<li>classname, 类名</li>
+<li>public, 定义公有成员，包括属性和方法</li>
+<li>private, 定义私有成员，包括属性和方法</li>
+<li>active, 主动绑定的函数列表</li>
+<li>inherit, 定义父类，继承关系</li>
+<li>lock, 是否上锁，上锁则用于类变量存储的环境空间被锁定，不能修改。</li>
+<li>class, 是否把属性封装成对象</li>
+<li>portable, 是否为可移植类型，默认是，类中成员访问需要调用 self 和 private 对象</li>
+<li>parent_env, 定义对象的父环境空间</li>
+</ul>
+</div>
+<div id="实例化r6类对象" class="section level4">
+<h4>实例化R6类对象：</h4>
+<p><code>R6类名$new()</code></p>
+</div>
+</div>
+<div id="公有成员和私有成员" class="section level3">
+<h3>公有成员和私有成员</h3>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>Person <span class="ot">&lt;-</span> <span class="fu">R6Class</span>(</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Person&quot;</span>,</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 公有成员</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">public =</span> <span class="fu">list</span>(</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 公有属性name</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="cn">NA</span>,</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 公有方法1：实例化对象的初始化函数</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 就像 JS 类的 constructor() 函数</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">initialize =</span> <span class="cf">function</span>(str_name, str_gender) {</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>      <span class="co"># 在类的内部访问公有成员，需要借助self对象来调用</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>      self<span class="sc">$</span>name <span class="ot">&lt;-</span> str_name</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>      <span class="co"># 调用私有属性和私有方法，都需要借助private对象来调用</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>      private<span class="sc">$</span>gender <span class="ot">&lt;-</span> str_gender</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 公有方法2：hello()</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">hello =</span> <span class="cf">function</span>() {</span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Hello,&quot;</span>, self<span class="sc">$</span>name))</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>      private<span class="sc">$</span><span class="fu">myGender</span>()</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 公有方法3：测试self和private到底是什么</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    <span class="at">member =</span> <span class="cf">function</span>() {</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(self)</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(private)</span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(<span class="fu">ls</span>(<span class="at">envir =</span> private))</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 私有成员</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">private =</span> <span class="fu">list</span>(</span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a>    <span class="at">gender =</span> <span class="cn">NA</span>,</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>    <span class="at">myGender =</span> <span class="cf">function</span>() {</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(<span class="fu">paste</span>(self<span class="sc">$</span>name, <span class="st">&quot;is&quot;</span>, private<span class="sc">$</span>gender))</span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a>)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 查看Person的定义</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>Person</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;Person&gt; object generator</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Public:</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     name: NA</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     initialize: function (str_name, str_gender) </span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     hello: function () </span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     member: function () </span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     clone: function (deep = FALSE) </span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Private:</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     gender: NA</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     myGender: function () </span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Parent env: &lt;environment: R_GlobalEnv&gt;</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Locked objects: TRUE</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Locked class: FALSE</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Portable: TRUE</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a><span class="co"># 检查Person的类型</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(Person)</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;R6ClassGenerator&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 实例化对象</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> Person<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;Conan&quot;</span>, <span class="st">&quot;Male&quot;</span>)</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>p1</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;Person&gt;</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Public:</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     clone: function (deep = FALSE) </span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     hello: function () </span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     initialize: function (str_name, str_gender) </span></span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     member: function () </span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     name: Conan</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Private:</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     gender: Male</span></span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     myGender: function ()</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(p1)</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Person&quot; &quot;R6&quot;</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">$</span><span class="fu">hello</span>()</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Hello, Conan&quot;</span></span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Conan is Male&quot;</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 公有成员可以直接访问；私有成员一旦赋值完成后，对外界是不可见的</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">$</span>name</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Conan&quot;</span></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">$</span>gender <span class="co"># 访问私有属性，返回NULL</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; NULL</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a><span class="co"># p1$myGender() # 访问私有方法，直接报Error</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 查看所有成员</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">$</span><span class="fu">member</span>()</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;Person&gt;</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Public:</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     clone: function (deep = FALSE) </span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     hello: function () </span></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     initialize: function (str_name, str_gender) </span></span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     member: function () </span></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     name: Conan</span></span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Private:</span></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     gender: Male</span></span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     myGender: function () </span></span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;environment: 0x0000000022c34c00&gt;</span></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;gender&quot;   &quot;myGender&quot;</span></span></code></pre></div>
+<p>private对象则是一个的环境空间，是self对象所在环境空间的中的一个子环境空间，所以私有成员只能在当前的类中被调用，外部访问私有成员时，就会找不到。</p>
+<p>在环境空间中保存私有成员的属性和方法，通过环境空间的访问控制让外部调用无法使用私有属性和方法，这种方式是经常被用在R包开发上的技巧。</p>
+</div>
+<div id="主动绑定的函数" class="section level3">
+<h3>主动绑定的函数</h3>
+<p>主动绑定的主要作用似乎是把函数的行为转换成属性的行为，让类中的函数操作更加灵活。</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>Calculate <span class="ot">&lt;-</span> <span class="fu">R6Class</span>(<span class="st">&quot;Calculate&quot;</span>,</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">public =</span> <span class="fu">list</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">num =</span> <span class="dv">100</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">active =</span> <span class="fu">list</span>(</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 主动绑定的第一个函数，有参数</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    <span class="at">alter =</span> <span class="cf">function</span>(value) {</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>      <span class="co"># 若参数缺失</span></span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>      <span class="cf">if</span> (<span class="fu">missing</span>(value)) {</span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>        <span class="fu">return</span>(self<span class="sc">$</span>num <span class="sc">+</span> <span class="dv">10</span>)</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>      } <span class="co"># 若参数得到了定义</span></span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>      <span class="cf">else</span> {</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a>        self<span class="sc">$</span>num <span class="ot">&lt;-</span> value <span class="sc">/</span> <span class="dv">2</span></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>      }</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 主动绑定的第二个函数，无参数</span></span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">rand =</span> <span class="cf">function</span>() <span class="fu">rnorm</span>(<span class="dv">1</span>)</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a>exam <span class="ot">&lt;-</span> Calculate<span class="sc">$</span><span class="fu">new</span>()</span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>exam<span class="sc">$</span>num</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 100</span></span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a><span class="co"># 调用主动绑定的alter()函数</span></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="co"># 由于没有参数，结果为 num  10 = 100  10 = 110</span></span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>exam<span class="sc">$</span>alter</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 110</span></span></code></pre></div>
+<p>注意，因为alter在active中被绑定了，虽然它<strong>本来是一个函数，在这里却像一个属性一样被引用(可以不写括号)</strong><a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a> 。</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>exam<span class="sc">$</span>alter <span class="ot">&lt;-</span> <span class="dv">100</span></span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="co"># exam$alter又被当做了元素</span></span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 但所赋的值100实际传给了alter()的参数value</span></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>exam<span class="sc">$</span>num <span class="co"># 查看公有属性num，显然上一句alter()就被调用运行了</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 50</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a>exam<span class="sc">$</span>alter <span class="co"># 调用主动绑定的active()函数，结果为 num+10=50+10=60</span></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 60</span></span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a><span class="co"># exam$alter(100) # 如果用函数方式来调用，会提示没有这个函数的</span></span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>exam<span class="sc">$</span>rand <span class="co"># 调用rand函数</span></span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.07360935</span></span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>exam<span class="sc">$</span>rand</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 0.3897215</span></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a><span class="co"># exam$rand &lt;- 99 # 传参出错，因为rand()不接受参数</span></span></code></pre></div>
+</div>
+<div id="继承子类对父类" class="section level3">
+<h3>继承（子类对父类）</h3>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>Worker <span class="ot">&lt;-</span> <span class="fu">R6Class</span>(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;Worker&quot;</span>,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">inherit =</span> Person, <span class="co"># 继承，指向父类</span></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">public =</span> <span class="fu">list</span>(</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 子类中的新函数</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">bye =</span> <span class="cf">function</span>() {</span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Bye bye&quot;</span>, self<span class="sc">$</span>name))</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">private =</span> <span class="fu">list</span>(</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">gender =</span> <span class="cn">NA</span>,</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>    <span class="co"># 子类中重写、覆盖旧函数</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a>    <span class="at">myGender =</span> <span class="cf">function</span>() {</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>      super<span class="sc">$</span><span class="fu">myGender</span>() <span class="co"># 子类中调用父类的方法，通过super对象</span></span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>      <span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Worker&quot;</span>, self<span class="sc">$</span>name, <span class="st">&quot;is&quot;</span>, private<span class="sc">$</span>gender))</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> Person<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;Conan&quot;</span>, <span class="st">&quot;Male&quot;</span>) <span class="co"># 实例化父类</span></span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">$</span><span class="fu">hello</span>()</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Hello, Conan&quot;</span></span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Conan is Male&quot;</span></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a>p2 <span class="ot">&lt;-</span> Worker<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;Conan&quot;</span>, <span class="st">&quot;Male&quot;</span>) <span class="co"># 实例化子类</span></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a>p2<span class="sc">$</span><span class="fu">hello</span>()</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Hello, Conan&quot;</span></span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Conan is Male&quot;</span></span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Worker Conan is Male&quot;</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-31"><a href="#cb10-31" aria-hidden="true" tabindex="-1"></a>p2<span class="sc">$</span><span class="fu">bye</span>()</span>
+<span id="cb10-32"><a href="#cb10-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Bye bye Conan&quot;</span></span></code></pre></div>
+</div>
+<div id="r6类对象的静态属性" class="section level3">
+<h3>R6类对象的静态属性</h3>
+<p>即可以在多个实例中通过共同链接到一个对象的方式共享该对象的属性，且实时联动，不会产生数据冗余。</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="co"># A类</span></span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">R6Class</span>(<span class="st">&quot;A&quot;</span>,</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">public =</span> <span class="fu">list</span>(</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="cn">NULL</span></span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-8"><a href="#cb11-8" aria-hidden="true" tabindex="-1"></a><span class="co"># B类，其属性是一个A类对象</span></span>
+<span id="cb11-9"><a href="#cb11-9" aria-hidden="true" tabindex="-1"></a>B <span class="ot">&lt;-</span> <span class="fu">R6Class</span>(<span class="st">&quot;B&quot;</span>,</span>
+<span id="cb11-10"><a href="#cb11-10" aria-hidden="true" tabindex="-1"></a>  <span class="at">public =</span> <span class="fu">list</span>(</span>
+<span id="cb11-11"><a href="#cb11-11" aria-hidden="true" tabindex="-1"></a>    <span class="at">a =</span> A<span class="sc">$</span><span class="fu">new</span>()</span>
+<span id="cb11-12"><a href="#cb11-12" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb11-13"><a href="#cb11-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb11-14"><a href="#cb11-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a>b1 <span class="ot">&lt;-</span> B<span class="sc">$</span><span class="fu">new</span>() <span class="co"># 实例化B对象</span></span>
+<span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>b1<span class="sc">$</span>a<span class="sc">$</span>x <span class="ot">&lt;-</span> <span class="dv">1</span> <span class="co"># 给x变量赋值</span></span>
+<span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a>b1<span class="sc">$</span>a<span class="sc">$</span>x <span class="co"># 查看x变量的值</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a>b2 <span class="ot">&lt;-</span> B<span class="sc">$</span><span class="fu">new</span>() <span class="co"># 实例化b2对象</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a>b2<span class="sc">$</span>a<span class="sc">$</span>x <span class="ot">&lt;-</span> <span class="dv">2</span> <span class="co"># 给x变量赋值</span></span>
+<span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>b2<span class="sc">$</span>a<span class="sc">$</span>x <span class="co"># 查看x变量的值</span></span>
+<span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span>
+<span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb11-25"><a href="#cb11-25" aria-hidden="true" tabindex="-1"></a>b1<span class="sc">$</span>a<span class="sc">$</span>x <span class="co"># b1实例的a对象的x值也发生改变</span></span>
+<span id="cb11-26"><a href="#cb11-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span></code></pre></div>
+<p>从输出结果可以看到，a对象实现了在多个b实例的共享。即<strong>不同的B类对象，其属性是同一个A类对象</strong>。</p>
+<p>需要注意的是，不能这样写：</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>C <span class="ot">&lt;-</span> <span class="fu">R6Class</span>(<span class="st">&quot;C&quot;</span>,</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">public =</span> <span class="fu">list</span>(</span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">a =</span> <span class="cn">NULL</span>,</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">initialize =</span> <span class="cf">function</span>() {</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>      self<span class="sc">$</span>a <span class="ot">&lt;-</span> A<span class="sc">$</span><span class="fu">new</span>()</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>cc1 <span class="ot">&lt;-</span> C<span class="sc">$</span><span class="fu">new</span>()</span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>cc1<span class="sc">$</span>a<span class="sc">$</span>x <span class="ot">&lt;-</span> <span class="dv">1</span></span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a>cc1<span class="sc">$</span>a<span class="sc">$</span>x</span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>cc2 <span class="ot">&lt;-</span> C<span class="sc">$</span><span class="fu">new</span>()</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a>cc2<span class="sc">$</span>a<span class="sc">$</span>x <span class="ot">&lt;-</span> <span class="dv">2</span></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>cc2<span class="sc">$</span>a<span class="sc">$</span>x</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 2</span></span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>cc1<span class="sc">$</span>a<span class="sc">$</span>x <span class="co"># x值未发生改变</span></span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 1</span></span></code></pre></div>
+<p>通过initialize()构建的a对象，是对单独的环境空间中的引用，所以不能实现引用对象的共享。</p>
+</div>
+<div id="r6类的可移植类型" class="section level3">
+<h3>R6类的可移植类型</h3>
+<ul>
+<li>可移植类型支持跨R包的继承；不可移植类型，在跨R包继承的时候，兼容性不太好。</li>
+<li>可移植类型必须要用self对象和private对象来访问类中的成员，如<code>self$x</code>, <code>private$y</code>；不可移植类型，可以直接使用变量x,y，并通过&lt;&lt;-实现赋值。</li>
+</ul>
+</div>
+<div id="r6类结构的修改" class="section level3">
+<h3>R6类结构的修改</h3>
+<p>定义一个R6类后，后续还可以通过<code>类名$set()</code>追加定义属性和方法。如：</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>A <span class="ot">&lt;-</span> <span class="fu">R6Class</span>(</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;A&quot;</span>,</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">public =</span> <span class="fu">list</span>(</span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">x =</span> <span class="dv">1</span>,</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">getx =</span> <span class="cf">function</span>() self<span class="sc">$</span>x</span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a><span class="co"># 动态修改</span></span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>A<span class="sc">$</span><span class="fu">set</span>(<span class="st">&quot;public&quot;</span>, <span class="st">&quot;x&quot;</span>, <span class="dv">10</span>, <span class="at">overwrite =</span> T)</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>A<span class="sc">$</span><span class="fu">set</span>(<span class="st">&quot;public&quot;</span>, <span class="st">&quot;getx2&quot;</span>, <span class="cf">function</span>() self<span class="sc">$</span>x <span class="sc">*</span> <span class="dv">10</span>, <span class="at">overwrite =</span> T)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>s <span class="ot">&lt;-</span> A<span class="sc">$</span><span class="fu">new</span>()</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a>s</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; &lt;A&gt;</span></span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;   Public:</span></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     clone: function (deep = FALSE) </span></span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     getx: function () </span></span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     getx2: function () </span></span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;     x: 10</span></span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span>x</span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 10</span></span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span><span class="fu">getx</span>()</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 10</span></span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-28"><a href="#cb13-28" aria-hidden="true" tabindex="-1"></a>s<span class="sc">$</span><span class="fu">getx2</span>()</span>
+<span id="cb13-29"><a href="#cb13-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 100</span></span></code></pre></div>
+</div>
+</div>
+<div id="综合案例构建一个图书分类的使用案例" class="section level2">
+<h2>综合案例：构建一个图书分类的使用案例</h2>
+<div id="任务一定义图书的静态结构" class="section level3">
+<h3>任务一：定义图书的静态结构</h3>
+<p>以图书(book)为父类，包括R，Java，PHP的3个分类，在book类中定义私有属性及公有方法，继承关系如下：</p>
+<p><img src="r6-class.png" style="margin-left:25%" /></p>
+<p>定义图书系统的数据结构，包括父类的结构 和 3种型类的图书:</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 父类</span></span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>Book <span class="ot">&lt;-</span> <span class="fu">R6Class</span>(<span class="st">&quot;Book&quot;</span>,</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">private =</span> <span class="fu">list</span>(</span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="cn">NA</span>,</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    <span class="at">price =</span> <span class="cn">NA</span>,</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    <span class="at">category =</span> <span class="cn">NA</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  ),</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>  <span class="at">public =</span> <span class="fu">list</span>(</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a>    <span class="at">initialize =</span> <span class="cf">function</span>(title, price, category) {</span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a>      private<span class="sc">$</span>title <span class="ot">&lt;-</span> title</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>      private<span class="sc">$</span>price <span class="ot">&lt;-</span> price</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>      private<span class="sc">$</span>category <span class="ot">&lt;-</span> category</span>
+<span id="cb14-14"><a href="#cb14-14" aria-hidden="true" tabindex="-1"></a>    },</span>
+<span id="cb14-15"><a href="#cb14-15" aria-hidden="true" tabindex="-1"></a>    <span class="at">getPrice =</span> <span class="cf">function</span>() {</span>
+<span id="cb14-16"><a href="#cb14-16" aria-hidden="true" tabindex="-1"></a>      private<span class="sc">$</span>price</span>
+<span id="cb14-17"><a href="#cb14-17" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb14-18"><a href="#cb14-18" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb14-19"><a href="#cb14-19" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-20"><a href="#cb14-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-21"><a href="#cb14-21" aria-hidden="true" tabindex="-1"></a><span class="co"># 子类R图书</span></span>
+<span id="cb14-22"><a href="#cb14-22" aria-hidden="true" tabindex="-1"></a>R <span class="ot">&lt;-</span> <span class="fu">R6Class</span>(<span class="st">&quot;R&quot;</span>,</span>
+<span id="cb14-23"><a href="#cb14-23" aria-hidden="true" tabindex="-1"></a>  <span class="at">inherit =</span> Book</span>
+<span id="cb14-24"><a href="#cb14-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-25"><a href="#cb14-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-26"><a href="#cb14-26" aria-hidden="true" tabindex="-1"></a><span class="co"># 子类JAVA图书</span></span>
+<span id="cb14-27"><a href="#cb14-27" aria-hidden="true" tabindex="-1"></a>Java <span class="ot">&lt;-</span> <span class="fu">R6Class</span>(<span class="st">&quot;JAVA&quot;</span>,</span>
+<span id="cb14-28"><a href="#cb14-28" aria-hidden="true" tabindex="-1"></a>  <span class="at">inherit =</span> Book</span>
+<span id="cb14-29"><a href="#cb14-29" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-30"><a href="#cb14-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-31"><a href="#cb14-31" aria-hidden="true" tabindex="-1"></a><span class="co"># 子类PHP图书</span></span>
+<span id="cb14-32"><a href="#cb14-32" aria-hidden="true" tabindex="-1"></a>Php <span class="ot">&lt;-</span> <span class="fu">R6Class</span>(<span class="st">&quot;PHP&quot;</span>,</span>
+<span id="cb14-33"><a href="#cb14-33" aria-hidden="true" tabindex="-1"></a>  <span class="at">inherit =</span> Book</span>
+<span id="cb14-34"><a href="#cb14-34" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb14-35"><a href="#cb14-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-36"><a href="#cb14-36" aria-hidden="true" tabindex="-1"></a><span class="co"># 创建3个实例</span></span>
+<span id="cb14-37"><a href="#cb14-37" aria-hidden="true" tabindex="-1"></a>r1 <span class="ot">&lt;-</span> R<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;R的极客理想-工具篇&quot;</span>, <span class="dv">59</span>, <span class="st">&quot;R&quot;</span>)</span>
+<span id="cb14-38"><a href="#cb14-38" aria-hidden="true" tabindex="-1"></a>r1<span class="sc">$</span><span class="fu">getPrice</span>()</span>
+<span id="cb14-39"><a href="#cb14-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 59</span></span>
+<span id="cb14-40"><a href="#cb14-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-41"><a href="#cb14-41" aria-hidden="true" tabindex="-1"></a>j1 <span class="ot">&lt;-</span> Java<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;Java编程思想&quot;</span>, <span class="dv">108</span>, <span class="st">&quot;JAVA&quot;</span>)</span>
+<span id="cb14-42"><a href="#cb14-42" aria-hidden="true" tabindex="-1"></a>j1<span class="sc">$</span><span class="fu">getPrice</span>()</span>
+<span id="cb14-43"><a href="#cb14-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 108</span></span>
+<span id="cb14-44"><a href="#cb14-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-45"><a href="#cb14-45" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> Java<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;Head First PHP &amp; MySQL&quot;</span>, <span class="dv">98</span>, <span class="st">&quot;PHP&quot;</span>)</span>
+<span id="cb14-46"><a href="#cb14-46" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">$</span><span class="fu">getPrice</span>()</span>
+<span id="cb14-47"><a href="#cb14-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] 98</span></span></code></pre></div>
+</div>
+<div id="任务二结合问题实际修改类的结构" class="section level3">
+<h3>任务二：结合问题实际修改类的结构</h3>
+<p>正逢双11对各类图书打折促销，假设有如下的打折规则</p>
+<ul>
+<li>所有图书至少9折起，再此基础上：</li>
+<li>JAVA图书7折，但不支持重复打折</li>
+<li>为了推动R图书的销售，R语言图书享受折上折，在现有基础上再打7折</li>
+<li>PHP图书无更多优惠</li>
+</ul>
+<p>根据打折规则，图书都可以被打折，那么打折就可以作为图书对象的一个行为，R, Java, PHP的3类图书，分别还有自己的打折规则，所以是一种多态的表现。</p>
+<p>我们修改父类的定义，增加打折的方法discount()，默认设置为9折，满足第一条规则。</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="do">## 为修改父类，添加属性和方法</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a><span class="co"># 添加新方法：折扣</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>Book<span class="sc">$</span><span class="fu">set</span>(<span class="st">&quot;public&quot;</span>, <span class="st">&quot;discount&quot;</span>, <span class="cf">function</span>() <span class="fl">0.9</span>, <span class="at">overwrite =</span> T)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 覆盖就方法：输出</span></span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>Book<span class="sc">$</span><span class="fu">set</span>(</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;public&quot;</span>,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;getPrice&quot;</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>  <span class="cf">function</span>() {</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>    p <span class="ot">&lt;-</span> private<span class="sc">$</span>price <span class="sc">*</span> self<span class="sc">$</span><span class="fu">discount</span>()</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>(<span class="fu">paste</span>(<span class="st">&quot;Price:&quot;</span>, private<span class="sc">$</span>price, <span class="st">&quot;, Sell out:&quot;</span>, p, <span class="at">sep =</span> <span class="st">&quot;&quot;</span>))</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>  },</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>  <span class="at">overwrite =</span> T</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Java类覆盖父类的discount()</span></span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a>Java <span class="ot">&lt;-</span> <span class="fu">R6Class</span>(<span class="st">&quot;JAVA&quot;</span>,</span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>  <span class="at">inherit =</span> Book,</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>  <span class="at">public =</span> <span class="fu">list</span>(</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">discount =</span> <span class="cf">function</span>() <span class="fl">0.7</span></span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="co"># R类通过super$调用父类的discount()</span></span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a>R <span class="ot">&lt;-</span> <span class="fu">R6Class</span>(<span class="st">&quot;R&quot;</span>,</span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>  <span class="at">inherit =</span> Book,</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a>  <span class="at">public =</span> <span class="fu">list</span>(</span>
+<span id="cb15-27"><a href="#cb15-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">discount =</span> <span class="cf">function</span>() {</span>
+<span id="cb15-28"><a href="#cb15-28" aria-hidden="true" tabindex="-1"></a>      super<span class="sc">$</span><span class="fu">discount</span>() <span class="sc">*</span> <span class="fl">0.7</span></span>
+<span id="cb15-29"><a href="#cb15-29" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb15-30"><a href="#cb15-30" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb15-31"><a href="#cb15-31" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-32"><a href="#cb15-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-33"><a href="#cb15-33" aria-hidden="true" tabindex="-1"></a><span class="co"># PHP类直接继承父类</span></span>
+<span id="cb15-34"><a href="#cb15-34" aria-hidden="true" tabindex="-1"></a>Php <span class="ot">&lt;-</span> <span class="fu">R6Class</span>(<span class="st">&quot;PHP&quot;</span>,</span>
+<span id="cb15-35"><a href="#cb15-35" aria-hidden="true" tabindex="-1"></a>  <span class="at">inherit =</span> Book</span>
+<span id="cb15-36"><a href="#cb15-36" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-37"><a href="#cb15-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-38"><a href="#cb15-38" aria-hidden="true" tabindex="-1"></a><span class="co"># 查看打折结果</span></span>
+<span id="cb15-39"><a href="#cb15-39" aria-hidden="true" tabindex="-1"></a>r1 <span class="ot">&lt;-</span> R<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;R的极客理想-工具篇&quot;</span>, <span class="dv">59</span>, <span class="st">&quot;R&quot;</span>)</span>
+<span id="cb15-40"><a href="#cb15-40" aria-hidden="true" tabindex="-1"></a>r1<span class="sc">$</span><span class="fu">getPrice</span>()</span>
+<span id="cb15-41"><a href="#cb15-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Price:59, Sell out:37.17&quot;</span></span>
+<span id="cb15-42"><a href="#cb15-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-43"><a href="#cb15-43" aria-hidden="true" tabindex="-1"></a>j1 <span class="ot">&lt;-</span> Java<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;Java编程思想&quot;</span>, <span class="dv">108</span>, <span class="st">&quot;JAVA&quot;</span>)</span>
+<span id="cb15-44"><a href="#cb15-44" aria-hidden="true" tabindex="-1"></a>j1<span class="sc">$</span><span class="fu">getPrice</span>()</span>
+<span id="cb15-45"><a href="#cb15-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Price:108, Sell out:75.6&quot;</span></span>
+<span id="cb15-46"><a href="#cb15-46" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-47"><a href="#cb15-47" aria-hidden="true" tabindex="-1"></a>p1 <span class="ot">&lt;-</span> Php<span class="sc">$</span><span class="fu">new</span>(<span class="st">&quot;Head First PHP &amp; MySQL&quot;</span>, <span class="dv">98</span>, <span class="st">&quot;PHP&quot;</span>)</span>
+<span id="cb15-48"><a href="#cb15-48" aria-hidden="true" tabindex="-1"></a>p1<span class="sc">$</span><span class="fu">getPrice</span>()</span>
+<span id="cb15-49"><a href="#cb15-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; [1] &quot;Price:98, Sell out:88.2&quot;</span></span></code></pre></div>
+</div>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p>像上文的公有方法 hello()，被 p1 引用时就是函数形式。<a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIk9iamVjdCBPcmllbnRlZCBQcm9ncmFtbWluZyBpbiBSIg0Kc3VidGl0bGU6ICfjgIpS55qE5p6B5a6i55CG5oOz4oCU4oCU6auY57qn5byA5Y+R56+H44CL56ys5Zub56ugJw0KYXV0aG9yOiAiSHVtb29uIg0KZGF0ZTogImByIFN5cy5EYXRlKClgIg0Kb3V0cHV0OiBodG1sX2RvY3VtZW50DQpkb2N1bWVudGNsYXNzOiBjdGV4YXJ0DQpjbGFzc29wdGlvbjogaHlwZXJyZWYsDQotLS0NCg0KYGBge3Igc2V0dXAsIGluY2x1ZGUgPSBGQUxTRX0NCnNvdXJjZSgiLi4vUm1hcmtkb3duLXRlbXBsYXRlL1JtYXJrZG93bl9jb25maWcuUiIpDQoNCiMjIGdsb2JhbCBvcHRpb25zID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQprbml0cjo6b3B0c19jaHVuayRzZXQoDQogIHdpZHRoID0gY29uZmlnJHdpZHRoLA0KICBmaWcud2lkdGggPSBjb25maWckZmlnLndpZHRoLA0KICBmaWcuYXNwID0gY29uZmlnJGZpZy5hc3AsDQogIG91dC53aWR0aCA9IGNvbmZpZyRvdXQud2lkdGgsDQogIGZpZy5hbGlnbiA9IGNvbmZpZyRmaWcuYWxpZ24sDQogIGZpZy5wYXRoID0gY29uZmlnJGZpZy5wYXRoLA0KICBmaWcuc2hvdyA9IGNvbmZpZyRmaWcuc2hvdywNCiAgd2FybiA9IGNvbmZpZyR3YXJuLA0KICB3YXJuaW5nID0gY29uZmlnJHdhcm5pbmcsDQogIG1lc3NhZ2UgPSBjb25maWckbWVzc2FnZSwNCiAgZWNobyA9IGNvbmZpZyRlY2hvLCANCiAgZXZhbCA9IGNvbmZpZyRldmFsLCANCiAgdGlkeSA9IGNvbmZpZyR0aWR5LCANCiAgY29tbWVudCA9IGNvbmZpZyRjb21tZW50LCANCiAgY29sbGFwc2UgPSBjb25maWckY29sbGFwc2UsIA0KICBjYWNoZSA9IGNvbmZpZyRjYWNoZSwNCiAgY2FjaGUuY29tbWVudHMgPSBjb25maWckY2FjaGUuY29tbWVudHMsDQogIGF1dG9kZXAgPSBjb25maWckYXV0b2RlcA0KKQ0KDQojIyB1c2UgbmVjZXNzYXJ5IHBhY2thZ2VzID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0KbGlicmFyeSh0aWR5dmVyc2UpDQpsaWJyYXJ5KGRhdGEudGFibGUpDQpsaWJyYXJ5KG1hZ3JpdHRyKQ0KbGlicmFyeShwbG90bHkpDQpsaWJyYXJ5KGh0bWx3aWRnZXRzKQ0KYGBgDQoNCg0KYGBge3J9DQpsaWJyYXJ5KFI2KQ0KYGBgDQoNCiMjIFI2IOexuw0KDQojIyMg5Yib5bu6IFI2IOexu+WSjOWunuS+i+WMluWvueixoQ0KDQojIyMjIOWIm+W7ulI257G777yaDQoNCmBgYHtyLCBldmFsPUZBTFNFfQ0KUjZDbGFzcygNCiAgY2xhc3NuYW1lID0gTlVMTCwNCiAgcHVibGljID0gbGlzdCgpLA0KICBwcml2YXRlID0gTlVMTCwNCiAgYWN0aXZlID0gTlVMTCwNCiAgaW5oZXJpdCA9IE5VTEwsDQogIGxvY2sgPSBUUlVFLA0KICBjbGFzcyA9IFRSVUUsDQogIHBvcnRhYmxlID0gVFJVRSwNCiAgcGFyZW50X2VudiA9IHBhcmVudC5mcmFtZSgpDQopDQpgYGANCg0KLSBjbGFzc25hbWUsIOexu+WQjQ0KLSBwdWJsaWMsIOWumuS5ieWFrOacieaIkOWRmO+8jOWMheaLrOWxnuaAp+WSjOaWueazlQ0KLSBwcml2YXRlLCDlrprkuYnnp4HmnInmiJDlkZjvvIzljIXmi6zlsZ7mgKflkozmlrnms5UNCi0gYWN0aXZlLCDkuLvliqjnu5HlrprnmoTlh73mlbDliJfooagNCi0gaW5oZXJpdCwg5a6a5LmJ54i257G777yM57un5om/5YWz57O7DQotIGxvY2ssIOaYr+WQpuS4iumUge+8jOS4iumUgeWImeeUqOS6juexu+WPmOmHj+WtmOWCqOeahOeOr+Wig+epuumXtOiiq+mUgeWumu+8jOS4jeiDveS/ruaUueOAgg0KLSBjbGFzcywg5piv5ZCm5oqK5bGe5oCn5bCB6KOF5oiQ5a+56LGhDQotIHBvcnRhYmxlLCDmmK/lkKbkuLrlj6/np7vmpI3nsbvlnovvvIzpu5jorqTmmK/vvIznsbvkuK3miJDlkZjorr/pl67pnIDopoHosIPnlKggc2VsZiDlkowgcHJpdmF0ZSDlr7nosaENCi0gcGFyZW50X2Vudiwg5a6a5LmJ5a+56LGh55qE54i2546v5aKD56m66Ze0DQoNCg0KIyMjIyDlrp7kvovljJZSNuexu+Wvueixoe+8mg0KDQpgUjbnsbvlkI0kbmV3KClgDQoNCg0KIyMjIOWFrOacieaIkOWRmOWSjOengeacieaIkOWRmA0KDQpgYGB7cn0NClBlcnNvbiA8LSBSNkNsYXNzKA0KICAiUGVyc29uIiwNCg0KICAjIOWFrOacieaIkOWRmA0KICBwdWJsaWMgPSBsaXN0KA0KICAgICMg5YWs5pyJ5bGe5oCnbmFtZQ0KICAgIG5hbWUgPSBOQSwNCg0KICAgICMg5YWs5pyJ5pa55rOVMe+8muWunuS+i+WMluWvueixoeeahOWIneWni+WMluWHveaVsA0KICAgICMg5bCx5YOPIEpTIOexu+eahCBjb25zdHJ1Y3RvcigpIOWHveaVsA0KICAgIGluaXRpYWxpemUgPSBmdW5jdGlvbihzdHJfbmFtZSwgc3RyX2dlbmRlcikgew0KICAgICAgIyDlnKjnsbvnmoTlhoXpg6jorr/pl67lhazmnInmiJDlkZjvvIzpnIDopoHlgJ/liqlzZWxm5a+56LGh5p2l6LCD55SoDQogICAgICBzZWxmJG5hbWUgPC0gc3RyX25hbWUNCiAgICAgICMg6LCD55So56eB5pyJ5bGe5oCn5ZKM56eB5pyJ5pa55rOV77yM6YO96ZyA6KaB5YCf5YqpcHJpdmF0ZeWvueixoeadpeiwg+eUqA0KICAgICAgcHJpdmF0ZSRnZW5kZXIgPC0gc3RyX2dlbmRlcg0KICAgIH0sDQoNCiAgICAjIOWFrOacieaWueazlTLvvJpoZWxsbygpDQogICAgaGVsbG8gPSBmdW5jdGlvbigpIHsNCiAgICAgIHByaW50KHBhc3RlKCJIZWxsbywiLCBzZWxmJG5hbWUpKQ0KICAgICAgcHJpdmF0ZSRteUdlbmRlcigpDQogICAgfSwNCg0KICAgICMg5YWs5pyJ5pa55rOVM++8mua1i+ivlXNlbGblkoxwcml2YXRl5Yiw5bqV5piv5LuA5LmIDQogICAgbWVtYmVyID0gZnVuY3Rpb24oKSB7DQogICAgICBwcmludChzZWxmKQ0KICAgICAgcHJpbnQocHJpdmF0ZSkNCiAgICAgIHByaW50KGxzKGVudmlyID0gcHJpdmF0ZSkpDQogICAgfQ0KICApLA0KDQogICMg56eB5pyJ5oiQ5ZGYDQogIHByaXZhdGUgPSBsaXN0KA0KICAgIGdlbmRlciA9IE5BLA0KICAgIG15R2VuZGVyID0gZnVuY3Rpb24oKSB7DQogICAgICBwcmludChwYXN0ZShzZWxmJG5hbWUsICJpcyIsIHByaXZhdGUkZ2VuZGVyKSkNCiAgICB9DQogICkNCikNCmBgYA0KDQoNCmBgYHtyfQ0KIyDmn6XnnItQZXJzb27nmoTlrprkuYkNClBlcnNvbg0KDQojIOajgOafpVBlcnNvbueahOexu+Weiw0KY2xhc3MoUGVyc29uKQ0KYGBgDQoNCg0KYGBge3J9DQojIOWunuS+i+WMluWvueixoQ0KcDEgPC0gUGVyc29uJG5ldygiQ29uYW4iLCAiTWFsZSIpDQpwMQ0KDQpjbGFzcyhwMSkNCg0KcDEkaGVsbG8oKQ0KYGBgDQoNCg0KYGBge3J9DQojIOWFrOacieaIkOWRmOWPr+S7peebtOaOpeiuv+mXru+8m+engeacieaIkOWRmOS4gOaXpui1i+WAvOWujOaIkOWQju+8jOWvueWklueVjOaYr+S4jeWPr+ingeeahA0KcDEkbmFtZQ0KDQpwMSRnZW5kZXIgIyDorr/pl67np4HmnInlsZ7mgKfvvIzov5Tlm55OVUxMDQoNCiMgcDEkbXlHZW5kZXIoKSAjIOiuv+mXruengeacieaWueazle+8jOebtOaOpeaKpUVycm9yDQpgYGANCg0KYGBge3J9DQojIOafpeeci+aJgOacieaIkOWRmA0KcDEkbWVtYmVyKCkNCmBgYA0KDQpwcml2YXRl5a+56LGh5YiZ5piv5LiA5Liq55qE546v5aKD56m66Ze077yM5pivc2VsZuWvueixoeaJgOWcqOeOr+Wig+epuumXtOeahOS4reeahOS4gOS4quWtkOeOr+Wig+epuumXtO+8jOaJgOS7peengeacieaIkOWRmOWPquiDveWcqOW9k+WJjeeahOexu+S4reiiq+iwg+eUqO+8jOWklumDqOiuv+mXruengeacieaIkOWRmOaXtu+8jOWwseS8muaJvuS4jeWIsOOAgg0KDQrlnKjnjq/looPnqbrpl7TkuK3kv53lrZjnp4HmnInmiJDlkZjnmoTlsZ7mgKflkozmlrnms5XvvIzpgJrov4fnjq/looPnqbrpl7TnmoTorr/pl67mjqfliLborqnlpJbpg6josIPnlKjml6Dms5Xkvb/nlKjnp4HmnInlsZ7mgKflkozmlrnms5XvvIzov5nnp43mlrnlvI/mmK/nu4/luLjooqvnlKjlnKhS5YyF5byA5Y+R5LiK55qE5oqA5ben44CCDQoNCiMjIyDkuLvliqjnu5HlrprnmoTlh73mlbANCg0K5Li75Yqo57uR5a6a55qE5Li76KaB5L2c55So5Ly85LmO5piv5oqK5Ye95pWw55qE6KGM5Li66L2s5o2i5oiQ5bGe5oCn55qE6KGM5Li677yM6K6p57G75Lit55qE5Ye95pWw5pON5L2c5pu05Yqg54G15rS744CCDQoNCmBgYHtyfQ0KQ2FsY3VsYXRlIDwtIFI2Q2xhc3MoIkNhbGN1bGF0ZSIsDQogIHB1YmxpYyA9IGxpc3QoDQogICAgbnVtID0gMTAwDQogICksDQogIGFjdGl2ZSA9IGxpc3QoDQoNCiAgICAjIOS4u+WKqOe7keWumueahOesrOS4gOS4quWHveaVsO+8jOacieWPguaVsA0KICAgIGFsdGVyID0gZnVuY3Rpb24odmFsdWUpIHsNCiAgICAgICMg6Iul5Y+C5pWw57y65aSxDQogICAgICBpZiAobWlzc2luZyh2YWx1ZSkpIHsNCiAgICAgICAgcmV0dXJuKHNlbGYkbnVtICsgMTApDQogICAgICB9ICMg6Iul5Y+C5pWw5b6X5Yiw5LqG5a6a5LmJDQogICAgICBlbHNlIHsNCiAgICAgICAgc2VsZiRudW0gPC0gdmFsdWUgLyAyDQogICAgICB9DQogICAgfSwNCg0KICAgICMg5Li75Yqo57uR5a6a55qE56ys5LqM5Liq5Ye95pWw77yM5peg5Y+C5pWwDQogICAgcmFuZCA9IGZ1bmN0aW9uKCkgcm5vcm0oMSkNCiAgKQ0KKQ0KDQpleGFtIDwtIENhbGN1bGF0ZSRuZXcoKQ0KZXhhbSRudW0NCg0KIyDosIPnlKjkuLvliqjnu5HlrprnmoRhbHRlcigp5Ye95pWwDQojIOeUseS6juayoeacieWPguaVsO+8jOe7k+aenOS4uiBudW0gIDEwID0gMTAwICAxMCA9IDExMA0KZXhhbSRhbHRlcg0KYGBgDQoNCuazqOaEj++8jOWboOS4umFsdGVy5ZyoYWN0aXZl5Lit6KKr57uR5a6a5LqG77yM6Jm954S25a6DKirmnKzmnaXmmK/kuIDkuKrlh73mlbDvvIzlnKjov5nph4zljbTlg4/kuIDkuKrlsZ7mgKfkuIDmoLfooqvlvJXnlKgo5Y+v5Lul5LiN5YaZ5ous5Y+3KSoqXlvlg4/kuIrmlofnmoTlhazmnInmlrnms5UgaGVsbG8oKe+8jOiiqyBwMSDlvJXnlKjml7blsLHmmK/lh73mlbDlvaLlvI/jgIJdIOOAgg0KDQoNCmBgYHtyfQ0KZXhhbSRhbHRlciA8LSAxMDANCiMgZXhhbSRhbHRlcuWPiOiiq+W9k+WBmuS6huWFg+e0oA0KIyDkvYbmiYDotYvnmoTlgLwxMDDlrp7pmYXkvKDnu5nkuoZhbHRlcigp55qE5Y+C5pWwdmFsdWUNCg0KZXhhbSRudW0gIyDmn6XnnIvlhazmnInlsZ7mgKdudW3vvIzmmL7nhLbkuIrkuIDlj6VhbHRlcigp5bCx6KKr6LCD55So6L+Q6KGM5LqGDQoNCmV4YW0kYWx0ZXIgIyDosIPnlKjkuLvliqjnu5HlrprnmoRhY3RpdmUoKeWHveaVsO+8jOe7k+aenOS4uiBudW0rMTA9NTArMTA9NjANCiMgZXhhbSRhbHRlcigxMDApICMg5aaC5p6c55So5Ye95pWw5pa55byP5p2l6LCD55So77yM5Lya5o+Q56S65rKh5pyJ6L+Z5Liq5Ye95pWw55qEDQoNCmV4YW0kcmFuZCAjIOiwg+eUqHJhbmTlh73mlbANCg0KZXhhbSRyYW5kDQojIGV4YW0kcmFuZCA8LSA5OSAjIOS8oOWPguWHuumUme+8jOWboOS4unJhbmQoKeS4jeaOpeWPl+WPguaVsA0KYGBgDQoNCiMjIyDnu6fmib/vvIjlrZDnsbvlr7nniLbnsbvvvIkNCg0KYGBge3J9DQpXb3JrZXIgPC0gUjZDbGFzcygNCiAgIldvcmtlciIsDQogIGluaGVyaXQgPSBQZXJzb24sICMg57un5om/77yM5oyH5ZCR54i257G7DQogIHB1YmxpYyA9IGxpc3QoDQogICAgIyDlrZDnsbvkuK3nmoTmlrDlh73mlbANCiAgICBieWUgPSBmdW5jdGlvbigpIHsNCiAgICAgIHByaW50KHBhc3RlKCJCeWUgYnllIiwgc2VsZiRuYW1lKSkNCiAgICB9DQogICksDQogIHByaXZhdGUgPSBsaXN0KA0KICAgIGdlbmRlciA9IE5BLA0KICAgICMg5a2Q57G75Lit6YeN5YaZ44CB6KaG55uW5pen5Ye95pWwDQogICAgbXlHZW5kZXIgPSBmdW5jdGlvbigpIHsNCiAgICAgIHN1cGVyJG15R2VuZGVyKCkgIyDlrZDnsbvkuK3osIPnlKjniLbnsbvnmoTmlrnms5XvvIzpgJrov4dzdXBlcuWvueixoQ0KICAgICAgcHJpbnQocGFzdGUoIldvcmtlciIsIHNlbGYkbmFtZSwgImlzIiwgcHJpdmF0ZSRnZW5kZXIpKQ0KICAgIH0NCiAgKQ0KKQ0KDQpwMSA8LSBQZXJzb24kbmV3KCJDb25hbiIsICJNYWxlIikgIyDlrp7kvovljJbniLbnsbsNCnAxJGhlbGxvKCkNCg0KcDIgPC0gV29ya2VyJG5ldygiQ29uYW4iLCAiTWFsZSIpICMg5a6e5L6L5YyW5a2Q57G7DQpwMiRoZWxsbygpDQoNCnAyJGJ5ZSgpDQpgYGANCg0KIyMjIFI257G75a+56LGh55qE6Z2Z5oCB5bGe5oCnDQoNCuWNs+WPr+S7peWcqOWkmuS4quWunuS+i+S4remAmui/h+WFseWQjOmTvuaOpeWIsOS4gOS4quWvueixoeeahOaWueW8j+WFseS6q+ivpeWvueixoeeahOWxnuaAp++8jOS4lOWunuaXtuiBlOWKqO+8jOS4jeS8muS6p+eUn+aVsOaNruWGl+S9meOAgg0KDQpgYGB7cn0NCiMgQeexuw0KQSA8LSBSNkNsYXNzKCJBIiwNCiAgcHVibGljID0gbGlzdCgNCiAgICB4ID0gTlVMTA0KICApDQopDQoNCiMgQuexu++8jOWFtuWxnuaAp+aYr+S4gOS4qkHnsbvlr7nosaENCkIgPC0gUjZDbGFzcygiQiIsDQogIHB1YmxpYyA9IGxpc3QoDQogICAgYSA9IEEkbmV3KCkNCiAgKQ0KKQ0KDQpiMSA8LSBCJG5ldygpICMg5a6e5L6L5YyWQuWvueixoQ0KYjEkYSR4IDwtIDEgIyDnu5l45Y+Y6YeP6LWL5YC8DQpiMSRhJHggIyDmn6XnnIt45Y+Y6YeP55qE5YC8DQoNCmIyIDwtIEIkbmV3KCkgIyDlrp7kvovljJZiMuWvueixoQ0KYjIkYSR4IDwtIDIgIyDnu5l45Y+Y6YeP6LWL5YC8DQpiMiRhJHggIyDmn6XnnIt45Y+Y6YeP55qE5YC8DQoNCmIxJGEkeCAjIGIx5a6e5L6L55qEYeWvueixoeeahHjlgLzkuZ/lj5HnlJ/mlLnlj5gNCmBgYA0KDQrku47ovpPlh7rnu5Pmnpzlj6/ku6XnnIvliLDvvIxh5a+56LGh5a6e546w5LqG5Zyo5aSa5LiqYuWunuS+i+eahOWFseS6q+OAguWNsyoq5LiN5ZCM55qEQuexu+Wvueixoe+8jOWFtuWxnuaAp+aYr+WQjOS4gOS4qkHnsbvlr7nosaEqKuOAgg0KDQrpnIDopoHms6jmhI/nmoTmmK/vvIzkuI3og73ov5nmoLflhpnvvJoNCg0KYGBge3J9DQpDIDwtIFI2Q2xhc3MoIkMiLA0KICBwdWJsaWMgPSBsaXN0KA0KICAgIGEgPSBOVUxMLA0KICAgIGluaXRpYWxpemUgPSBmdW5jdGlvbigpIHsNCiAgICAgIHNlbGYkYSA8LSBBJG5ldygpDQogICAgfQ0KICApDQopDQoNCmNjMSA8LSBDJG5ldygpDQpjYzEkYSR4IDwtIDENCmNjMSRhJHgNCg0KY2MyIDwtIEMkbmV3KCkNCmNjMiRhJHggPC0gMg0KY2MyJGEkeA0KDQpjYzEkYSR4ICMgeOWAvOacquWPkeeUn+aUueWPmA0KYGBgDQoNCumAmui/h2luaXRpYWxpemUoKeaehOW7uueahGHlr7nosaHvvIzmmK/lr7nljZXni6znmoTnjq/looPnqbrpl7TkuK3nmoTlvJXnlKjvvIzmiYDku6XkuI3og73lrp7njrDlvJXnlKjlr7nosaHnmoTlhbHkuqvjgIINCg0KIyMjIFI257G755qE5Y+v56e75qSN57G75Z6LDQoNCi0g5Y+v56e75qSN57G75Z6L5pSv5oyB6LeoUuWMheeahOe7p+aJv++8m+S4jeWPr+enu+akjeexu+Wei++8jOWcqOi3qFLljIXnu6fmib/nmoTml7blgJnvvIzlhbzlrrnmgKfkuI3lpKrlpb3jgIINCi0g5Y+v56e75qSN57G75Z6L5b+F6aG76KaB55Soc2VsZuWvueixoeWSjHByaXZhdGXlr7nosaHmnaXorr/pl67nsbvkuK3nmoTmiJDlkZjvvIzlpoJgc2VsZiR4YCwgYHByaXZhdGUkeWDvvJvkuI3lj6/np7vmpI3nsbvlnovvvIzlj6/ku6Xnm7TmjqXkvb/nlKjlj5jph494LHnvvIzlubbpgJrov4c8PC3lrp7njrDotYvlgLzjgIINCg0KIyMjIFI257G757uT5p6E55qE5L+u5pS5DQoNCuWumuS5ieS4gOS4qlI257G75ZCO77yM5ZCO57ut6L+Y5Y+v5Lul6YCa6L+HYOexu+WQjSRzZXQoKWDov73liqDlrprkuYnlsZ7mgKflkozmlrnms5XjgILlpoLvvJoNCmBgYHtyfQ0KQSA8LSBSNkNsYXNzKA0KICAiQSIsDQogIHB1YmxpYyA9IGxpc3QoDQogICAgeCA9IDEsDQogICAgZ2V0eCA9IGZ1bmN0aW9uKCkgc2VsZiR4DQogICkNCikNCg0KIyDliqjmgIHkv67mlLkNCkEkc2V0KCJwdWJsaWMiLCAieCIsIDEwLCBvdmVyd3JpdGUgPSBUKQ0KQSRzZXQoInB1YmxpYyIsICJnZXR4MiIsIGZ1bmN0aW9uKCkgc2VsZiR4ICogMTAsIG92ZXJ3cml0ZSA9IFQpDQoNCnMgPC0gQSRuZXcoKQ0Kcw0KDQpzJHgNCg0KcyRnZXR4KCkNCg0KcyRnZXR4MigpDQpgYGANCg0KIyMg57u85ZCI5qGI5L6L77ya5p6E5bu65LiA5Liq5Zu+5Lmm5YiG57G755qE5L2/55So5qGI5L6LDQoNCiMjIyDku7vliqHkuIDvvJrlrprkuYnlm77kuabnmoTpnZnmgIHnu5PmnoQNCg0K5Lul5Zu+5LmmKGJvb2sp5Li654i257G777yM5YyF5ousUu+8jEphdmHvvIxQSFDnmoQz5Liq5YiG57G777yM5ZyoYm9va+exu+S4reWumuS5ieengeacieWxnuaAp+WPiuWFrOacieaWueazle+8jOe7p+aJv+WFs+ezu+WmguS4i++8mg0KDQo8aW1nIHNyYz0icjYtY2xhc3MucG5nIiBzdHlsZT0ibWFyZ2luLWxlZnQ6MjUlIiAvPg0KDQrlrprkuYnlm77kuabns7vnu5/nmoTmlbDmja7nu5PmnoTvvIzljIXmi6zniLbnsbvnmoTnu5PmnoQg5ZKMIDPnp43lnovnsbvnmoTlm77kuaY6DQpgYGB7cn0NCg0KIyDniLbnsbsNCkJvb2sgPC0gUjZDbGFzcygiQm9vayIsDQogIHByaXZhdGUgPSBsaXN0KA0KICAgIHRpdGxlID0gTkEsDQogICAgcHJpY2UgPSBOQSwNCiAgICBjYXRlZ29yeSA9IE5BDQogICksDQogIHB1YmxpYyA9IGxpc3QoDQogICAgaW5pdGlhbGl6ZSA9IGZ1bmN0aW9uKHRpdGxlLCBwcmljZSwgY2F0ZWdvcnkpIHsNCiAgICAgIHByaXZhdGUkdGl0bGUgPC0gdGl0bGUNCiAgICAgIHByaXZhdGUkcHJpY2UgPC0gcHJpY2UNCiAgICAgIHByaXZhdGUkY2F0ZWdvcnkgPC0gY2F0ZWdvcnkNCiAgICB9LA0KICAgIGdldFByaWNlID0gZnVuY3Rpb24oKSB7DQogICAgICBwcml2YXRlJHByaWNlDQogICAgfQ0KICApDQopDQoNCiMg5a2Q57G7UuWbvuS5pg0KUiA8LSBSNkNsYXNzKCJSIiwNCiAgaW5oZXJpdCA9IEJvb2sNCikNCg0KIyDlrZDnsbtKQVZB5Zu+5LmmDQpKYXZhIDwtIFI2Q2xhc3MoIkpBVkEiLA0KICBpbmhlcml0ID0gQm9vaw0KKQ0KDQojIOWtkOexu1BIUOWbvuS5pg0KUGhwIDwtIFI2Q2xhc3MoIlBIUCIsDQogIGluaGVyaXQgPSBCb29rDQopDQoNCiMg5Yib5bu6M+S4quWunuS+iw0KcjEgPC0gUiRuZXcoIlLnmoTmnoHlrqLnkIbmg7Mt5bel5YW356+HIiwgNTksICJSIikNCnIxJGdldFByaWNlKCkNCg0KajEgPC0gSmF2YSRuZXcoIkphdmHnvJbnqIvmgJ3mg7MiLCAxMDgsICJKQVZBIikNCmoxJGdldFByaWNlKCkNCg0KcDEgPC0gSmF2YSRuZXcoIkhlYWQgRmlyc3QgUEhQICYgTXlTUUwiLCA5OCwgIlBIUCIpDQpwMSRnZXRQcmljZSgpDQpgYGANCg0KIyMjIOS7u+WKoeS6jO+8mue7k+WQiOmXrumimOWunumZheS/ruaUueexu+eahOe7k+aehA0KDQrmraPpgKLlj4wxMeWvueWQhOexu+WbvuS5puaJk+aKmOS/g+mUgO+8jOWBh+iuvuacieWmguS4i+eahOaJk+aKmOinhOWImQ0KDQotIOaJgOacieWbvuS5puiHs+WwkTnmipjotbfvvIzlho3mraTln7rnoYDkuIrvvJoNCi0gSkFWQeWbvuS5pjfmipjvvIzkvYbkuI3mlK/mjIHph43lpI3miZPmipgNCi0g5Li65LqG5o6o5YqoUuWbvuS5pueahOmUgOWUru+8jFLor63oqIDlm77kuabkuqvlj5fmipjkuIrmipjvvIzlnKjnjrDmnInln7rnoYDkuIrlho3miZM35oqYDQotIFBIUOWbvuS5puaXoOabtOWkmuS8mOaDoA0KDQrmoLnmja7miZPmipjop4TliJnvvIzlm77kuabpg73lj6/ku6XooqvmiZPmipjvvIzpgqPkuYjmiZPmipjlsLHlj6/ku6XkvZzkuLrlm77kuablr7nosaHnmoTkuIDkuKrooYzkuLrvvIxSLCBKYXZhLCBQSFDnmoQz57G75Zu+5Lmm77yM5YiG5Yir6L+Y5pyJ6Ieq5bex55qE5omT5oqY6KeE5YiZ77yM5omA5Lul5piv5LiA56eN5aSa5oCB55qE6KGo546w44CCDQoNCuaIkeS7rOS/ruaUueeItuexu+eahOWumuS5ie+8jOWinuWKoOaJk+aKmOeahOaWueazlWRpc2NvdW50KCnvvIzpu5jorqTorr7nva7kuLo55oqY77yM5ruh6Laz56ys5LiA5p2h6KeE5YiZ44CCDQoNCmBgYHtyfQ0KIyMg5Li65L+u5pS554i257G777yM5re75Yqg5bGe5oCn5ZKM5pa55rOVDQojIOa3u+WKoOaWsOaWueazle+8muaKmOaJow0KQm9vayRzZXQoInB1YmxpYyIsICJkaXNjb3VudCIsIGZ1bmN0aW9uKCkgMC45LCBvdmVyd3JpdGUgPSBUKQ0KIyDopobnm5blsLHmlrnms5XvvJrovpPlh7oNCkJvb2skc2V0KA0KICAicHVibGljIiwNCiAgImdldFByaWNlIiwNCiAgZnVuY3Rpb24oKSB7DQogICAgcCA8LSBwcml2YXRlJHByaWNlICogc2VsZiRkaXNjb3VudCgpDQogICAgcHJpbnQocGFzdGUoIlByaWNlOiIsIHByaXZhdGUkcHJpY2UsICIsIFNlbGwgb3V0OiIsIHAsIHNlcCA9ICIiKSkNCiAgfSwNCiAgb3ZlcndyaXRlID0gVA0KKQ0KDQojIEphdmHnsbvopobnm5bniLbnsbvnmoRkaXNjb3VudCgpDQpKYXZhIDwtIFI2Q2xhc3MoIkpBVkEiLA0KICBpbmhlcml0ID0gQm9vaywNCiAgcHVibGljID0gbGlzdCgNCiAgICBkaXNjb3VudCA9IGZ1bmN0aW9uKCkgMC43DQogICkNCikNCg0KIyBS57G76YCa6L+Hc3VwZXIk6LCD55So54i257G755qEZGlzY291bnQoKQ0KUiA8LSBSNkNsYXNzKCJSIiwNCiAgaW5oZXJpdCA9IEJvb2ssDQogIHB1YmxpYyA9IGxpc3QoDQogICAgZGlzY291bnQgPSBmdW5jdGlvbigpIHsNCiAgICAgIHN1cGVyJGRpc2NvdW50KCkgKiAwLjcNCiAgICB9DQogICkNCikNCg0KIyBQSFDnsbvnm7TmjqXnu6fmib/niLbnsbsNClBocCA8LSBSNkNsYXNzKCJQSFAiLA0KICBpbmhlcml0ID0gQm9vaw0KKQ0KDQojIOafpeeci+aJk+aKmOe7k+aenA0KcjEgPC0gUiRuZXcoIlLnmoTmnoHlrqLnkIbmg7Mt5bel5YW356+HIiwgNTksICJSIikNCnIxJGdldFByaWNlKCkNCg0KajEgPC0gSmF2YSRuZXcoIkphdmHnvJbnqIvmgJ3mg7MiLCAxMDgsICJKQVZBIikNCmoxJGdldFByaWNlKCkNCg0KcDEgPC0gUGhwJG5ldygiSGVhZCBGaXJzdCBQSFAgJiBNeVNRTCIsIDk4LCAiUEhQIikNCnAxJGdldFByaWNlKCkNCmBgYA0K</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("OOP-in-R.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

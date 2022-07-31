@@ -1,0 +1,1086 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Humoon" />
+
+<meta name="date" content="2022-05-07" />
+
+<title>Functional</title>
+
+<script src="libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="libs/navigation-1.1/tabsets.js"></script>
+<script src="libs/navigation-1.1/codefolding.js"></script>
+<script src="libs/navigation-1.1/sourceembed.js"></script>
+<script src="libs/htmlwidgets-1.5.4/htmlwidgets.js"></script>
+<script src="libs/plotly-binding-4.10.0/plotly.js"></script>
+<script src="libs/typedarray-0.1/typedarray.min.js"></script>
+<link href="libs/crosstalk-1.2.0/css/crosstalk.min.css" rel="stylesheet" />
+<script src="libs/crosstalk-1.2.0/js/crosstalk.min.js"></script>
+<link href="libs/plotly-htmlwidgets-css-2.5.1/plotly-htmlwidgets.css" rel="stylesheet" />
+<script src="libs/plotly-main-2.5.1/plotly-latest.min.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; } /* Alert */
+code span.an { color: #008000; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #0000ff; } /* ControlFlow */
+code span.ch { color: #008080; } /* Char */
+code span.cn { } /* Constant */
+code span.co { color: #008000; } /* Comment */
+code span.cv { color: #008000; } /* CommentVar */
+code span.do { color: #008000; } /* Documentation */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.im { } /* Import */
+code span.in { color: #008000; } /* Information */
+code span.kw { color: #0000ff; } /* Keyword */
+code span.op { } /* Operator */
+code span.ot { color: #ff4000; } /* Other */
+code span.pp { color: #ff4000; } /* Preprocessor */
+code span.sc { color: #008080; } /* SpecialChar */
+code span.ss { color: #008080; } /* SpecialString */
+code span.st { color: #008080; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #008080; } /* VerbatimString */
+code span.wa { color: #008000; font-weight: bold; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+<link rel="stylesheet" href="../css/style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Functional</h1>
+<h4 class="author">Humoon</h4>
+<h4 class="date">2022-05-07</h4>
+
+</div>
+
+
+<div id="高阶函数" class="section level2">
+<h2>高阶函数</h2>
+<p>将函数按照参数和返回值是否是函数进行分类，如下图。</p>
+<p>除了 regular function，其他三种函数统称为高阶函数。</p>
+<p><img
+src="https://d33wubrfki0l68.cloudfront.net/1dff819e743f280bbab1c55f8f063e60b6a0d2fb/2269e/diagrams/fp.png" /></p>
+<p>在数学上，泛函（functional）是从函数到实数的映射；在 R
+中，将接受函数作为参数、返回向量的函数称为泛函。</p>
+<p>将处理数据的代码段写入函数的函数参数中，<strong>泛函就可以代替循环/迭代</strong><a
+href="#fn1" class="footnote-ref"
+id="fnref1"><sup>1</sup></a>——减少显式循环的使用是高质量代码的标志之一</p>
+<p>新版本的 R base 包含了一些原生的泛函，但不如 purrr
+包的泛函更丰富、在语法上更具有内在一致性</p>
+<table>
+<colgroup>
+<col width="41%" />
+<col width="25%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><code>R base</code></th>
+<th><code>purrr::</code></th>
+<th>功能</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>Filter(f, x)</code></td>
+<td><code>keep()</code>, <code>discard()</code></td>
+<td>筛选</td>
+</tr>
+<tr class="even">
+<td><code>Map(f, …)</code></td>
+<td><code>map()</code></td>
+<td>依次作用</td>
+</tr>
+<tr class="odd">
+<td><code>Find(f, x, right = FALSE, nomatch = NULL)</code></td>
+<td><code>detect()</code></td>
+<td>给出符合条件的第一个或最后一个元素</td>
+</tr>
+<tr class="even">
+<td><code>Position(f, x, right = FALSE, nomatch = NA_integer_)</code></td>
+<td><code>detect_index()</code></td>
+<td>给出符合条件的第一个或最后一个元素的index</td>
+</tr>
+<tr class="odd">
+<td><code>Reduce(f, x, init, right = FALSE, accumulate = FALSE)</code></td>
+<td><code>reduce()</code></td>
+<td>串行操作</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>还有更多，见 cheatsheet</td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><a href="../pdf/cheatsheet-purrr.pdf"><strong>purrr
+cheatsheet.pdf</strong></a></p>
+<object data="../pdf/cheatsheet-purrr.pdf" type="application/pdf" width="100%" height="100%">
+</object>
+</div>
+<div id="并行操作的映射泛函" class="section level2">
+<h2>并行操作的映射泛函</h2>
+<div id="map.x-.f-..." class="section level3">
+<h3><code>map*(.x, .f, ...)</code></h3>
+<p><code>map*()</code>使用一个向量（包括列表、数据框）作为输入，并对其每个元素应用<code>.f</code>，所得结果组合成新向量或列表后返回。<strong><code>...</code>
+是 <code>.f()</code> 的可选参数<a href="#fn2" class="footnote-ref"
+id="fnref2"><sup>2</sup></a></strong></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 求每列平均值</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">data.table</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="at">y =</span> <span class="dv">11</span><span class="sc">:</span><span class="dv">20</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&gt;%</span> <span class="fu">map_dbl</span>(sum)</span></code></pre></div>
+<pre><code>#&gt;   x   y 
+#&gt;  55 155</code></pre>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="do">## map 通过 ... 传递 .f 参数的优雅</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>l <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">x =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span>, <span class="at">y =</span> <span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="cn">NA</span>))</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 两种写法等价</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>l <span class="sc">%&gt;%</span> <span class="fu">map_dbl</span>(<span class="at">.f =</span> <span class="sc">~</span> <span class="fu">mean</span>(.x, <span class="at">na.rm =</span> <span class="cn">TRUE</span>))</span></code></pre></div>
+<pre><code>#&gt;   x   y 
+#&gt; 3.0 5.5</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>l <span class="sc">%&gt;%</span> <span class="fu">map_dbl</span>(mean, <span class="at">na.rm =</span> <span class="cn">TRUE</span>)</span></code></pre></div>
+<pre><code>#&gt;   x   y 
+#&gt; 3.0 5.5</code></pre>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a>trims <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">0</span>, <span class="fl">0.1</span>, <span class="fl">0.2</span>, <span class="fl">0.5</span>)</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rcauchy</span>(<span class="dv">1000</span>) <span class="co"># Cauchy distribution</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 两种写法等价</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>trims <span class="sc">%&gt;%</span> <span class="fu">map_dbl</span>(mean, <span class="at">x =</span> x)</span></code></pre></div>
+<pre><code>#&gt; [1] -0.33485780 -0.04766183 -0.01638114  0.02400590</code></pre>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>trims <span class="sc">%&gt;%</span> <span class="fu">map_dbl</span>(<span class="sc">~</span> <span class="fu">mean</span>(x, <span class="at">trim =</span> .))</span></code></pre></div>
+<pre><code>#&gt; [1] -0.33485780 -0.04766183 -0.01638114  0.02400590</code></pre>
+<div id="map的伪代码示意" class="section level4">
+<h4><code>map*()</code>的伪代码示意</h4>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>simple_map <span class="ot">&lt;-</span> <span class="cf">function</span>(x, f, ...) {</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>  out <span class="ot">&lt;-</span> <span class="fu">vector</span>(<span class="st">&quot;list&quot;</span>, <span class="fu">length</span>(x))</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>  <span class="cf">for</span> (i <span class="cf">in</span> <span class="fu">seq_along</span>(x)) {</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>    out[[i]] <span class="ot">&lt;-</span> <span class="fu">f</span>(x[[i]], ...)</span>
+<span id="cb11-5"><a href="#cb11-5" aria-hidden="true" tabindex="-1"></a>  }</span>
+<span id="cb11-6"><a href="#cb11-6" aria-hidden="true" tabindex="-1"></a>  out</span>
+<span id="cb11-7"><a href="#cb11-7" aria-hidden="true" tabindex="-1"></a>}</span></code></pre></div>
+</div>
+<div id="map的变体" class="section level4">
+<h4><code>map*()</code>的变体</h4>
+<ul>
+<li><code>map()</code> 返回列表</li>
+<li><code>map_lgl()</code> 返回逻辑型 atomic 向量</li>
+<li><code>map_int()</code> 返回整型 atomic 向量</li>
+<li><code>map_dbl()</code> 返回双精度型 atomic 向量</li>
+<li><code>map_chr()</code> 返回字符型 atomic 向量</li>
+<li><code>modify()</code>
+获得<strong>与输入相同类型的输出</strong>，如输入和输出均为数据框</li>
+<li><code>map_dfr()</code>
+对各元素的运算产生若干个行向量，并把它们粘在一起，返回数据框</li>
+<li><code>map_dfc()</code>
+对各元素的运算产生若干个列向量，并把它们粘在一起，返回数据框</li>
+<li><code>imap()</code> 遍历向量及其索引</li>
+<li><code>walk()</code>，无输出，只是为了执行函数内部某些指令的操作过程（如保存、打印）</li>
+<li><code>map_at(.x, .at, .f, ...)</code>,
+<code>map_if(.x, .p, .f, ...)</code>，对筛选出的部分元素执行 .f
+操作，其他元素不进行任何操作，返回对象的长度与 .x 相同</li>
+</ul>
+</div>
+<div id="匿名函数" class="section level4">
+<h4>匿名函数</h4>
+<p><code>map()</code> 的第二个参数可以是匿名函数。</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> mtcars <span class="sc">%&gt;%</span></span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(.<span class="sc">$</span>cyl) <span class="sc">%&gt;%</span></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="cf">function</span>(df) <span class="fu">lm</span>(mpg <span class="sc">~</span> wt, <span class="at">data =</span> df))</span></code></pre></div>
+<p>purrr 给出了一种匿名函数的简写语法：</p>
+<p><img src="img/Function-Shortcuts.png" /></p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a>models <span class="ot">&lt;-</span> mtcars <span class="sc">%&gt;%</span></span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(.<span class="sc">$</span>cyl) <span class="sc">%&gt;%</span></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">lm</span>(mpg <span class="sc">~</span> wt, <span class="at">data =</span> .)) <span class="co"># ~表明这是一个匿名函数, .(或.x)是代词，指传入的参数</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a><span class="fu">class</span>(models)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;list&quot;</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>models</span></code></pre></div>
+<pre><code>#&gt; $`4`
+#&gt; 
+#&gt; Call:
+#&gt; lm(formula = mpg ~ wt, data = .)
+#&gt; 
+#&gt; Coefficients:
+#&gt; (Intercept)           wt  
+#&gt;      39.571       -5.647  
+#&gt; 
+#&gt; 
+#&gt; $`6`
+#&gt; 
+#&gt; Call:
+#&gt; lm(formula = mpg ~ wt, data = .)
+#&gt; 
+#&gt; Coefficients:
+#&gt; (Intercept)           wt  
+#&gt;       28.41        -2.78  
+#&gt; 
+#&gt; 
+#&gt; $`8`
+#&gt; 
+#&gt; Call:
+#&gt; lm(formula = mpg ~ wt, data = .)
+#&gt; 
+#&gt; Coefficients:
+#&gt; (Intercept)           wt  
+#&gt;      23.868       -2.192</code></pre>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 提取三个模型的 R^2</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>models <span class="sc">%&gt;%</span></span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(summary.lm) <span class="sc">%&gt;%</span></span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dbl</span>(<span class="sc">~</span> .<span class="sc">$</span>r.squared) <span class="co"># ~表明这是一个函数，.代指参数，故返回: 参数$r.squared</span></span></code></pre></div>
+<pre><code>#&gt;         4         6         8 
+#&gt; 0.5086326 0.4645102 0.4229655</code></pre>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 批量建模及查看结果</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>mtcars <span class="sc">%&gt;%</span></span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">group_by</span>(cyl) <span class="sc">%&gt;%</span></span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">nest</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">model =</span> <span class="fu">map</span>(data, <span class="sc">~</span> <span class="fu">lm</span>(mpg <span class="sc">~</span> wt, <span class="at">data =</span> .))) <span class="sc">%&gt;%</span></span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">result =</span> <span class="fu">map</span>(model, <span class="sc">~</span> broom<span class="sc">::</span><span class="fu">tidy</span>(.))) <span class="sc">%&gt;%</span></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unnest</span>(result)</span></code></pre></div>
+<pre><code>#&gt; # A tibble: 6 × 8
+#&gt; # Groups:   cyl [3]
+#&gt;     cyl data               model  term      estimate std.error statistic p.value
+#&gt;   &lt;dbl&gt; &lt;list&gt;             &lt;list&gt; &lt;chr&gt;        &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+#&gt; 1     6 &lt;tibble [7 × 10]&gt;  &lt;lm&gt;   (Interce…    28.4      4.18       6.79 1.05e-3
+#&gt; 2     6 &lt;tibble [7 × 10]&gt;  &lt;lm&gt;   wt           -2.78     1.33      -2.08 9.18e-2
+#&gt; 3     4 &lt;tibble [11 × 10]&gt; &lt;lm&gt;   (Interce…    39.6      4.35       9.10 7.77e-6
+#&gt; 4     4 &lt;tibble [11 × 10]&gt; &lt;lm&gt;   wt           -5.65     1.85      -3.05 1.37e-2
+#&gt; 5     8 &lt;tibble [14 × 10]&gt; &lt;lm&gt;   (Interce…    23.9      3.01       7.94 4.05e-6
+#&gt; 6     8 &lt;tibble [14 × 10]&gt; &lt;lm&gt;   wt           -2.19     0.739     -2.97 1.18e-2</code></pre>
+<p><strong>最好不要使用超过一行的匿名函数</strong>。超过一行，最好给出函数名，便于阅读和调试。</p>
+</div>
+<div id="提取每个元素的部分成分" class="section level4">
+<h4>提取每个元素的部分成分</h4>
+<p><code>map_*()</code>的第二个参数还可以是字符串（作为
+name）和整数（作为索引），表示<strong>提取（extract）</strong>每个元素的对应属性或分量的值</p>
+<p>该语法可以避免在一连串管道的中间或最后使用<code>[]</code>或<code>$</code>符号，破坏语法的统一</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>models <span class="sc">%&gt;%</span></span>
+<span id="cb21-2"><a href="#cb21-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(summary.lm) <span class="sc">%&gt;%</span></span>
+<span id="cb21-3"><a href="#cb21-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map_dbl</span>(<span class="st">&quot;r.squared&quot;</span>)</span></code></pre></div>
+<pre><code>#&gt;         4         6         8 
+#&gt; 0.5086326 0.4645102 0.4229655</code></pre>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">list</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>), <span class="fu">list</span>(<span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">6</span>), <span class="fu">list</span>(<span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>))</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a>x <span class="sc">%&gt;%</span> <span class="fu">map_dbl</span>(<span class="dv">2</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] 2 5 8</code></pre>
+<p>两种方式也可以混用，通过 list() 实现嵌套提取的效果</p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">x =</span> <span class="dv">1</span>, <span class="at">y =</span> <span class="fu">c</span>(<span class="dv">2</span>)),</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">x =</span> <span class="dv">4</span>, <span class="at">y =</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">6</span>)),</span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">x =</span> <span class="dv">9</span>, <span class="at">y =</span> <span class="fu">c</span>(<span class="dv">9</span>, <span class="dv">10</span>, <span class="dv">11</span>))</span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a><span class="fu">map_dbl</span>(x, <span class="fu">list</span>(<span class="st">&quot;y&quot;</span>, <span class="dv">1</span>)) <span class="co"># 提取name为&quot;y&quot;的元素中的第一个元素</span></span></code></pre></div>
+<pre><code>#&gt; [1] 2 5 9</code></pre>
+</div>
+</div>
+<div id="map2_.x-.y-.f" class="section level3">
+<h3><code>map2_*(.x, .y, .f)</code></h3>
+<p><code>map2()</code>的 .f 参数为二元函数</p>
+<div class="sourceCode" id="cb27"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb27-1"><a href="#cb27-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 获得均值分别为 5, 10, -3 的几个正态分布</span></span>
+<span id="cb27-2"><a href="#cb27-2" aria-hidden="true" tabindex="-1"></a>mu <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="sc">-</span><span class="dv">3</span>)</span>
+<span id="cb27-3"><a href="#cb27-3" aria-hidden="true" tabindex="-1"></a>mu <span class="sc">%&gt;%</span></span>
+<span id="cb27-4"><a href="#cb27-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(rnorm, <span class="at">n =</span> <span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb27-5"><a href="#cb27-5" aria-hidden="true" tabindex="-1"></a>  <span class="co"># rnorm(n, mean=0, sd=1) 产生正态分布</span></span>
+<span id="cb27-6"><a href="#cb27-6" aria-hidden="true" tabindex="-1"></a>  <span class="co"># n=5已经给了rnorm，所以 mu 的元素传给 rnorm 只能从第二个参数开始排，也就是 mean</span></span>
+<span id="cb27-7"><a href="#cb27-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">str</span>()</span></code></pre></div>
+<pre><code>#&gt; List of 3
+#&gt;  $ : num [1:5] 4.11 6.63 5.38 4.94 6.63
+#&gt;  $ : num [1:5] 10.5 9.83 8.98 10.74 10.74
+#&gt;  $ : num [1:5] -3.14 -2.66 -2.85 -1.48 -3</code></pre>
+<div class="sourceCode" id="cb29"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb29-1"><a href="#cb29-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 均值、方差都不同的几个正态分布</span></span>
+<span id="cb29-2"><a href="#cb29-2" aria-hidden="true" tabindex="-1"></a>sigma <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="dv">1</span>, <span class="dv">5</span>, <span class="dv">10</span>)</span>
+<span id="cb29-3"><a href="#cb29-3" aria-hidden="true" tabindex="-1"></a><span class="fu">map2</span>(mu, sigma, rnorm, <span class="at">n =</span> <span class="dv">5</span>) <span class="sc">%&gt;%</span> <span class="fu">str</span>()</span></code></pre></div>
+<pre><code>#&gt; List of 3
+#&gt;  $ : num [1:5] 3.78 3.86 6 2.78 4.11
+#&gt;  $ : num [1:5] 5.3 15.53 9.25 6.86 7.62
+#&gt;  $ : num [1:5] -2.586 -24.152 -10.802 0.221 -14.042</code></pre>
+</div>
+<div id="pmap_.l-.f-..." class="section level3">
+<h3><code>pmap_*(.l, .f, ...)</code></h3>
+<p><code>pmap()</code>可以将一个可迭代对象的列表作为第一个参数，每个可迭代对象的
+index
+相同的元素作为一组，传递给<code>pmap()</code>的第二个参数（函数）。</p>
+<p><code>map2()</code>是<code>pmap()</code>的特例，<code>map2(x, y, f)</code>等价于<code>pmap(list(x, y), f)</code></p>
+<p>生成均值、标准差和样本数量都不相同的正态分布：</p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>n <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="dv">5</span>, <span class="dv">10</span>, <span class="dv">100</span>)</span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>args1 <span class="ot">&lt;-</span> <span class="fu">list</span>(n, mu, sigma)</span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a><span class="fu">pmap</span>(args1, rnorm) <span class="sc">%&gt;%</span> <span class="fu">str</span>()</span></code></pre></div>
+<pre><code>#&gt; List of 3
+#&gt;  $ : num [1:5] 2.99 4.89 3.88 5.55 4.2
+#&gt;  $ : num [1:10] 9.08 10.07 7.5 5.4 16.13 ...
+#&gt;  $ : num [1:100] -7.93 -9.4 -1.54 6.68 3.99 ...</code></pre>
+<p><img src="img/pmap1.png" /></p>
+<p>为了让代码更易读，应该<strong>为列表中的几个可迭代对象命名，名称分别为rnorm()的参数的名称。这样即使list中各向量的顺序不对，rnorm()也能正确识别</strong>。</p>
+<div class="sourceCode" id="cb33"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb33-1"><a href="#cb33-1" aria-hidden="true" tabindex="-1"></a>args2 <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">mean =</span> mu, <span class="at">sd =</span> sigma, <span class="at">n =</span> n)</span>
+<span id="cb33-2"><a href="#cb33-2" aria-hidden="true" tabindex="-1"></a>args2 <span class="sc">%&gt;%</span></span>
+<span id="cb33-3"><a href="#cb33-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pmap</span>(rnorm) <span class="sc">%&gt;%</span></span>
+<span id="cb33-4"><a href="#cb33-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">str</span>()</span></code></pre></div>
+<pre><code>#&gt; List of 3
+#&gt;  $ : num [1:5] 5.33 6.95 5.39 5.06 7
+#&gt;  $ : num [1:10] 13.05 1.78 14.14 9.35 14.17 ...
+#&gt;  $ : num [1:100] -5.03 -15.49 -13.5 -13.06 9.37 ...</code></pre>
+<p>也可以将参数保存在数据框中，注意变量名称的匹配</p>
+<div class="sourceCode" id="cb35"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb35-1"><a href="#cb35-1" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb35-2"><a href="#cb35-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>mean, <span class="sc">~</span>sd, <span class="sc">~</span>n,</span>
+<span id="cb35-3"><a href="#cb35-3" aria-hidden="true" tabindex="-1"></a>  <span class="dv">5</span>, <span class="dv">1</span>, <span class="dv">1</span>,</span>
+<span id="cb35-4"><a href="#cb35-4" aria-hidden="true" tabindex="-1"></a>  <span class="dv">10</span>, <span class="dv">5</span>, <span class="dv">3</span>,</span>
+<span id="cb35-5"><a href="#cb35-5" aria-hidden="true" tabindex="-1"></a>  <span class="sc">-</span><span class="dv">3</span>, <span class="dv">10</span>, <span class="dv">5</span></span>
+<span id="cb35-6"><a href="#cb35-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb35-7"><a href="#cb35-7" aria-hidden="true" tabindex="-1"></a>params <span class="sc">%&gt;%</span></span>
+<span id="cb35-8"><a href="#cb35-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">pmap</span>(rnorm)</span></code></pre></div>
+<pre><code>#&gt; [[1]]
+#&gt; [1] 5.813772
+#&gt; 
+#&gt; [[2]]
+#&gt; [1] 12.44169 18.04220 10.18662
+#&gt; 
+#&gt; [[3]]
+#&gt; [1]  2.591449  7.795421 -5.283498  9.821111 -2.784204</code></pre>
+</div>
+<div id="invoke_map" class="section level3">
+<h3><code>invoke_map()</code></h3>
+<p>多个函数的并行操作</p>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>f <span class="ot">&lt;-</span> <span class="fu">c</span>(<span class="st">&quot;runif&quot;</span>, <span class="st">&quot;rnorm&quot;</span>, <span class="st">&quot;rpois&quot;</span>)</span>
+<span id="cb37-2"><a href="#cb37-2" aria-hidden="true" tabindex="-1"></a>param <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb37-3"><a href="#cb37-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">min =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">max =</span> <span class="dv">1</span>),</span>
+<span id="cb37-4"><a href="#cb37-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">sd =</span> <span class="dv">5</span>),</span>
+<span id="cb37-5"><a href="#cb37-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">list</span>(<span class="at">lambda =</span> <span class="dv">10</span>)</span>
+<span id="cb37-6"><a href="#cb37-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb37-7"><a href="#cb37-7" aria-hidden="true" tabindex="-1"></a><span class="fu">invoke_map</span>(f, param, <span class="at">n =</span> <span class="dv">5</span>) <span class="sc">%&gt;%</span> <span class="fu">str</span>()</span></code></pre></div>
+<pre><code>#&gt; List of 3
+#&gt;  $ : num [1:5] 0.649 0.389 0.878 0.724 -0.559
+#&gt;  $ : num [1:5] -1.23 -3.32 -1.1 -1.01 -9.39
+#&gt;  $ : int [1:5] 10 9 11 14 12</code></pre>
+<p><img src="img/pmap2.png" /></p>
+<div class="sourceCode" id="cb39"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb39-1"><a href="#cb39-1" aria-hidden="true" tabindex="-1"></a>sim <span class="ot">&lt;-</span> <span class="fu">tribble</span>(</span>
+<span id="cb39-2"><a href="#cb39-2" aria-hidden="true" tabindex="-1"></a>  <span class="sc">~</span>f, <span class="sc">~</span>params,</span>
+<span id="cb39-3"><a href="#cb39-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;runif&quot;</span>, <span class="fu">list</span>(<span class="at">min =</span> <span class="sc">-</span><span class="dv">1</span>, <span class="at">max =</span> <span class="dv">1</span>),</span>
+<span id="cb39-4"><a href="#cb39-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;rnorm&quot;</span>, <span class="fu">list</span>(<span class="at">sd =</span> <span class="dv">5</span>),</span>
+<span id="cb39-5"><a href="#cb39-5" aria-hidden="true" tabindex="-1"></a>  <span class="st">&quot;rpois&quot;</span>, <span class="fu">list</span>(<span class="at">lambda =</span> <span class="dv">10</span>)</span>
+<span id="cb39-6"><a href="#cb39-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb39-7"><a href="#cb39-7" aria-hidden="true" tabindex="-1"></a>sim <span class="sc">%&gt;%</span> <span class="fu">mutate</span>(<span class="at">sim =</span> <span class="fu">invoke_map</span>(f, params, <span class="at">n =</span> <span class="dv">10</span>))</span></code></pre></div>
+<pre><code>#&gt; # A tibble: 3 × 3
+#&gt;   f     params           sim       
+#&gt;   &lt;chr&gt; &lt;list&gt;           &lt;list&gt;    
+#&gt; 1 runif &lt;named list [2]&gt; &lt;dbl [10]&gt;
+#&gt; 2 rnorm &lt;named list [1]&gt; &lt;dbl [10]&gt;
+#&gt; 3 rpois &lt;named list [1]&gt; &lt;int [10]&gt;</code></pre>
+</div>
+<div id="imap遍历索引" class="section level3">
+<h3><code>imap()</code>遍历索引</h3>
+<p><code>imap_*(.x, .f)</code>, .f 为二元函数，其第一个参数为 .x
+元素的值，第二个参数为 .x 元素的名称或 index（这很像 d3.js 中的
+<code>(d, i) =&gt; ...</code>）</p>
+<p>若 x 的元素具有 names
+属性，<code>imap(x, f)</code>等价于<code>map2(x, names(x), f)</code>；若
+x 的元素没有 names
+属性，<code>imap(x, f)</code>等价于<code>map2(x, seq_along(x), f)</code></p>
+<div class="sourceCode" id="cb41"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb41-1"><a href="#cb41-1" aria-hidden="true" tabindex="-1"></a>v <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="st">&quot;a&quot;</span> <span class="ot">=</span> <span class="dv">1</span>, <span class="st">&quot;b&quot;</span> <span class="ot">=</span> <span class="dv">2</span>, <span class="st">&quot;c&quot;</span> <span class="ot">=</span> <span class="dv">3</span>)</span>
+<span id="cb41-2"><a href="#cb41-2" aria-hidden="true" tabindex="-1"></a><span class="fu">imap</span>(v, <span class="sc">~</span> <span class="fu">paste0</span>(.y, <span class="st">&quot;: &quot;</span>, .x))</span></code></pre></div>
+<pre><code>#&gt; $a
+#&gt; [1] &quot;a: 1&quot;
+#&gt; 
+#&gt; $b
+#&gt; [1] &quot;b: 2&quot;
+#&gt; 
+#&gt; $c
+#&gt; [1] &quot;c: 3&quot;</code></pre>
+</div>
+<div id="walk" class="section level3">
+<h3><code>walk*()</code></h3>
+<p><code>walk(.x, .f)</code>, <code>walk2()</code>,
+<code>pwalk()</code>, <code>iwalk()</code></p>
+<div class="sourceCode" id="cb43"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb43-1"><a href="#cb43-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="dv">1</span>, <span class="st">&quot;a&quot;</span>, <span class="dv">3</span>)</span>
+<span id="cb43-2"><a href="#cb43-2" aria-hidden="true" tabindex="-1"></a>x <span class="sc">%&gt;%</span> <span class="fu">walk</span>(print)</span></code></pre></div>
+<pre><code>#&gt; [1] 1
+#&gt; [1] &quot;a&quot;
+#&gt; [1] 3</code></pre>
+<div class="sourceCode" id="cb45"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb45-1"><a href="#cb45-1" aria-hidden="true" tabindex="-1"></a>plots <span class="ot">&lt;-</span> mtcars <span class="sc">%&gt;%</span></span>
+<span id="cb45-2"><a href="#cb45-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">split</span>(.<span class="sc">$</span>cyl) <span class="sc">%&gt;%</span></span>
+<span id="cb45-3"><a href="#cb45-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">ggplot</span>(., <span class="fu">aes</span>(mpg, wt)) <span class="sc">+</span></span>
+<span id="cb45-4"><a href="#cb45-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_point</span>())</span>
+<span id="cb45-5"><a href="#cb45-5" aria-hidden="true" tabindex="-1"></a>fileNames <span class="ot">&lt;-</span> <span class="fu">str_c</span>(<span class="fu">names</span>(plots), <span class="st">&quot;.pdf&quot;</span>)</span>
+<span id="cb45-6"><a href="#cb45-6" aria-hidden="true" tabindex="-1"></a><span class="fu">pwalk</span>(<span class="fu">list</span>(fileNames, plots), ggsave, <span class="at">path =</span> <span class="fu">getwd</span>() <span class="sc">%&gt;%</span> <span class="fu">str_c</span>(<span class="st">&quot;/figure/&quot;</span>))</span></code></pre></div>
+<pre><code>#&gt; Saving 6 x 3.7 in image
+#&gt; Saving 6 x 3.7 in image
+#&gt; Saving 6 x 3.7 in image</code></pre>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># ggsave()的第一个参数是要保存的文件名，第二个参数是图形对象，path参数是文件夹路径</span></span></code></pre></div>
+<p><code>walk*()</code> 会隐式返回第一个参数
+.x，这使得它们非常适用于<strong>管道传输的中间步骤</strong>，就像不会打断管道的<code>%T&gt;%</code>一样。</p>
+</div>
+</div>
+<div id="apply泛函族" class="section level2">
+<h2><code>*apply()</code>泛函族</h2>
+<p><img src="img/applyFamily.png" /></p>
+<table>
+<caption><code>*apply()</code>与<code>map*()</code>对应表</caption>
+<colgroup>
+<col width="32%" />
+<col width="67%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th><code>*apply()</code></th>
+<th><code>map*()</code></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>lapply()</code></td>
+<td><code>map()</code></td>
+</tr>
+<tr class="even">
+<td><code>sapply()</code>, <code>vapply()</code></td>
+<td><code>map_lgl()</code>/<code>map_int()</code>/<code>map_dbl()</code>/<code>map_chr()</code></td>
+</tr>
+<tr class="odd">
+<td><code>mapply()</code></td>
+<td><code>map2()</code></td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+</tr>
+</tbody>
+</table>
+<p><strong>apply()函数有一个功能<code>map_*()</code>无法取代，那就是
+<code>matrix %&gt;% apply(1, f)</code> 允许将行作为元素传递给
+<code>f()</code>，而<code>map_*()</code>在处理数据框时永远将列作为元素传递给
+<code>f()</code></strong></p>
+<p>更多内容详见 <a href="http://blog.fens.me/r-apply/"
+class="uri">http://blog.fens.me/r-apply/</a></p>
+<div id="apply-遍历矩阵" class="section level4">
+<h4>apply: 遍历矩阵</h4>
+<p><code>apply(X, MARGIN, FUN, ...)</code>，其中<code>...</code>为 FUN
+的可选参数</p>
+<p>参数为<strong>矩阵或数组</strong>。要求所有的元素都是同一种数据类型。如果误用于其它类型，如<strong>数据框，则会自动转换为矩阵</strong>再处理</p>
+<p>MARGIN 表示函数的作用维度，1为对行运算，2为对列运算。</p>
+<p>如 <code>apply(X = A, 2, FUN = sum)</code>，对A矩阵的列求和</p>
+</div>
+<div id="lapply-从列表到列表" class="section level4">
+<h4>lapply: 从列表到列表</h4>
+<p><code>lapply(list,function,...)</code>，对列表、dataframe的每个对象/列分别进行操作，<strong>返回一个新列表</strong></p>
+</div>
+<div id="sapply-和-vapply-简化返回值" class="section level4">
+<h4>sapply 和 vapply: 简化返回值</h4>
+<p><code>sapply(list,function,…,simplify=T)</code>，相比 lapply
+的特点在于返回值可以被简化为 vector/matrix</p>
+<ul>
+<li><p>默认 simplify = T：返回值的类型由计算结果决定，如果 function
+计算结果的长度为1，则sapply将list简化为vector；如果返回的列表中每个元素的长度都大于1且长度相同，那么sapply将其简化位一个矩阵</p></li>
+<li><p>simplify = F：返回值的类型是list，此时与lapply完全相同。</p></li>
+</ul>
+<div class="sourceCode" id="cb48"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb48-1"><a href="#cb48-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 意为提取数据框每一列的第一个元素，返回一个由这些元素组成的向量。</span></span>
+<span id="cb48-2"><a href="#cb48-2" aria-hidden="true" tabindex="-1"></a><span class="co"># &quot;[[&quot;函数的用法为：&quot;[&quot;(object, 元素位置)&quot;</span></span>
+<span id="cb48-3"><a href="#cb48-3" aria-hidden="true" tabindex="-1"></a><span class="fu">sapply</span>(iris, <span class="st">&quot;[[&quot;</span>, <span class="dv">1</span>)</span></code></pre></div>
+<pre><code>#&gt; Sepal.Length  Sepal.Width Petal.Length  Petal.Width      Species 
+#&gt;          5.1          3.5          1.4          0.2          1.0</code></pre>
+<p><code>vapply(x, function, fun.value, ..., USE.NAMES = TRUE)</code>，相比sapply可以在参数中通过fun.value设置输出形状（向量/矩阵/列表）</p>
+<div class="sourceCode" id="cb50"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb50-1"><a href="#cb50-1" aria-hidden="true" tabindex="-1"></a><span class="fu">vapply</span>(x, mean, <span class="at">FUN.VALUE =</span> <span class="fu">double</span>(<span class="dv">1</span>)) <span class="co"># 等价于 map_dbl(x, mean)</span></span></code></pre></div>
+<p><code>vapply()</code> 是 <code>sapply()</code>
+的安全升级版，如果不能按照既定模板进行输出，函数就会终止，并产生错误信息。因此，<strong>尽量不要使用
+<code>sapply()</code></strong></p>
+</div>
+<div id="mapply-多元函数版" class="section level4">
+<h4>mapply: 多元函数版</h4>
+<p><code>mapply(function, object1, object2, ..., SIMPLIFY = TRUE)</code>，多参数计算，同样可能简化计算结果导致类型不匹配的错误</p>
+<p><code>mapply(f, x, y, z)</code>返回
+<code>list(f(x[1],y[1],z[1]), f(x[2],y[2],z[2]), ...)</code></p>
+<div class="sourceCode" id="cb51"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb51-1"><a href="#cb51-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb51-2"><a href="#cb51-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span></span>
+<span id="cb51-3"><a href="#cb51-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="dv">5</span><span class="sc">:-</span><span class="dv">4</span></span>
+<span id="cb51-4"><a href="#cb51-4" aria-hidden="true" tabindex="-1"></a>z <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">runif</span>(<span class="dv">10</span>, <span class="sc">-</span><span class="dv">5</span>, <span class="dv">5</span>))</span>
+<span id="cb51-5"><a href="#cb51-5" aria-hidden="true" tabindex="-1"></a>z</span></code></pre></div>
+<pre><code>#&gt;  [1] -2 -1  1  4 -3  4  4  2  1 -4</code></pre>
+<div class="sourceCode" id="cb53"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb53-1"><a href="#cb53-1" aria-hidden="true" tabindex="-1"></a><span class="fu">mapply</span>(max, x, y, z)</span></code></pre></div>
+<pre><code>#&gt;  [1]  5  4  3  4  5  6  7  8  9 10</code></pre>
+<div class="sourceCode" id="cb55"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb55-1"><a href="#cb55-1" aria-hidden="true" tabindex="-1"></a>firstlist <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">A =</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>, <span class="dv">4</span>), <span class="at">B =</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>, <span class="dv">2</span>))</span>
+<span id="cb55-2"><a href="#cb55-2" aria-hidden="true" tabindex="-1"></a>secondlist <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="at">A =</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>, <span class="dv">4</span>), <span class="at">B =</span> <span class="fu">matrix</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">16</span>, <span class="dv">8</span>))</span>
+<span id="cb55-3"><a href="#cb55-3" aria-hidden="true" tabindex="-1"></a><span class="fu">mapply</span>(identical, firstlist, secondlist) <span class="co"># identical()意为是否严格相等</span></span></code></pre></div>
+<pre><code>#&gt;     A     B 
+#&gt;  TRUE FALSE</code></pre>
+</div>
+<div id="tapply-分组统计" class="section level4">
+<h4>tapply: 分组统计</h4>
+<p><code>tapply(X, INDEX, function, ..., simplify = TRUE)</code></p>
+<p>INDEX 为用于分组的索引，对 X 按 INDEX 分组操作</p>
+<div class="sourceCode" id="cb57"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb57-1"><a href="#cb57-1" aria-hidden="true" tabindex="-1"></a>d <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="fu">list</span>(</span>
+<span id="cb57-2"><a href="#cb57-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">gender =</span> <span class="fu">c</span>(<span class="st">&quot;M&quot;</span>, <span class="st">&quot;M&quot;</span>, <span class="st">&quot;F&quot;</span>, <span class="st">&quot;M&quot;</span>, <span class="st">&quot;F&quot;</span>, <span class="st">&quot;F&quot;</span>),</span>
+<span id="cb57-3"><a href="#cb57-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">age =</span> <span class="fu">c</span>(<span class="dv">47</span>, <span class="dv">59</span>, <span class="dv">21</span>, <span class="dv">32</span>, <span class="dv">33</span>, <span class="dv">24</span>),</span>
+<span id="cb57-4"><a href="#cb57-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">income =</span> <span class="fu">c</span>(<span class="dv">55000</span>, <span class="dv">88000</span>, <span class="dv">32450</span>, <span class="dv">76500</span>, <span class="dv">123000</span>, <span class="dv">45650</span>)</span>
+<span id="cb57-5"><a href="#cb57-5" aria-hidden="true" tabindex="-1"></a>))</span>
+<span id="cb57-6"><a href="#cb57-6" aria-hidden="true" tabindex="-1"></a><span class="fu">tapply</span>(d<span class="sc">$</span>income, d<span class="sc">$</span>gender, mean) <span class="co"># income先对gender分组，再求平均值</span></span></code></pre></div>
+<pre><code>#&gt;        F        M 
+#&gt; 67033.33 73166.67</code></pre>
+<div class="sourceCode" id="cb59"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb59-1"><a href="#cb59-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span></span>
+<span id="cb59-2"><a href="#cb59-2" aria-hidden="true" tabindex="-1"></a>t <span class="ot">&lt;-</span> <span class="fu">round</span>(<span class="fu">runif</span>(<span class="dv">10</span>, <span class="dv">1</span>, <span class="dv">100</span>) <span class="sc">%%</span> <span class="dv">2</span>)</span>
+<span id="cb59-3"><a href="#cb59-3" aria-hidden="true" tabindex="-1"></a>t</span></code></pre></div>
+<pre><code>#&gt;  [1] 1 0 1 1 1 0 0 1 1 2</code></pre>
+<div class="sourceCode" id="cb61"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb61-1"><a href="#cb61-1" aria-hidden="true" tabindex="-1"></a><span class="fu">tapply</span>(x, t, sum)</span></code></pre></div>
+<pre><code>#&gt;  0  1  2 
+#&gt; 15 30 10</code></pre>
+</div>
+<div id="rapply-递归遍历" class="section level4">
+<h4>rapply 递归遍历</h4>
+<p><code>rapply(object, function, classes = "ANY", deflt = NULL, how = c("unlist", "replace", "list"),...)</code></p>
+<p><code>lapply()</code>
+的深度递归版，只接受list，如果list有子list，则继续遍历运用f处理</p>
+</div>
+<div id="eapply" class="section level4">
+<h4>eapply</h4>
+<p>环境空间遍历</p>
+</div>
+</div>
+<div id="并行操作的判断泛函" class="section level2">
+<h2>并行操作的判断泛函</h2>
+<p>predicate functional</p>
+<div id="筛选泛函" class="section level3">
+<h3>筛选泛函</h3>
+<ul>
+<li><code>keep(.x, .p)</code>，筛选 .p
+参数（一个函数，通常是匿名函数）的返回值为 TRUE 的元素，长度通常比 .x
+短</li>
+<li><code>discard(.x, .p)</code>，筛选 .p 参数的返回值为 FALSE
+的元素</li>
+<li><code>detect(.x, .f, ..., dir)</code>,
+返回符合条件的第一个或最后一个元素</li>
+<li><code>detect_index(.x, .f, ..., dir)</code>,
+返回符合条件的第一个或最后一个元素的 index</li>
+<li><code>head_while()</code></li>
+<li><code>tail_while()</code></li>
+</ul>
+</div>
+<div id="检测泛函" class="section level3">
+<h3>检测泛函</h3>
+<ul>
+<li><code>every(.x, .p)</code>, 计算出第一个 FALSE 时即返回 FALSE</li>
+<li><code>some(.x, .p)</code>, 计算出第一个 TRUE 时即返回 TRUE</li>
+<li><code>none(.x, .p)</code>, 是否没有元素通过检测</li>
+<li><code>has_element(.x, .y)</code>, .x 中是否包含 .y</li>
+</ul>
+</div>
+</div>
+<div id="串行操作的递归累计泛函" class="section level2">
+<h2>串行操作的递归、累计泛函</h2>
+<p>一个可迭代对象(iteratable
+object)，元素依次两两运算，每次运算得到一个结果，再与下一个元素运算。</p>
+<p>递归函数<code>purrr::reduce(.x, .f, ..., .init)</code>,
+<code>reduce2(.x, .y, .f, ..., .init)</code>直接得到最后的结果</p>
+<p>累计函数<code>purrr::accumulate(.x, f, ..., .init)</code>,
+<code>accumulate2(.x, .y, .f, ..., .init)</code>同时显示中间的步骤<a
+href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a> 。</p>
+<div class="sourceCode" id="cb63"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb63-1"><a href="#cb63-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 求交集和并集</span></span>
+<span id="cb63-2"><a href="#cb63-2" aria-hidden="true" tabindex="-1"></a>vs <span class="ot">&lt;-</span> <span class="fu">list</span>(</span>
+<span id="cb63-3"><a href="#cb63-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">3</span>, <span class="dv">5</span>, <span class="dv">6</span>, <span class="dv">10</span>),</span>
+<span id="cb63-4"><a href="#cb63-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">10</span>),</span>
+<span id="cb63-5"><a href="#cb63-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">10</span>)</span>
+<span id="cb63-6"><a href="#cb63-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb63-7"><a href="#cb63-7" aria-hidden="true" tabindex="-1"></a>vs <span class="sc">%&gt;%</span> <span class="fu">reduce</span>(intersect)</span></code></pre></div>
+<pre><code>#&gt; [1]  1  3 10</code></pre>
+<div class="sourceCode" id="cb65"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb65-1"><a href="#cb65-1" aria-hidden="true" tabindex="-1"></a>vs <span class="sc">%&gt;%</span> <span class="fu">reduce</span>(union)</span></code></pre></div>
+<pre><code>#&gt;  [1]  1  3  5  6 10  2  7  8  4  9</code></pre>
+<div class="sourceCode" id="cb67"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb67-1"><a href="#cb67-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 求连乘积</span></span>
+<span id="cb67-2"><a href="#cb67-2" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span><span class="sc">:</span><span class="dv">10</span> <span class="sc">%&gt;%</span> <span class="fu">accumulate</span>(<span class="st">`</span><span class="at">*</span><span class="st">`</span>)</span></code></pre></div>
+<pre><code>#&gt;  [1]       1       2       6      24     120     720    5040   40320  362880
+#&gt; [10] 3628800</code></pre>
+<div class="sourceCode" id="cb69"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb69-1"><a href="#cb69-1" aria-hidden="true" tabindex="-1"></a><span class="do">## config ===============================================</span></span>
+<span id="cb69-2"><a href="#cb69-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="dv">5</span>)</span>
+<span id="cb69-3"><a href="#cb69-3" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">seq</span>(<span class="dv">100</span>, <span class="dv">200</span>, <span class="dv">5</span>)</span>
+<span id="cb69-4"><a href="#cb69-4" aria-hidden="true" tabindex="-1"></a>params <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">5</span> <span class="sc">*</span> <span class="dv">10</span></span>
+<span id="cb69-5"><a href="#cb69-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-6"><a href="#cb69-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-7"><a href="#cb69-7" aria-hidden="true" tabindex="-1"></a><span class="do">## plotting ===============================================</span></span>
+<span id="cb69-8"><a href="#cb69-8" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plotly)</span>
+<span id="cb69-9"><a href="#cb69-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-10"><a href="#cb69-10" aria-hidden="true" tabindex="-1"></a><span class="co"># 图的框架</span></span>
+<span id="cb69-11"><a href="#cb69-11" aria-hidden="true" tabindex="-1"></a>p0 <span class="ot">&lt;-</span> <span class="fu">plot_ly</span>(<span class="at">type =</span> <span class="st">&quot;surface&quot;</span>, <span class="at">showscale =</span> F)</span>
+<span id="cb69-12"><a href="#cb69-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb69-13"><a href="#cb69-13" aria-hidden="true" tabindex="-1"></a>p <span class="ot">&lt;-</span> params <span class="sc">%&gt;%</span></span>
+<span id="cb69-14"><a href="#cb69-14" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 1. 参数由函数工厂加工成函数list</span></span>
+<span id="cb69-15"><a href="#cb69-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="cf">function</span>(a, b) <span class="fl">0.02</span> <span class="sc">*</span> a <span class="sc">+</span> <span class="fl">0.015</span> <span class="sc">*</span> b <span class="sc">-</span> <span class="fl">0.0008</span> <span class="sc">*</span> a <span class="sc">*</span> b <span class="sc">+</span> <span class="fl">0.0007</span> <span class="sc">*</span> a<span class="sc">^</span><span class="dv">2</span> <span class="sc">-</span> <span class="fl">0.0002</span> <span class="sc">*</span> b<span class="sc">^</span><span class="dv">2</span> <span class="sc">+</span> .) <span class="sc">%&gt;%</span></span>
+<span id="cb69-16"><a href="#cb69-16" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 2. 函数list作用于x, y, 得到 matrix list</span></span>
+<span id="cb69-17"><a href="#cb69-17" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(<span class="sc">~</span> <span class="fu">outer</span>(x, y, .)) <span class="sc">%&gt;%</span></span>
+<span id="cb69-18"><a href="#cb69-18" aria-hidden="true" tabindex="-1"></a>  <span class="co"># 3. 所有的 matrix 依次作为截面，叠加到 p0上</span></span>
+<span id="cb69-19"><a href="#cb69-19" aria-hidden="true" tabindex="-1"></a>  <span class="fu">reduce</span>(</span>
+<span id="cb69-20"><a href="#cb69-20" aria-hidden="true" tabindex="-1"></a>    <span class="at">.f =</span> <span class="cf">function</span>(p, m) p <span class="sc">%&gt;%</span> <span class="fu">add_surface</span>(<span class="at">x =</span> x, <span class="at">y =</span> y, <span class="at">z =</span> <span class="sc">~</span>m),</span>
+<span id="cb69-21"><a href="#cb69-21" aria-hidden="true" tabindex="-1"></a>    <span class="at">.init =</span> p0</span>
+<span id="cb69-22"><a href="#cb69-22" aria-hidden="true" tabindex="-1"></a>  )</span>
+<span id="cb69-23"><a href="#cb69-23" aria-hidden="true" tabindex="-1"></a>p</span></code></pre></div>
+<div id="htmlwidget-484ed42468d86de4a421" style="width:90%;height:355.968px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-484ed42468d86de4a421">{"x":{"visdat":{"fa02516bff":["function () ","plotlyVisDat"]},"cur_data":"fa02516bff","attrs":{"fa02516bff":{"showscale":false,"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"surface"},"fa02516bff.1":{"showscale":false,"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"surface","z":{},"x":[0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100],"y":[100,105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200],"inherit":true},"fa02516bff.2":{"showscale":false,"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"surface","z":{},"x":[0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100],"y":[100,105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200],"inherit":true},"fa02516bff.3":{"showscale":false,"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"surface","z":{},"x":[0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100],"y":[100,105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200],"inherit":true},"fa02516bff.4":{"showscale":false,"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"surface","z":{},"x":[0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100],"y":[100,105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200],"inherit":true},"fa02516bff.5":{"showscale":false,"alpha_stroke":1,"sizes":[10,100],"spans":[1,20],"type":"surface","z":{},"x":[0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100],"y":[100,105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200],"inherit":true}},"layout":{"margin":{"b":40,"l":60,"t":25,"r":10},"scene":{"xaxis":{"title":[]},"yaxis":{"title":[]},"zaxis":{"title":"m"}},"hovermode":"closest","showlegend":true},"source":"A","config":{"modeBarButtonsToAdd":["hoverclosest","hovercompare"],"showSendToCloud":false},"data":[{"showscale":false,"type":"surface","frame":null},{"colorbar":{"title":"m<br />m<br />m<br />m<br />m","ticklen":2},"colorscale":[["0","rgba(68,1,84,1)"],["0.0416666666666667","rgba(70,19,97,1)"],["0.0833333333333333","rgba(72,32,111,1)"],["0.125","rgba(71,45,122,1)"],["0.166666666666667","rgba(68,58,128,1)"],["0.208333333333333","rgba(64,70,135,1)"],["0.25","rgba(60,82,138,1)"],["0.291666666666667","rgba(56,93,140,1)"],["0.333333333333333","rgba(49,104,142,1)"],["0.375","rgba(46,114,142,1)"],["0.416666666666667","rgba(42,123,142,1)"],["0.458333333333333","rgba(38,133,141,1)"],["0.5","rgba(37,144,140,1)"],["0.541666666666667","rgba(33,154,138,1)"],["0.583333333333333","rgba(39,164,133,1)"],["0.625","rgba(47,174,127,1)"],["0.666666666666667","rgba(53,183,121,1)"],["0.708333333333333","rgba(79,191,110,1)"],["0.75","rgba(98,199,98,1)"],["0.791666666666667","rgba(119,207,85,1)"],["0.833333333333333","rgba(147,214,70,1)"],["0.875","rgba(172,220,52,1)"],["0.916666666666667","rgba(199,225,42,1)"],["0.958333333333333","rgba(226,228,40,1)"],["1","rgba(253,231,37,1)"]],"showscale":false,"type":"surface","z":[[9.5,9.37,9.23,9.08,8.92,8.75,8.57,8.38,8.18,7.97,7.75,7.52,7.28,7.03,6.77,6.5,6.22,5.93,5.63,5.32,5],[9.2175,9.0675,8.9075,8.7375,8.5575,8.3675,8.1675,7.9575,7.7375,7.5075,7.2675,7.0175,6.7575,6.4875,6.2075,5.9175,5.6175,5.3075,4.9875,4.6575,4.3175],[8.97,8.8,8.62,8.43,8.23,8.02,7.8,7.57,7.33,7.08,6.82,6.55,6.27,5.98,5.68,5.37,5.05,4.72,4.38,4.03,3.67],[8.7575,8.5675,8.3675,8.1575,7.9375,7.7075,7.4675,7.2175,6.9575,6.6875,6.4075,6.1175,5.8175,5.5075,5.1875,4.8575,4.5175,4.1675,3.8075,3.4375,3.0575],[8.58,8.37,8.15,7.92,7.68,7.43,7.17,6.9,6.62,6.33,6.03,5.72,5.4,5.07,4.73,4.38,4.02,3.65,3.27,2.88,2.48],[8.4375,8.2075,7.9675,7.7175,7.4575,7.1875,6.9075,6.6175,6.3175,6.0075,5.6875,5.3575,5.0175,4.6675,4.3075,3.9375,3.5575,3.1675,2.7675,2.3575,1.9375],[8.33,8.08,7.82,7.55,7.27,6.98,6.68,6.37,6.05,5.72,5.38,5.03,4.67,4.3,3.92,3.53,3.13,2.72,2.3,1.87,1.43],[8.2575,7.9875,7.7075,7.4175,7.1175,6.8075,6.4875,6.1575,5.8175,5.4675,5.1075,4.7375,4.3575,3.9675,3.5675,3.1575,2.7375,2.3075,1.8675,1.4175,0.9575],[8.22,7.93,7.63,7.32,7,6.67,6.33,5.98,5.62,5.25,4.87,4.48,4.08,3.67,3.25,2.82,2.38,1.93,1.47,0.999999999999998,0.52],[8.2175,7.9075,7.5875,7.2575,6.9175,6.5675,6.2075,5.8375,5.4575,5.0675,4.6675,4.2575,3.8375,3.4075,2.9675,2.5175,2.0575,1.5875,1.1075,0.6175,0.1175],[8.25,7.92,7.58,7.23,6.87,6.5,6.12,5.73,5.33,4.92,4.5,4.07,3.63,3.18,2.72,2.25,1.77,1.28,0.779999999999999,0.27,-0.25],[8.3175,7.9675,7.6075,7.2375,6.8575,6.4675,6.0675,5.6575,5.2375,4.8075,4.3675,3.9175,3.4575,2.9875,2.5075,2.0175,1.5175,1.0075,0.487499999999999,-0.0425000000000004,-0.582500000000001],[8.42,8.05,7.67,7.28,6.88,6.47,6.05,5.62,5.18,4.73,4.27,3.8,3.32,2.83,2.33,1.82,1.3,0.769999999999998,0.229999999999999,-0.32,-0.879999999999999],[8.5575,8.1675,7.7675,7.3575,6.9375,6.5075,6.0675,5.6175,5.1575,4.6875,4.2075,3.7175,3.2175,2.7075,2.1875,1.6575,1.1175,0.567499999999999,0.00749999999999851,-0.562500000000002,-1.1425],[8.73,8.32,7.9,7.47,7.03,6.58,6.12,5.65,5.17,4.68,4.18,3.67,3.15,2.62,2.08,1.53,0.969999999999999,0.4,-0.180000000000001,-0.77,-1.37],[8.9375,8.5075,8.0675,7.6175,7.1575,6.6875,6.2075,5.7175,5.2175,4.7075,4.1875,3.6575,3.1175,2.5675,2.0075,1.4375,0.857499999999998,0.267499999999998,-0.332500000000001,-0.942500000000003,-1.5625],[9.18,8.73,8.27,7.8,7.32,6.83,6.33,5.82,5.3,4.77,4.23,3.68,3.12,2.55,1.97,1.38,0.779999999999999,0.169999999999998,-0.450000000000001,-1.08,-1.72],[9.4575,8.9875,8.5075,8.0175,7.5175,7.0075,6.4875,5.9575,5.4175,4.8675,4.3075,3.7375,3.1575,2.5675,1.9675,1.3575,0.737499999999999,0.107499999999998,-0.532500000000002,-1.1825,-1.8425],[9.77,9.28,8.78,8.27,7.75,7.22,6.68,6.13,5.57,5,4.42,3.83,3.23,2.62,2,1.37,0.729999999999999,0.0799999999999983,-0.580000000000002,-1.25,-1.93],[10.1175,9.6075,9.0875,8.5575,8.0175,7.4675,6.9075,6.3375,5.7575,5.1675,4.5675,3.9575,3.3375,2.7075,2.0675,1.4175,0.7575,0.0874999999999986,-0.592500000000001,-1.2825,-1.9825],[10.5,9.97,9.43,8.88,8.32,7.75,7.17,6.58,5.98,5.37,4.75,4.12,3.48,2.83,2.17,1.5,0.819999999999999,0.129999999999999,-0.570000000000002,-1.28,-2]],"x":[0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100],"y":[100,105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200],"frame":null},{"colorbar":{"title":"m<br />m<br />m<br />m<br />m","ticklen":2},"colorscale":[["0","rgba(68,1,84,1)"],["0.0416666666666667","rgba(70,19,97,1)"],["0.0833333333333333","rgba(72,32,111,1)"],["0.125","rgba(71,45,122,1)"],["0.166666666666667","rgba(68,58,128,1)"],["0.208333333333333","rgba(64,70,135,1)"],["0.25","rgba(60,82,138,1)"],["0.291666666666667","rgba(56,93,140,1)"],["0.333333333333333","rgba(49,104,142,1)"],["0.375","rgba(46,114,142,1)"],["0.416666666666667","rgba(42,123,142,1)"],["0.458333333333333","rgba(38,133,141,1)"],["0.5","rgba(37,144,140,1)"],["0.541666666666667","rgba(33,154,138,1)"],["0.583333333333333","rgba(39,164,133,1)"],["0.625","rgba(47,174,127,1)"],["0.666666666666667","rgba(53,183,121,1)"],["0.708333333333333","rgba(79,191,110,1)"],["0.75","rgba(98,199,98,1)"],["0.791666666666667","rgba(119,207,85,1)"],["0.833333333333333","rgba(147,214,70,1)"],["0.875","rgba(172,220,52,1)"],["0.916666666666667","rgba(199,225,42,1)"],["0.958333333333333","rgba(226,228,40,1)"],["1","rgba(253,231,37,1)"]],"showscale":false,"type":"surface","z":[[19.5,19.37,19.23,19.08,18.92,18.75,18.57,18.38,18.18,17.97,17.75,17.52,17.28,17.03,16.77,16.5,16.22,15.93,15.63,15.32,15],[19.2175,19.0675,18.9075,18.7375,18.5575,18.3675,18.1675,17.9575,17.7375,17.5075,17.2675,17.0175,16.7575,16.4875,16.2075,15.9175,15.6175,15.3075,14.9875,14.6575,14.3175],[18.97,18.8,18.62,18.43,18.23,18.02,17.8,17.57,17.33,17.08,16.82,16.55,16.27,15.98,15.68,15.37,15.05,14.72,14.38,14.03,13.67],[18.7575,18.5675,18.3675,18.1575,17.9375,17.7075,17.4675,17.2175,16.9575,16.6875,16.4075,16.1175,15.8175,15.5075,15.1875,14.8575,14.5175,14.1675,13.8075,13.4375,13.0575],[18.58,18.37,18.15,17.92,17.68,17.43,17.17,16.9,16.62,16.33,16.03,15.72,15.4,15.07,14.73,14.38,14.02,13.65,13.27,12.88,12.48],[18.4375,18.2075,17.9675,17.7175,17.4575,17.1875,16.9075,16.6175,16.3175,16.0075,15.6875,15.3575,15.0175,14.6675,14.3075,13.9375,13.5575,13.1675,12.7675,12.3575,11.9375],[18.33,18.08,17.82,17.55,17.27,16.98,16.68,16.37,16.05,15.72,15.38,15.03,14.67,14.3,13.92,13.53,13.13,12.72,12.3,11.87,11.43],[18.2575,17.9875,17.7075,17.4175,17.1175,16.8075,16.4875,16.1575,15.8175,15.4675,15.1075,14.7375,14.3575,13.9675,13.5675,13.1575,12.7375,12.3075,11.8675,11.4175,10.9575],[18.22,17.93,17.63,17.32,17,16.67,16.33,15.98,15.62,15.25,14.87,14.48,14.08,13.67,13.25,12.82,12.38,11.93,11.47,11,10.52],[18.2175,17.9075,17.5875,17.2575,16.9175,16.5675,16.2075,15.8375,15.4575,15.0675,14.6675,14.2575,13.8375,13.4075,12.9675,12.5175,12.0575,11.5875,11.1075,10.6175,10.1175],[18.25,17.92,17.58,17.23,16.87,16.5,16.12,15.73,15.33,14.92,14.5,14.07,13.63,13.18,12.72,12.25,11.77,11.28,10.78,10.27,9.75],[18.3175,17.9675,17.6075,17.2375,16.8575,16.4675,16.0675,15.6575,15.2375,14.8075,14.3675,13.9175,13.4575,12.9875,12.5075,12.0175,11.5175,11.0075,10.4875,9.9575,9.4175],[18.42,18.05,17.67,17.28,16.88,16.47,16.05,15.62,15.18,14.73,14.27,13.8,13.32,12.83,12.33,11.82,11.3,10.77,10.23,9.68,9.12],[18.5575,18.1675,17.7675,17.3575,16.9375,16.5075,16.0675,15.6175,15.1575,14.6875,14.2075,13.7175,13.2175,12.7075,12.1875,11.6575,11.1175,10.5675,10.0075,9.4375,8.8575],[18.73,18.32,17.9,17.47,17.03,16.58,16.12,15.65,15.17,14.68,14.18,13.67,13.15,12.62,12.08,11.53,10.97,10.4,9.82,9.23,8.63],[18.9375,18.5075,18.0675,17.6175,17.1575,16.6875,16.2075,15.7175,15.2175,14.7075,14.1875,13.6575,13.1175,12.5675,12.0075,11.4375,10.8575,10.2675,9.6675,9.0575,8.4375],[19.18,18.73,18.27,17.8,17.32,16.83,16.33,15.82,15.3,14.77,14.23,13.68,13.12,12.55,11.97,11.38,10.78,10.17,9.55,8.92,8.28],[19.4575,18.9875,18.5075,18.0175,17.5175,17.0075,16.4875,15.9575,15.4175,14.8675,14.3075,13.7375,13.1575,12.5675,11.9675,11.3575,10.7375,10.1075,9.4675,8.8175,8.1575],[19.77,19.28,18.78,18.27,17.75,17.22,16.68,16.13,15.57,15,14.42,13.83,13.23,12.62,12,11.37,10.73,10.08,9.42,8.75,8.07],[20.1175,19.6075,19.0875,18.5575,18.0175,17.4675,16.9075,16.3375,15.7575,15.1675,14.5675,13.9575,13.3375,12.7075,12.0675,11.4175,10.7575,10.0875,9.4075,8.7175,8.0175],[20.5,19.97,19.43,18.88,18.32,17.75,17.17,16.58,15.98,15.37,14.75,14.12,13.48,12.83,12.17,11.5,10.82,10.13,9.43,8.72,8]],"x":[0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100],"y":[100,105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200],"frame":null},{"colorbar":{"title":"m<br />m<br />m<br />m<br />m","ticklen":2},"colorscale":[["0","rgba(68,1,84,1)"],["0.0416666666666667","rgba(70,19,97,1)"],["0.0833333333333333","rgba(72,32,111,1)"],["0.125","rgba(71,45,122,1)"],["0.166666666666667","rgba(68,58,128,1)"],["0.208333333333333","rgba(64,70,135,1)"],["0.25","rgba(60,82,138,1)"],["0.291666666666667","rgba(56,93,140,1)"],["0.333333333333333","rgba(49,104,142,1)"],["0.375","rgba(46,114,142,1)"],["0.416666666666667","rgba(42,123,142,1)"],["0.458333333333333","rgba(38,133,141,1)"],["0.5","rgba(37,144,140,1)"],["0.541666666666667","rgba(33,154,138,1)"],["0.583333333333333","rgba(39,164,133,1)"],["0.625","rgba(47,174,127,1)"],["0.666666666666667","rgba(53,183,121,1)"],["0.708333333333333","rgba(79,191,110,1)"],["0.75","rgba(98,199,98,1)"],["0.791666666666667","rgba(119,207,85,1)"],["0.833333333333333","rgba(147,214,70,1)"],["0.875","rgba(172,220,52,1)"],["0.916666666666667","rgba(199,225,42,1)"],["0.958333333333333","rgba(226,228,40,1)"],["1","rgba(253,231,37,1)"]],"showscale":false,"type":"surface","z":[[29.5,29.37,29.23,29.08,28.92,28.75,28.57,28.38,28.18,27.97,27.75,27.52,27.28,27.03,26.77,26.5,26.22,25.93,25.63,25.32,25],[29.2175,29.0675,28.9075,28.7375,28.5575,28.3675,28.1675,27.9575,27.7375,27.5075,27.2675,27.0175,26.7575,26.4875,26.2075,25.9175,25.6175,25.3075,24.9875,24.6575,24.3175],[28.97,28.8,28.62,28.43,28.23,28.02,27.8,27.57,27.33,27.08,26.82,26.55,26.27,25.98,25.68,25.37,25.05,24.72,24.38,24.03,23.67],[28.7575,28.5675,28.3675,28.1575,27.9375,27.7075,27.4675,27.2175,26.9575,26.6875,26.4075,26.1175,25.8175,25.5075,25.1875,24.8575,24.5175,24.1675,23.8075,23.4375,23.0575],[28.58,28.37,28.15,27.92,27.68,27.43,27.17,26.9,26.62,26.33,26.03,25.72,25.4,25.07,24.73,24.38,24.02,23.65,23.27,22.88,22.48],[28.4375,28.2075,27.9675,27.7175,27.4575,27.1875,26.9075,26.6175,26.3175,26.0075,25.6875,25.3575,25.0175,24.6675,24.3075,23.9375,23.5575,23.1675,22.7675,22.3575,21.9375],[28.33,28.08,27.82,27.55,27.27,26.98,26.68,26.37,26.05,25.72,25.38,25.03,24.67,24.3,23.92,23.53,23.13,22.72,22.3,21.87,21.43],[28.2575,27.9875,27.7075,27.4175,27.1175,26.8075,26.4875,26.1575,25.8175,25.4675,25.1075,24.7375,24.3575,23.9675,23.5675,23.1575,22.7375,22.3075,21.8675,21.4175,20.9575],[28.22,27.93,27.63,27.32,27,26.67,26.33,25.98,25.62,25.25,24.87,24.48,24.08,23.67,23.25,22.82,22.38,21.93,21.47,21,20.52],[28.2175,27.9075,27.5875,27.2575,26.9175,26.5675,26.2075,25.8375,25.4575,25.0675,24.6675,24.2575,23.8375,23.4075,22.9675,22.5175,22.0575,21.5875,21.1075,20.6175,20.1175],[28.25,27.92,27.58,27.23,26.87,26.5,26.12,25.73,25.33,24.92,24.5,24.07,23.63,23.18,22.72,22.25,21.77,21.28,20.78,20.27,19.75],[28.3175,27.9675,27.6075,27.2375,26.8575,26.4675,26.0675,25.6575,25.2375,24.8075,24.3675,23.9175,23.4575,22.9875,22.5075,22.0175,21.5175,21.0075,20.4875,19.9575,19.4175],[28.42,28.05,27.67,27.28,26.88,26.47,26.05,25.62,25.18,24.73,24.27,23.8,23.32,22.83,22.33,21.82,21.3,20.77,20.23,19.68,19.12],[28.5575,28.1675,27.7675,27.3575,26.9375,26.5075,26.0675,25.6175,25.1575,24.6875,24.2075,23.7175,23.2175,22.7075,22.1875,21.6575,21.1175,20.5675,20.0075,19.4375,18.8575],[28.73,28.32,27.9,27.47,27.03,26.58,26.12,25.65,25.17,24.68,24.18,23.67,23.15,22.62,22.08,21.53,20.97,20.4,19.82,19.23,18.63],[28.9375,28.5075,28.0675,27.6175,27.1575,26.6875,26.2075,25.7175,25.2175,24.7075,24.1875,23.6575,23.1175,22.5675,22.0075,21.4375,20.8575,20.2675,19.6675,19.0575,18.4375],[29.18,28.73,28.27,27.8,27.32,26.83,26.33,25.82,25.3,24.77,24.23,23.68,23.12,22.55,21.97,21.38,20.78,20.17,19.55,18.92,18.28],[29.4575,28.9875,28.5075,28.0175,27.5175,27.0075,26.4875,25.9575,25.4175,24.8675,24.3075,23.7375,23.1575,22.5675,21.9675,21.3575,20.7375,20.1075,19.4675,18.8175,18.1575],[29.77,29.28,28.78,28.27,27.75,27.22,26.68,26.13,25.57,25,24.42,23.83,23.23,22.62,22,21.37,20.73,20.08,19.42,18.75,18.07],[30.1175,29.6075,29.0875,28.5575,28.0175,27.4675,26.9075,26.3375,25.7575,25.1675,24.5675,23.9575,23.3375,22.7075,22.0675,21.4175,20.7575,20.0875,19.4075,18.7175,18.0175],[30.5,29.97,29.43,28.88,28.32,27.75,27.17,26.58,25.98,25.37,24.75,24.12,23.48,22.83,22.17,21.5,20.82,20.13,19.43,18.72,18]],"x":[0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100],"y":[100,105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200],"frame":null},{"colorbar":{"title":"m<br />m<br />m<br />m<br />m","ticklen":2},"colorscale":[["0","rgba(68,1,84,1)"],["0.0416666666666667","rgba(70,19,97,1)"],["0.0833333333333333","rgba(72,32,111,1)"],["0.125","rgba(71,45,122,1)"],["0.166666666666667","rgba(68,58,128,1)"],["0.208333333333333","rgba(64,70,135,1)"],["0.25","rgba(60,82,138,1)"],["0.291666666666667","rgba(56,93,140,1)"],["0.333333333333333","rgba(49,104,142,1)"],["0.375","rgba(46,114,142,1)"],["0.416666666666667","rgba(42,123,142,1)"],["0.458333333333333","rgba(38,133,141,1)"],["0.5","rgba(37,144,140,1)"],["0.541666666666667","rgba(33,154,138,1)"],["0.583333333333333","rgba(39,164,133,1)"],["0.625","rgba(47,174,127,1)"],["0.666666666666667","rgba(53,183,121,1)"],["0.708333333333333","rgba(79,191,110,1)"],["0.75","rgba(98,199,98,1)"],["0.791666666666667","rgba(119,207,85,1)"],["0.833333333333333","rgba(147,214,70,1)"],["0.875","rgba(172,220,52,1)"],["0.916666666666667","rgba(199,225,42,1)"],["0.958333333333333","rgba(226,228,40,1)"],["1","rgba(253,231,37,1)"]],"showscale":false,"type":"surface","z":[[39.5,39.37,39.23,39.08,38.92,38.75,38.57,38.38,38.18,37.97,37.75,37.52,37.28,37.03,36.77,36.5,36.22,35.93,35.63,35.32,35],[39.2175,39.0675,38.9075,38.7375,38.5575,38.3675,38.1675,37.9575,37.7375,37.5075,37.2675,37.0175,36.7575,36.4875,36.2075,35.9175,35.6175,35.3075,34.9875,34.6575,34.3175],[38.97,38.8,38.62,38.43,38.23,38.02,37.8,37.57,37.33,37.08,36.82,36.55,36.27,35.98,35.68,35.37,35.05,34.72,34.38,34.03,33.67],[38.7575,38.5675,38.3675,38.1575,37.9375,37.7075,37.4675,37.2175,36.9575,36.6875,36.4075,36.1175,35.8175,35.5075,35.1875,34.8575,34.5175,34.1675,33.8075,33.4375,33.0575],[38.58,38.37,38.15,37.92,37.68,37.43,37.17,36.9,36.62,36.33,36.03,35.72,35.4,35.07,34.73,34.38,34.02,33.65,33.27,32.88,32.48],[38.4375,38.2075,37.9675,37.7175,37.4575,37.1875,36.9075,36.6175,36.3175,36.0075,35.6875,35.3575,35.0175,34.6675,34.3075,33.9375,33.5575,33.1675,32.7675,32.3575,31.9375],[38.33,38.08,37.82,37.55,37.27,36.98,36.68,36.37,36.05,35.72,35.38,35.03,34.67,34.3,33.92,33.53,33.13,32.72,32.3,31.87,31.43],[38.2575,37.9875,37.7075,37.4175,37.1175,36.8075,36.4875,36.1575,35.8175,35.4675,35.1075,34.7375,34.3575,33.9675,33.5675,33.1575,32.7375,32.3075,31.8675,31.4175,30.9575],[38.22,37.93,37.63,37.32,37,36.67,36.33,35.98,35.62,35.25,34.87,34.48,34.08,33.67,33.25,32.82,32.38,31.93,31.47,31,30.52],[38.2175,37.9075,37.5875,37.2575,36.9175,36.5675,36.2075,35.8375,35.4575,35.0675,34.6675,34.2575,33.8375,33.4075,32.9675,32.5175,32.0575,31.5875,31.1075,30.6175,30.1175],[38.25,37.92,37.58,37.23,36.87,36.5,36.12,35.73,35.33,34.92,34.5,34.07,33.63,33.18,32.72,32.25,31.77,31.28,30.78,30.27,29.75],[38.3175,37.9675,37.6075,37.2375,36.8575,36.4675,36.0675,35.6575,35.2375,34.8075,34.3675,33.9175,33.4575,32.9875,32.5075,32.0175,31.5175,31.0075,30.4875,29.9575,29.4175],[38.42,38.05,37.67,37.28,36.88,36.47,36.05,35.62,35.18,34.73,34.27,33.8,33.32,32.83,32.33,31.82,31.3,30.77,30.23,29.68,29.12],[38.5575,38.1675,37.7675,37.3575,36.9375,36.5075,36.0675,35.6175,35.1575,34.6875,34.2075,33.7175,33.2175,32.7075,32.1875,31.6575,31.1175,30.5675,30.0075,29.4375,28.8575],[38.73,38.32,37.9,37.47,37.03,36.58,36.12,35.65,35.17,34.68,34.18,33.67,33.15,32.62,32.08,31.53,30.97,30.4,29.82,29.23,28.63],[38.9375,38.5075,38.0675,37.6175,37.1575,36.6875,36.2075,35.7175,35.2175,34.7075,34.1875,33.6575,33.1175,32.5675,32.0075,31.4375,30.8575,30.2675,29.6675,29.0575,28.4375],[39.18,38.73,38.27,37.8,37.32,36.83,36.33,35.82,35.3,34.77,34.23,33.68,33.12,32.55,31.97,31.38,30.78,30.17,29.55,28.92,28.28],[39.4575,38.9875,38.5075,38.0175,37.5175,37.0075,36.4875,35.9575,35.4175,34.8675,34.3075,33.7375,33.1575,32.5675,31.9675,31.3575,30.7375,30.1075,29.4675,28.8175,28.1575],[39.77,39.28,38.78,38.27,37.75,37.22,36.68,36.13,35.57,35,34.42,33.83,33.23,32.62,32,31.37,30.73,30.08,29.42,28.75,28.07],[40.1175,39.6075,39.0875,38.5575,38.0175,37.4675,36.9075,36.3375,35.7575,35.1675,34.5675,33.9575,33.3375,32.7075,32.0675,31.4175,30.7575,30.0875,29.4075,28.7175,28.0175],[40.5,39.97,39.43,38.88,38.32,37.75,37.17,36.58,35.98,35.37,34.75,34.12,33.48,32.83,32.17,31.5,30.82,30.13,29.43,28.72,28]],"x":[0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100],"y":[100,105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200],"frame":null},{"colorbar":{"title":"m<br />m<br />m<br />m<br />m","ticklen":2},"colorscale":[["0","rgba(68,1,84,1)"],["0.0416666666666667","rgba(70,19,97,1)"],["0.0833333333333333","rgba(72,32,111,1)"],["0.125","rgba(71,45,122,1)"],["0.166666666666667","rgba(68,58,128,1)"],["0.208333333333333","rgba(64,70,135,1)"],["0.25","rgba(60,82,138,1)"],["0.291666666666667","rgba(56,93,140,1)"],["0.333333333333333","rgba(49,104,142,1)"],["0.375","rgba(46,114,142,1)"],["0.416666666666667","rgba(42,123,142,1)"],["0.458333333333333","rgba(38,133,141,1)"],["0.5","rgba(37,144,140,1)"],["0.541666666666667","rgba(33,154,138,1)"],["0.583333333333333","rgba(39,164,133,1)"],["0.625","rgba(47,174,127,1)"],["0.666666666666667","rgba(53,183,121,1)"],["0.708333333333333","rgba(79,191,110,1)"],["0.75","rgba(98,199,98,1)"],["0.791666666666667","rgba(119,207,85,1)"],["0.833333333333333","rgba(147,214,70,1)"],["0.875","rgba(172,220,52,1)"],["0.916666666666667","rgba(199,225,42,1)"],["0.958333333333333","rgba(226,228,40,1)"],["1","rgba(253,231,37,1)"]],"showscale":false,"type":"surface","z":[[49.5,49.37,49.23,49.08,48.92,48.75,48.57,48.38,48.18,47.97,47.75,47.52,47.28,47.03,46.77,46.5,46.22,45.93,45.63,45.32,45],[49.2175,49.0675,48.9075,48.7375,48.5575,48.3675,48.1675,47.9575,47.7375,47.5075,47.2675,47.0175,46.7575,46.4875,46.2075,45.9175,45.6175,45.3075,44.9875,44.6575,44.3175],[48.97,48.8,48.62,48.43,48.23,48.02,47.8,47.57,47.33,47.08,46.82,46.55,46.27,45.98,45.68,45.37,45.05,44.72,44.38,44.03,43.67],[48.7575,48.5675,48.3675,48.1575,47.9375,47.7075,47.4675,47.2175,46.9575,46.6875,46.4075,46.1175,45.8175,45.5075,45.1875,44.8575,44.5175,44.1675,43.8075,43.4375,43.0575],[48.58,48.37,48.15,47.92,47.68,47.43,47.17,46.9,46.62,46.33,46.03,45.72,45.4,45.07,44.73,44.38,44.02,43.65,43.27,42.88,42.48],[48.4375,48.2075,47.9675,47.7175,47.4575,47.1875,46.9075,46.6175,46.3175,46.0075,45.6875,45.3575,45.0175,44.6675,44.3075,43.9375,43.5575,43.1675,42.7675,42.3575,41.9375],[48.33,48.08,47.82,47.55,47.27,46.98,46.68,46.37,46.05,45.72,45.38,45.03,44.67,44.3,43.92,43.53,43.13,42.72,42.3,41.87,41.43],[48.2575,47.9875,47.7075,47.4175,47.1175,46.8075,46.4875,46.1575,45.8175,45.4675,45.1075,44.7375,44.3575,43.9675,43.5675,43.1575,42.7375,42.3075,41.8675,41.4175,40.9575],[48.22,47.93,47.63,47.32,47,46.67,46.33,45.98,45.62,45.25,44.87,44.48,44.08,43.67,43.25,42.82,42.38,41.93,41.47,41,40.52],[48.2175,47.9075,47.5875,47.2575,46.9175,46.5675,46.2075,45.8375,45.4575,45.0675,44.6675,44.2575,43.8375,43.4075,42.9675,42.5175,42.0575,41.5875,41.1075,40.6175,40.1175],[48.25,47.92,47.58,47.23,46.87,46.5,46.12,45.73,45.33,44.92,44.5,44.07,43.63,43.18,42.72,42.25,41.77,41.28,40.78,40.27,39.75],[48.3175,47.9675,47.6075,47.2375,46.8575,46.4675,46.0675,45.6575,45.2375,44.8075,44.3675,43.9175,43.4575,42.9875,42.5075,42.0175,41.5175,41.0075,40.4875,39.9575,39.4175],[48.42,48.05,47.67,47.28,46.88,46.47,46.05,45.62,45.18,44.73,44.27,43.8,43.32,42.83,42.33,41.82,41.3,40.77,40.23,39.68,39.12],[48.5575,48.1675,47.7675,47.3575,46.9375,46.5075,46.0675,45.6175,45.1575,44.6875,44.2075,43.7175,43.2175,42.7075,42.1875,41.6575,41.1175,40.5675,40.0075,39.4375,38.8575],[48.73,48.32,47.9,47.47,47.03,46.58,46.12,45.65,45.17,44.68,44.18,43.67,43.15,42.62,42.08,41.53,40.97,40.4,39.82,39.23,38.63],[48.9375,48.5075,48.0675,47.6175,47.1575,46.6875,46.2075,45.7175,45.2175,44.7075,44.1875,43.6575,43.1175,42.5675,42.0075,41.4375,40.8575,40.2675,39.6675,39.0575,38.4375],[49.18,48.73,48.27,47.8,47.32,46.83,46.33,45.82,45.3,44.77,44.23,43.68,43.12,42.55,41.97,41.38,40.78,40.17,39.55,38.92,38.28],[49.4575,48.9875,48.5075,48.0175,47.5175,47.0075,46.4875,45.9575,45.4175,44.8675,44.3075,43.7375,43.1575,42.5675,41.9675,41.3575,40.7375,40.1075,39.4675,38.8175,38.1575],[49.77,49.28,48.78,48.27,47.75,47.22,46.68,46.13,45.57,45,44.42,43.83,43.23,42.62,42,41.37,40.73,40.08,39.42,38.75,38.07],[50.1175,49.6075,49.0875,48.5575,48.0175,47.4675,46.9075,46.3375,45.7575,45.1675,44.5675,43.9575,43.3375,42.7075,42.0675,41.4175,40.7575,40.0875,39.4075,38.7175,38.0175],[50.5,49.97,49.43,48.88,48.32,47.75,47.17,46.58,45.98,45.37,44.75,44.12,43.48,42.83,42.17,41.5,40.82,40.13,39.43,38.72,38]],"x":[0,5,10,15,20,25,30,35,40,45,50,55,60,65,70,75,80,85,90,95,100],"y":[100,105,110,115,120,125,130,135,140,145,150,155,160,165,170,175,180,185,190,195,200],"frame":null}],"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+</div>
+<div id="其他泛函" class="section level2">
+<h2>其他泛函</h2>
+<div id="aggregate分组计算" class="section level3">
+<h3><code>aggregate()</code>分组计算</h3>
+<p><code>aggregate(formula, data, FUN, ...,subset, na.action = na.omit)</code></p>
+<div class="sourceCode" id="cb70"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb70-1"><a href="#cb70-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 按cut和color分组，将price作为参数传给mean()，数据来源为diamonds</span></span>
+<span id="cb70-2"><a href="#cb70-2" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(price <span class="sc">~</span> cut <span class="sc">+</span> color, diamonds, mean)</span></code></pre></div>
+<pre><code>#&gt;          cut color    price
+#&gt; 1       Fair     D 4291.061
+#&gt; 2       Good     D 3405.382
+#&gt; 3  Very Good     D 3470.467
+#&gt; 4    Premium     D 3631.293
+#&gt; 5      Ideal     D 2629.095
+#&gt; 6       Fair     E 3682.312
+#&gt; 7       Good     E 3423.644
+#&gt; 8  Very Good     E 3214.652
+#&gt; 9    Premium     E 3538.914
+#&gt; 10     Ideal     E 2597.550
+#&gt; 11      Fair     F 3827.003
+#&gt; 12      Good     F 3495.750
+#&gt; 13 Very Good     F 3778.820
+#&gt; 14   Premium     F 4324.890
+#&gt; 15     Ideal     F 3374.939
+#&gt; 16      Fair     G 4239.255
+#&gt; 17      Good     G 4123.482
+#&gt; 18 Very Good     G 3872.754
+#&gt; 19   Premium     G 4500.742
+#&gt; 20     Ideal     G 3720.706
+#&gt; 21      Fair     H 5135.683
+#&gt; 22      Good     H 4276.255
+#&gt; 23 Very Good     H 4535.390
+#&gt; 24   Premium     H 5216.707
+#&gt; 25     Ideal     H 3889.335
+#&gt; 26      Fair     I 4685.446
+#&gt; 27      Good     I 5078.533
+#&gt; 28 Very Good     I 5255.880
+#&gt; 29   Premium     I 5946.181
+#&gt; 30     Ideal     I 4451.970
+#&gt; 31      Fair     J 4975.655
+#&gt; 32      Good     J 4574.173
+#&gt; 33 Very Good     J 5103.513
+#&gt; 34   Premium     J 6294.592
+#&gt; 35     Ideal     J 4918.186</code></pre>
+<div class="sourceCode" id="cb72"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb72-1"><a href="#cb72-1" aria-hidden="true" tabindex="-1"></a><span class="co"># plyr包的each函数，可以使aggregate使用多个函数对数据进行计算</span></span>
+<span id="cb72-2"><a href="#cb72-2" aria-hidden="true" tabindex="-1"></a><span class="fu">aggregate</span>(price <span class="sc">~</span> cut, diamonds, plyr<span class="sc">::</span><span class="fu">each</span>(mean, median))</span></code></pre></div>
+<pre><code>#&gt;         cut price.mean price.median
+#&gt; 1      Fair   4358.758     3282.000
+#&gt; 2      Good   3928.864     3050.500
+#&gt; 3 Very Good   3981.760     2648.000
+#&gt; 4   Premium   4584.258     3185.000
+#&gt; 5     Ideal   3457.542     1810.000</code></pre>
+</div>
+<div id="replicaten-f" class="section level3">
+<h3><code>replicate(n, f)</code></h3>
+<p>多次执行并横向拼接为一个矩阵</p>
+<p>常用于随机数据的生成</p>
+<div class="sourceCode" id="cb74"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb74-1"><a href="#cb74-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1014</span>)</span>
+<span id="cb74-2"><a href="#cb74-2" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span></span>
+<span id="cb74-3"><a href="#cb74-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">replicate</span>(<span class="dv">5</span>, <span class="fu">sample</span>(<span class="fu">c</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>, <span class="sc">-</span><span class="dv">99</span>), <span class="dv">6</span>, <span class="at">replace =</span> <span class="cn">TRUE</span>)) <span class="sc">%&gt;%</span> <span class="co"># 5轮抽样形成矩阵. replicate(n, f), 即重复运行f函数n次</span></span>
+<span id="cb74-4"><a href="#cb74-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">data.table</span>() <span class="co"># 建立数据框</span></span></code></pre></div>
+</div>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li
+id="fn1"><p>一些数学上的泛函，如求极限、求根、定积分，实现算法中都包含迭代。<a
+href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>之所以 <code>map*()</code> 的参数设计为 .x, .f
+这样的形式，是为了避免与 .f() 的参数 x, f
+产生冲突。同理，<code>*apply()</code> 使用了 FUN
+这样的参数形式以避免冲突。<a href="#fnref2"
+class="footnote-back">↩︎</a></p></li>
+<li
+id="fn3"><p>例如，一个list中储存着格式一致的数据框，用rbind()将他们合并在一起，reduce()返回合并的最终结果，而accumulate()返回一个list，每个元素是合并的某一步的结果，即前k个数据框的合并。<a
+href="#fnref3" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIkZ1bmN0aW9uYWwiDQpzdWJ0aXRsZTogJycNCmF1dGhvcjogIkh1bW9vbiINCmRhdGU6ICJgciBTeXMuRGF0ZSgpYCINCm91dHB1dDogaHRtbF9kb2N1bWVudA0KLS0tDQoNCmBgYHtyIHNldHVwLCBpbmNsdWRlID0gRkFMU0V9DQpzb3VyY2UoIi4uL1JtYXJrZG93bi10ZW1wbGF0ZS9SbWFya2Rvd25fY29uZmlnLlIiKQ0KDQojIyBnbG9iYWwgb3B0aW9ucyA9PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PQ0Ka25pdHI6Om9wdHNfY2h1bmskc2V0KA0KICB3aWR0aCA9IGNvbmZpZyR3aWR0aCwNCiAgZmlnLndpZHRoID0gY29uZmlnJGZpZy53aWR0aCwNCiAgZmlnLmFzcCA9IGNvbmZpZyRmaWcuYXNwLA0KICBvdXQud2lkdGggPSBjb25maWckb3V0LndpZHRoLA0KICBmaWcuYWxpZ24gPSBjb25maWckZmlnLmFsaWduLA0KICBmaWcucGF0aCA9IGNvbmZpZyRmaWcucGF0aCwNCiAgZmlnLnNob3cgPSBjb25maWckZmlnLnNob3csDQogIHdhcm4gPSBjb25maWckd2FybiwNCiAgd2FybmluZyA9IGNvbmZpZyR3YXJuaW5nLA0KICBtZXNzYWdlID0gY29uZmlnJG1lc3NhZ2UsDQogIGVjaG8gPSBjb25maWckZWNobywNCiAgZXZhbCA9IGNvbmZpZyRldmFsLA0KICB0aWR5ID0gY29uZmlnJHRpZHksDQogIGNvbW1lbnQgPSBjb25maWckY29tbWVudCwNCiAgY29sbGFwc2UgPSBjb25maWckY29sbGFwc2UsDQogIGNhY2hlID0gY29uZmlnJGNhY2hlLA0KICBjYWNoZS5jb21tZW50cyA9IGNvbmZpZyRjYWNoZS5jb21tZW50cywNCiAgYXV0b2RlcCA9IGNvbmZpZyRhdXRvZGVwDQopDQpgYGANCg0KIyMg6auY6Zi25Ye95pWwDQoNCuWwhuWHveaVsOaMieeFp+WPguaVsOWSjOi/lOWbnuWAvOaYr+WQpuaYr+WHveaVsOi/m+ihjOWIhuexu++8jOWmguS4i+WbvuOAgg0KDQrpmaTkuoYgcmVndWxhciBmdW5jdGlvbu+8jOWFtuS7luS4ieenjeWHveaVsOe7n+ensOS4uumrmOmYtuWHveaVsOOAgg0KDQohW10oaHR0cHM6Ly9kMzN3dWJyZmtpMGw2OC5jbG91ZGZyb250Lm5ldC8xZGZmODE5ZTc0M2YyODBiYmFiMWM1NWY4ZjA2M2U2MGI2YTBkMmZiLzIyNjllL2RpYWdyYW1zL2ZwLnBuZykNCg0K5Zyo5pWw5a2m5LiK77yM5rOb5Ye977yIZnVuY3Rpb25hbO+8ieaYr+S7juWHveaVsOWIsOWunuaVsOeahOaYoOWwhO+8m+WcqCBSIOS4re+8jOWwhuaOpeWPl+WHveaVsOS9nOS4uuWPguaVsOOAgei/lOWbnuWQkemHj+eahOWHveaVsOensOS4uuazm+WHveOAgg0KDQrlsIblpITnkIbmlbDmja7nmoTku6PnoIHmrrXlhpnlhaXlh73mlbDnmoTlh73mlbDlj4LmlbDkuK3vvIwqKuazm+WHveWwseWPr+S7peS7o+abv+W+queOry/ov63ku6MqKlte5rOb5Ye95LiO6L+t5LujXS0tLS0tLeWHj+WwkeaYvuW8j+W+queOr+eahOS9v+eUqOaYr+mrmOi0qOmHj+S7o+eggeeahOagh+W/l+S5i+S4gA0KDQpbXuazm+WHveS4jui/reS7o106IOS4gOS6m+aVsOWtpuS4iueahOazm+WHve+8jOWmguaxguaegemZkOOAgeaxguagueOAgeWumuenr+WIhu+8jOWunueOsOeul+azleS4remDveWMheWQq+i/reS7o+OAgg0KDQrmlrDniYjmnKznmoQgUiBiYXNlIOWMheWQq+S6huS4gOS6m+WOn+eUn+eahOazm+WHve+8jOS9huS4jeWmgiBwdXJyciDljIXnmoTms5vlh73mm7TkuLDlr4zjgIHlnKjor63ms5XkuIrmm7TlhbfmnInlhoXlnKjkuIDoh7TmgKcNCg0KfCBgUiBiYXNlYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgYHB1cnJyOjpgICAgICAgICAgICAgICAgfCDlip/og70gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwtLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS18LS0tLS0tLS0tLS0tLS0tLS0tfC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLXwNCnwgYEZpbHRlcihmLCB4KWAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IGBrZWVwKClgLCBgZGlzY2FyZCgpYCAgIHwg562b6YCJICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IGBNYXAoZiwg4oCmKWAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IGBtYXAoKWAgICAgICAgICAgICAgICAgIHwg5L6d5qyh5L2c55SoICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwgYEZpbmQoZiwgeCwgcmlnaHQgPSBGQUxTRSwgbm9tYXRjaCA9IE5VTEwpYCAgICAgICAgICAgICB8IGBkZXRlY3QoKWAgICAgICAgICAgICAgIHwg57uZ5Ye656ym5ZCI5p2h5Lu255qE56ys5LiA5Liq5oiW5pyA5ZCO5LiA5Liq5YWD57SgICAgICAgICB8DQp8IGBQb3NpdGlvbihmLCB4LCByaWdodCA9IEZBTFNFLCBub21hdGNoID0gTkFfaW50ZWdlcl8pYCAgfCBgZGV0ZWN0X2luZGV4KClgICAgICAgICB8IOe7meWHuuespuWQiOadoeS7tueahOesrOS4gOS4quaIluacgOWQjuS4gOS4quWFg+e0oOeahGluZGV4IHwNCnwgYFJlZHVjZShmLCB4LCBpbml0LCByaWdodCA9IEZBTFNFLCBhY2N1bXVsYXRlID0gRkFMU0UpYCB8IGByZWR1Y2UoKWAgICAgICAgICAgICAgIHwg5Liy6KGM5pON5L2cICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IOi/mOacieabtOWkmu+8jOingSBjaGVhdHNoZWV0IHwgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KDQo8YSBocmVmPSIuLi9wZGYvY2hlYXRzaGVldC1wdXJyci5wZGYiPjxzdHJvbmc+cHVycnIgY2hlYXRzaGVldC5wZGY8L3N0cm9uZz48L2E+DQoNCjxvYmplY3QgZGF0YT0iLi4vcGRmL2NoZWF0c2hlZXQtcHVycnIucGRmIiB0eXBlPSJhcHBsaWNhdGlvbi9wZGYiIHdpZHRoPSIxMDAlIiBoZWlnaHQ9IjEwMCUiPg0KDQo8L29iamVjdD4NCg0KIyMg5bm26KGM5pON5L2c55qE5pig5bCE5rOb5Ye9DQoNCiMjIyBgbWFwKigueCwgLmYsIC4uLilgDQoNCmBtYXAqKClg5L2/55So5LiA5Liq5ZCR6YeP77yI5YyF5ous5YiX6KGo44CB5pWw5o2u5qGG77yJ5L2c5Li66L6T5YWl77yM5bm25a+55YW25q+P5Liq5YWD57Sg5bqU55SoYC5mYO+8jOaJgOW+l+e7k+aenOe7hOWQiOaIkOaWsOWQkemHj+aIluWIl+ihqOWQjui/lOWbnuOAgioqYC4uLmAg5pivIGAuZigpYCDnmoTlj6/pgInlj4LmlbBbXi4uLl0qKg0KDQpbXi4uLl06IOS5i+aJgOS7pSBgbWFwKigpYCDnmoTlj4LmlbDorr7orqHkuLogLngsIC5mIOi/meagt+eahOW9ouW8j++8jOaYr+S4uuS6humBv+WFjeS4jiAuZigpIOeahOWPguaVsCB4LCBmIOS6p+eUn+WGsueqgeOAguWQjOeQhu+8jGAqYXBwbHkoKWAg5L2/55So5LqGIEZVTiDov5nmoLfnmoTlj4LmlbDlvaLlvI/ku6Xpgb/lhY3lhrLnqoHjgIINCg0KYGBge3J9DQojIOaxguavj+WIl+W5s+Wdh+WAvA0KZGYgPC0gZGF0YS50YWJsZSh4ID0gMToxMCwgeSA9IDExOjIwKQ0KZGYgJT4lIG1hcF9kYmwoc3VtKQ0KDQoNCiMjIG1hcCDpgJrov4cgLi4uIOS8oOmAkiAuZiDlj4LmlbDnmoTkvJjpm4UNCmwgPC0gbGlzdCh4ID0gMTo1LCB5ID0gYygxOjEwLCBOQSkpDQoNCiMg5Lik56eN5YaZ5rOV562J5Lu3DQpsICU+JSBtYXBfZGJsKC5mID0gfiBtZWFuKC54LCBuYS5ybSA9IFRSVUUpKQ0KbCAlPiUgbWFwX2RibChtZWFuLCBuYS5ybSA9IFRSVUUpDQoNCg0KdHJpbXMgPC0gYygwLCAwLjEsIDAuMiwgMC41KQ0KeCA8LSByY2F1Y2h5KDEwMDApICMgQ2F1Y2h5IGRpc3RyaWJ1dGlvbg0KDQojIOS4pOenjeWGmeazleetieS7tw0KdHJpbXMgJT4lIG1hcF9kYmwobWVhbiwgeCA9IHgpDQp0cmltcyAlPiUgbWFwX2RibCh+IG1lYW4oeCwgdHJpbSA9IC4pKQ0KYGBgDQoNCiMjIyMgYG1hcCooKWDnmoTkvKrku6PnoIHnpLrmhI8NCg0KYGBge3IsIGV2YWw9RkFMU0V9DQpzaW1wbGVfbWFwIDwtIGZ1bmN0aW9uKHgsIGYsIC4uLikgew0KICBvdXQgPC0gdmVjdG9yKCJsaXN0IiwgbGVuZ3RoKHgpKQ0KICBmb3IgKGkgaW4gc2VxX2Fsb25nKHgpKSB7DQogICAgb3V0W1tpXV0gPC0gZih4W1tpXV0sIC4uLikNCiAgfQ0KICBvdXQNCn0NCmBgYA0KDQojIyMjIGBtYXAqKClg55qE5Y+Y5L2TDQoNCi0gICBgbWFwKClgIOi/lOWbnuWIl+ihqA0KLSAgIGBtYXBfbGdsKClgIOi/lOWbnumAu+i+keWeiyBhdG9taWMg5ZCR6YePDQotICAgYG1hcF9pbnQoKWAg6L+U5Zue5pW05Z6LIGF0b21pYyDlkJHph48NCi0gICBgbWFwX2RibCgpYCDov5Tlm57lj4znsr7luqblnosgYXRvbWljIOWQkemHjw0KLSAgIGBtYXBfY2hyKClgIOi/lOWbnuWtl+espuWeiyBhdG9taWMg5ZCR6YePDQotICAgYG1vZGlmeSgpYCDojrflvpcqKuS4jui+k+WFpeebuOWQjOexu+Wei+eahOi+k+WHuioq77yM5aaC6L6T5YWl5ZKM6L6T5Ye65Z2H5Li65pWw5o2u5qGGDQotICAgYG1hcF9kZnIoKWAg5a+55ZCE5YWD57Sg55qE6L+Q566X5Lqn55Sf6Iul5bmy5Liq6KGM5ZCR6YeP77yM5bm25oqK5a6D5Lus57KY5Zyo5LiA6LW377yM6L+U5Zue5pWw5o2u5qGGDQotICAgYG1hcF9kZmMoKWAg5a+55ZCE5YWD57Sg55qE6L+Q566X5Lqn55Sf6Iul5bmy5Liq5YiX5ZCR6YeP77yM5bm25oqK5a6D5Lus57KY5Zyo5LiA6LW377yM6L+U5Zue5pWw5o2u5qGGDQotICAgYGltYXAoKWAg6YGN5Y6G5ZCR6YeP5Y+K5YW257Si5byVDQotICAgYHdhbGsoKWDvvIzml6DovpPlh7rvvIzlj6rmmK/kuLrkuobmiafooYzlh73mlbDlhoXpg6jmn5DkupvmjIfku6TnmoTmk43kvZzov4fnqIvvvIjlpoLkv53lrZjjgIHmiZPljbDvvIkNCi0gICBgbWFwX2F0KC54LCAuYXQsIC5mLCAuLi4pYCwgYG1hcF9pZigueCwgLnAsIC5mLCAuLi4pYO+8jOWvueetm+mAieWHuueahOmDqOWIhuWFg+e0oOaJp+ihjCAuZiDmk43kvZzvvIzlhbbku5blhYPntKDkuI3ov5vooYzku7vkvZXmk43kvZzvvIzov5Tlm57lr7nosaHnmoTplb/luqbkuI4gLngg55u45ZCMDQoNCiMjIyMg5Yy/5ZCN5Ye95pWwDQoNCmBtYXAoKWAg55qE56ys5LqM5Liq5Y+C5pWw5Y+v5Lul5piv5Yy/5ZCN5Ye95pWw44CCDQoNCmBgYHtyfQ0KbW9kZWxzIDwtIG10Y2FycyAlPiUNCiAgc3BsaXQoLiRjeWwpICU+JQ0KICBtYXAoZnVuY3Rpb24oZGYpIGxtKG1wZyB+IHd0LCBkYXRhID0gZGYpKQ0KYGBgDQoNCnB1cnJyIOe7meWHuuS6huS4gOenjeWMv+WQjeWHveaVsOeahOeugOWGmeivreazle+8mg0KDQohW10oaW1nL0Z1bmN0aW9uLVNob3J0Y3V0cy5wbmcpDQoNCmBgYHtyfQ0KbW9kZWxzIDwtIG10Y2FycyAlPiUNCiAgc3BsaXQoLiRjeWwpICU+JQ0KICBtYXAofiBsbShtcGcgfiB3dCwgZGF0YSA9IC4pKSAjIH7ooajmmI7ov5nmmK/kuIDkuKrljL/lkI3lh73mlbAsIC4o5oiWLngp5piv5Luj6K+N77yM5oyH5Lyg5YWl55qE5Y+C5pWwDQoNCmNsYXNzKG1vZGVscykNCg0KbW9kZWxzDQoNCiMg5o+Q5Y+W5LiJ5Liq5qih5Z6L55qEIFJeMg0KbW9kZWxzICU+JQ0KICBtYXAoc3VtbWFyeS5sbSkgJT4lDQogIG1hcF9kYmwofiAuJHIuc3F1YXJlZCkgIyB+6KGo5piO6L+Z5piv5LiA5Liq5Ye95pWw77yMLuS7o+aMh+WPguaVsO+8jOaVhei/lOWbnjog5Y+C5pWwJHIuc3F1YXJlZA0KYGBgDQoNCmBgYHtyfQ0KIyDmibnph4/lu7rmqKHlj4rmn6XnnIvnu5PmnpwNCm10Y2FycyAlPiUNCiAgZ3JvdXBfYnkoY3lsKSAlPiUNCiAgbmVzdCgpICU+JQ0KICBtdXRhdGUobW9kZWwgPSBtYXAoZGF0YSwgfiBsbShtcGcgfiB3dCwgZGF0YSA9IC4pKSkgJT4lDQogIG11dGF0ZShyZXN1bHQgPSBtYXAobW9kZWwsIH4gYnJvb206OnRpZHkoLikpKSAlPiUNCiAgdW5uZXN0KHJlc3VsdCkNCmBgYA0KDQoqKuacgOWlveS4jeimgeS9v+eUqOi2hei/h+S4gOihjOeahOWMv+WQjeWHveaVsCoq44CC6LaF6L+H5LiA6KGM77yM5pyA5aW957uZ5Ye65Ye95pWw5ZCN77yM5L6/5LqO6ZiF6K+75ZKM6LCD6K+V44CCDQoNCiMjIyMg5o+Q5Y+W5q+P5Liq5YWD57Sg55qE6YOo5YiG5oiQ5YiGDQoNCmBtYXBfKigpYOeahOesrOS6jOS4quWPguaVsOi/mOWPr+S7peaYr+Wtl+espuS4su+8iOS9nOS4uiBuYW1l77yJ5ZKM5pW05pWw77yI5L2c5Li657Si5byV77yJ77yM6KGo56S6Kirmj5Dlj5bvvIhleHRyYWN077yJKirmr4/kuKrlhYPntKDnmoTlr7nlupTlsZ7mgKfmiJbliIbph4/nmoTlgLwNCg0K6K+l6K+t5rOV5Y+v5Lul6YG/5YWN5Zyo5LiA6L+e5Liy566h6YGT55qE5Lit6Ze05oiW5pyA5ZCO5L2/55SoYFtdYOaIlmAkYOespuWPt++8jOegtOWdj+ivreazleeahOe7n+S4gA0KDQpgYGB7cn0NCm1vZGVscyAlPiUNCiAgbWFwKHN1bW1hcnkubG0pICU+JQ0KICBtYXBfZGJsKCJyLnNxdWFyZWQiKQ0KDQp4IDwtIGxpc3QobGlzdCgxLCAyLCAzKSwgbGlzdCg0LCA1LCA2KSwgbGlzdCg3LCA4LCA5KSkNCnggJT4lIG1hcF9kYmwoMikNCmBgYA0KDQrkuKTnp43mlrnlvI/kuZ/lj6/ku6Xmt7fnlKjvvIzpgJrov4cgbGlzdCgpIOWunueOsOW1jOWll+aPkOWPlueahOaViOaenA0KYGBge3J9DQp4IDwtIGxpc3QoDQogIGxpc3QoeCA9IDEsIHkgPSBjKDIpKSwNCiAgbGlzdCh4ID0gNCwgeSA9IGMoNSwgNikpLA0KICBsaXN0KHggPSA5LCB5ID0gYyg5LCAxMCwgMTEpKQ0KKQ0KDQptYXBfZGJsKHgsIGxpc3QoInkiLCAxKSkgIyDmj5Dlj5ZuYW1l5Li6Inki55qE5YWD57Sg5Lit55qE56ys5LiA5Liq5YWD57SgDQpgYGANCg0KIyMjIGBtYXAyXyooLngsIC55LCAuZilgDQoNCmBtYXAyKClg55qEIC5mIOWPguaVsOS4uuS6jOWFg+WHveaVsA0KDQpgYGB7cn0NCiMg6I635b6X5Z2H5YC85YiG5Yir5Li6IDUsIDEwLCAtMyDnmoTlh6DkuKrmraPmgIHliIbluIMNCm11IDwtIGMoNSwgMTAsIC0zKQ0KbXUgJT4lDQogIG1hcChybm9ybSwgbiA9IDUpICU+JQ0KICAjIHJub3JtKG4sIG1lYW49MCwgc2Q9MSkg5Lqn55Sf5q2j5oCB5YiG5biDDQogICMgbj015bey57uP57uZ5LqGcm5vcm3vvIzmiYDku6UgbXUg55qE5YWD57Sg5Lyg57uZIHJub3JtIOWPquiDveS7juesrOS6jOS4quWPguaVsOW8gOWni+aOku+8jOS5n+WwseaYryBtZWFuDQogIHN0cigpDQpgYGANCg0KYGBge3J9DQojIOWdh+WAvOOAgeaWueW3rumDveS4jeWQjOeahOWHoOS4quato+aAgeWIhuW4gw0Kc2lnbWEgPC0gbGlzdCgxLCA1LCAxMCkNCm1hcDIobXUsIHNpZ21hLCBybm9ybSwgbiA9IDUpICU+JSBzdHIoKQ0KYGBgDQoNCiMjIyBgcG1hcF8qKC5sLCAuZiwgLi4uKWANCg0KYHBtYXAoKWDlj6/ku6XlsIbkuIDkuKrlj6/ov63ku6Plr7nosaHnmoTliJfooajkvZzkuLrnrKzkuIDkuKrlj4LmlbDvvIzmr4/kuKrlj6/ov63ku6Plr7nosaHnmoQgaW5kZXgg55u45ZCM55qE5YWD57Sg5L2c5Li65LiA57uE77yM5Lyg6YCS57uZYHBtYXAoKWDnmoTnrKzkuozkuKrlj4LmlbDvvIjlh73mlbDvvInjgIINCg0KYG1hcDIoKWDmmK9gcG1hcCgpYOeahOeJueS+i++8jGBtYXAyKHgsIHksIGYpYOetieS7t+S6jmBwbWFwKGxpc3QoeCwgeSksIGYpYA0KDQrnlJ/miJDlnYflgLzjgIHmoIflh4blt67lkozmoLfmnKzmlbDph4/pg73kuI3nm7jlkIznmoTmraPmgIHliIbluIPvvJoNCg0KYGBge3J9DQpuIDwtIGxpc3QoNSwgMTAsIDEwMCkNCmFyZ3MxIDwtIGxpc3QobiwgbXUsIHNpZ21hKQ0KcG1hcChhcmdzMSwgcm5vcm0pICU+JSBzdHIoKQ0KYGBgDQoNCiFbXShpbWcvcG1hcDEucG5nKQ0KDQrkuLrkuoborqnku6PnoIHmm7TmmJPor7vvvIzlupTor6UqKuS4uuWIl+ihqOS4reeahOWHoOS4quWPr+i/reS7o+WvueixoeWRveWQje+8jOWQjeensOWIhuWIq+S4unJub3JtKCnnmoTlj4LmlbDnmoTlkI3np7DjgILov5nmoLfljbPkvb9saXN05Lit5ZCE5ZCR6YeP55qE6aG65bqP5LiN5a+577yMcm5vcm0oKeS5n+iDveato+ehruivhuWIqyoq44CCDQoNCmBgYHtyfQ0KYXJnczIgPC0gbGlzdChtZWFuID0gbXUsIHNkID0gc2lnbWEsIG4gPSBuKQ0KYXJnczIgJT4lDQogIHBtYXAocm5vcm0pICU+JQ0KICBzdHIoKQ0KYGBgDQoNCuS5n+WPr+S7peWwhuWPguaVsOS/neWtmOWcqOaVsOaNruahhuS4re+8jOazqOaEj+WPmOmHj+WQjeensOeahOWMuemFjQ0KDQpgYGB7cn0NCnBhcmFtcyA8LSB0cmliYmxlKA0KICB+bWVhbiwgfnNkLCB+biwNCiAgNSwgMSwgMSwNCiAgMTAsIDUsIDMsDQogIC0zLCAxMCwgNQ0KKQ0KcGFyYW1zICU+JQ0KICBwbWFwKHJub3JtKQ0KYGBgDQoNCiMjIyBgaW52b2tlX21hcCgpYA0KDQrlpJrkuKrlh73mlbDnmoTlubbooYzmk43kvZwNCg0KYGBge3J9DQpmIDwtIGMoInJ1bmlmIiwgInJub3JtIiwgInJwb2lzIikNCnBhcmFtIDwtIGxpc3QoDQogIGxpc3QobWluID0gLTEsIG1heCA9IDEpLA0KICBsaXN0KHNkID0gNSksDQogIGxpc3QobGFtYmRhID0gMTApDQopDQppbnZva2VfbWFwKGYsIHBhcmFtLCBuID0gNSkgJT4lIHN0cigpDQpgYGANCg0KIVtdKGltZy9wbWFwMi5wbmcpDQoNCmBgYHtyfQ0Kc2ltIDwtIHRyaWJibGUoDQogIH5mLCB+cGFyYW1zLA0KICAicnVuaWYiLCBsaXN0KG1pbiA9IC0xLCBtYXggPSAxKSwNCiAgInJub3JtIiwgbGlzdChzZCA9IDUpLA0KICAicnBvaXMiLCBsaXN0KGxhbWJkYSA9IDEwKQ0KKQ0Kc2ltICU+JSBtdXRhdGUoc2ltID0gaW52b2tlX21hcChmLCBwYXJhbXMsIG4gPSAxMCkpDQpgYGANCg0KIyMjIGBpbWFwKClg6YGN5Y6G57Si5byVDQoNCmBpbWFwXyooLngsIC5mKWAsIC5mIOS4uuS6jOWFg+WHveaVsO+8jOWFtuesrOS4gOS4quWPguaVsOS4uiAueCDlhYPntKDnmoTlgLzvvIznrKzkuozkuKrlj4LmlbDkuLogLngg5YWD57Sg55qE5ZCN56ew5oiWIGluZGV477yI6L+Z5b6I5YOPIGQzLmpzIOS4reeahCBgKGQsIGkpID0+IC4uLmDvvIkNCg0K6IulIHgg55qE5YWD57Sg5YW35pyJIG5hbWVzIOWxnuaAp++8jGBpbWFwKHgsIGYpYOetieS7t+S6jmBtYXAyKHgsIG5hbWVzKHgpLCBmKWDvvJvoi6UgeCDnmoTlhYPntKDmsqHmnIkgbmFtZXMg5bGe5oCn77yMYGltYXAoeCwgZilg562J5Lu35LqOYG1hcDIoeCwgc2VxX2Fsb25nKHgpLCBmKWANCg0KYGBge3J9DQp2IDwtIGxpc3QoImEiID0gMSwgImIiID0gMiwgImMiID0gMykNCmltYXAodiwgfiBwYXN0ZTAoLnksICI6ICIsIC54KSkNCmBgYA0KDQojIyMgYHdhbGsqKClgDQoNCmB3YWxrKC54LCAuZilgLCBgd2FsazIoKWAsIGBwd2FsaygpYCwgYGl3YWxrKClgDQoNCmBgYHtyfQ0KeCA8LSBsaXN0KDEsICJhIiwgMykNCnggJT4lIHdhbGsocHJpbnQpDQoNCnBsb3RzIDwtIG10Y2FycyAlPiUNCiAgc3BsaXQoLiRjeWwpICU+JQ0KICBtYXAofiBnZ3Bsb3QoLiwgYWVzKG1wZywgd3QpKSArDQogICAgZ2VvbV9wb2ludCgpKQ0KZmlsZU5hbWVzIDwtIHN0cl9jKG5hbWVzKHBsb3RzKSwgIi5wZGYiKQ0KcHdhbGsobGlzdChmaWxlTmFtZXMsIHBsb3RzKSwgZ2dzYXZlLCBwYXRoID0gZ2V0d2QoKSAlPiUgc3RyX2MoIi9maWd1cmUvIikpDQojIGdnc2F2ZSgp55qE56ys5LiA5Liq5Y+C5pWw5piv6KaB5L+d5a2Y55qE5paH5Lu25ZCN77yM56ys5LqM5Liq5Y+C5pWw5piv5Zu+5b2i5a+56LGh77yMcGF0aOWPguaVsOaYr+aWh+S7tuWkuei3r+W+hA0KYGBgDQoNCmB3YWxrKigpYCDkvJrpmpDlvI/ov5Tlm57nrKzkuIDkuKrlj4LmlbAgLnjvvIzov5nkvb/lvpflroPku6zpnZ7luLjpgILnlKjkuo4qKueuoemBk+S8oOi+k+eahOS4remXtOatpemqpCoq77yM5bCx5YOP5LiN5Lya5omT5pat566h6YGT55qEYCVUPiVg5LiA5qC344CCDQoNCiMjIGAqYXBwbHkoKWDms5vlh73ml48NCg0KIVtdKGltZy9hcHBseUZhbWlseS5wbmcpDQoNCg0KfCBgKmFwcGx5KClgICAgICAgICAgICAgICB8IGBtYXAqKClgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tfC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS18DQp8IGBsYXBwbHkoKWAgICAgICAgICAgICAgfCBgbWFwKClgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IGBzYXBwbHkoKWAsIGB2YXBwbHkoKWAgfCBgbWFwX2xnbCgpYC9gbWFwX2ludCgpYC9gbWFwX2RibCgpYC9gbWFwX2NocigpYCB8DQp8IGBtYXBwbHkoKWAgICAgICAgICAgICAgfCBgbWFwMigpYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8ICAgICAgICAgICAgICAgICAgICAgICAgfCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQoNCjogYCphcHBseSgpYOS4jmBtYXAqKClg5a+55bqU6KGoDQoNCioqYXBwbHkoKeWHveaVsOacieS4gOS4quWKn+iDvWBtYXBfKigpYOaXoOazleWPluS7o++8jOmCo+WwseaYryBgbWF0cml4ICU+JSBhcHBseSgxLCBmKWAg5YWB6K645bCG6KGM5L2c5Li65YWD57Sg5Lyg6YCS57uZIGBmKClg77yM6ICMYG1hcF8qKClg5Zyo5aSE55CG5pWw5o2u5qGG5pe25rC46L+c5bCG5YiX5L2c5Li65YWD57Sg5Lyg6YCS57uZIGBmKClgKioNCg0K5pu05aSa5YaF5a656K+m6KeBIDxodHRwOi8vYmxvZy5mZW5zLm1lL3ItYXBwbHkvPg0KDQojIyMjIGFwcGx5OiDpgY3ljobnn6npmLUNCg0KYGFwcGx5KFgsIE1BUkdJTiwgRlVOLCAuLi4pYO+8jOWFtuS4rWAuLi5g5Li6IEZVTiDnmoTlj6/pgInlj4LmlbANCg0K5Y+C5pWw5Li6Kirnn6npmLXmiJbmlbDnu4QqKuOAguimgeaxguaJgOacieeahOWFg+e0oOmDveaYr+WQjOS4gOenjeaVsOaNruexu+Wei+OAguWmguaenOivr+eUqOS6juWFtuWug+exu+Wei++8jOWmgioq5pWw5o2u5qGG77yM5YiZ5Lya6Ieq5Yqo6L2s5o2i5Li655+p6Zi1Kirlho3lpITnkIYNCg0KTUFSR0lOIOihqOekuuWHveaVsOeahOS9nOeUqOe7tOW6pu+8jDHkuLrlr7nooYzov5DnrpfvvIwy5Li65a+55YiX6L+Q566X44CCDQoNCuWmgiBgYXBwbHkoWCA9IEEsIDIsIEZVTiA9IHN1bSlg77yM5a+5QeefqemYteeahOWIl+axguWSjA0KDQojIyMjIGxhcHBseTog5LuO5YiX6KGo5Yiw5YiX6KGoDQoNCmBsYXBwbHkobGlzdCxmdW5jdGlvbiwuLi4pYO+8jOWvueWIl+ihqOOAgWRhdGFmcmFtZeeahOavj+S4quWvueixoS/liJfliIbliKvov5vooYzmk43kvZzvvIwqKui/lOWbnuS4gOS4quaWsOWIl+ihqCoqDQoNCiMjIyMgc2FwcGx5IOWSjCB2YXBwbHk6IOeugOWMlui/lOWbnuWAvA0KDQpgc2FwcGx5KGxpc3QsZnVuY3Rpb24s4oCmLHNpbXBsaWZ5PVQpYO+8jOebuOavlCBsYXBwbHkg55qE54m554K55Zyo5LqO6L+U5Zue5YC85Y+v5Lul6KKr566A5YyW5Li6IHZlY3Rvci9tYXRyaXgNCg0KLSAgIOm7mOiupCBzaW1wbGlmeSA9IFTvvJrov5Tlm57lgLznmoTnsbvlnovnlLHorqHnrpfnu5PmnpzlhrPlrprvvIzlpoLmnpwgZnVuY3Rpb24g6K6h566X57uT5p6c55qE6ZW/5bqm5Li6Me+8jOWImXNhcHBseeWwhmxpc3TnroDljJbkuLp2ZWN0b3LvvJvlpoLmnpzov5Tlm57nmoTliJfooajkuK3mr4/kuKrlhYPntKDnmoTplb/luqbpg73lpKfkuo4x5LiU6ZW/5bqm55u45ZCM77yM6YKj5LmIc2FwcGx55bCG5YW2566A5YyW5L2N5LiA5Liq55+p6Zi1DQoNCi0gICBzaW1wbGlmeSA9IEbvvJrov5Tlm57lgLznmoTnsbvlnovmmK9saXN077yM5q2k5pe25LiObGFwcGx55a6M5YWo55u45ZCM44CCDQoNCmBgYHtyfQ0KIyDmhI/kuLrmj5Dlj5bmlbDmja7moYbmr4/kuIDliJfnmoTnrKzkuIDkuKrlhYPntKDvvIzov5Tlm57kuIDkuKrnlLHov5nkupvlhYPntKDnu4TmiJDnmoTlkJHph4/jgIINCiMgIltbIuWHveaVsOeahOeUqOazleS4uu+8miJbIihvYmplY3QsIOWFg+e0oOS9jee9rikiDQpzYXBwbHkoaXJpcywgIltbIiwgMSkNCmBgYA0KDQpgdmFwcGx5KHgsIGZ1bmN0aW9uLCBmdW4udmFsdWUsIC4uLiwgVVNFLk5BTUVTID0gVFJVRSlg77yM55u45q+Uc2FwcGx55Y+v5Lul5Zyo5Y+C5pWw5Lit6YCa6L+HZnVuLnZhbHVl6K6+572u6L6T5Ye65b2i54q277yI5ZCR6YePL+efqemYtS/liJfooajvvIkNCg0KYGBge3IsIGV2YWw9RkFMU0V9DQp2YXBwbHkoeCwgbWVhbiwgRlVOLlZBTFVFID0gZG91YmxlKDEpKSAjIOetieS7t+S6jiBtYXBfZGJsKHgsIG1lYW4pDQpgYGANCg0KYHZhcHBseSgpYCDmmK8gYHNhcHBseSgpYCDnmoTlronlhajljYfnuqfniYjvvIzlpoLmnpzkuI3og73mjInnhafml6LlrprmqKHmnb/ov5vooYzovpPlh7rvvIzlh73mlbDlsLHkvJrnu4jmraLvvIzlubbkuqfnlJ/plJnor6/kv6Hmga/jgILlm6DmraTvvIwqKuWwvemHj+S4jeimgeS9v+eUqCBgc2FwcGx5KClgKioNCg0KIyMjIyBtYXBwbHk6IOWkmuWFg+WHveaVsOeJiA0KDQpgbWFwcGx5KGZ1bmN0aW9uLCBvYmplY3QxLCBvYmplY3QyLCAuLi4sIFNJTVBMSUZZID0gVFJVRSlg77yM5aSa5Y+C5pWw6K6h566X77yM5ZCM5qC35Y+v6IO9566A5YyW6K6h566X57uT5p6c5a+86Ie057G75Z6L5LiN5Yy56YWN55qE6ZSZ6K+vDQoNCmBtYXBwbHkoZiwgeCwgeSwgeilg6L+U5ZueIGBsaXN0KGYoeFsxXSx5WzFdLHpbMV0pLCBmKHhbMl0seVsyXSx6WzJdKSwgLi4uKWANCg0KYGBge3J9DQpzZXQuc2VlZCgxKQ0KeCA8LSAxOjEwDQp5IDwtIDU6LTQNCnogPC0gcm91bmQocnVuaWYoMTAsIC01LCA1KSkNCnoNCm1hcHBseShtYXgsIHgsIHksIHopDQpgYGANCg0KYGBge3J9DQpmaXJzdGxpc3QgPC0gbGlzdChBID0gbWF0cml4KDE6MTYsIDQpLCBCID0gbWF0cml4KDE6MTYsIDIpKQ0Kc2Vjb25kbGlzdCA8LSBsaXN0KEEgPSBtYXRyaXgoMToxNiwgNCksIEIgPSBtYXRyaXgoMToxNiwgOCkpDQptYXBwbHkoaWRlbnRpY2FsLCBmaXJzdGxpc3QsIHNlY29uZGxpc3QpICMgaWRlbnRpY2FsKCnmhI/kuLrmmK/lkKbkuKXmoLznm7jnrYkNCmBgYA0KDQojIyMjIHRhcHBseTog5YiG57uE57uf6K6hDQoNCmB0YXBwbHkoWCwgSU5ERVgsIGZ1bmN0aW9uLCAuLi4sIHNpbXBsaWZ5ID0gVFJVRSlgDQoNCklOREVYIOS4uueUqOS6juWIhue7hOeahOe0ouW8le+8jOWvuSBYIOaMiSBJTkRFWCDliIbnu4Tmk43kvZwNCg0KYGBge3J9DQpkIDwtIGRhdGEuZnJhbWUobGlzdCgNCiAgZ2VuZGVyID0gYygiTSIsICJNIiwgIkYiLCAiTSIsICJGIiwgIkYiKSwNCiAgYWdlID0gYyg0NywgNTksIDIxLCAzMiwgMzMsIDI0KSwNCiAgaW5jb21lID0gYyg1NTAwMCwgODgwMDAsIDMyNDUwLCA3NjUwMCwgMTIzMDAwLCA0NTY1MCkNCikpDQp0YXBwbHkoZCRpbmNvbWUsIGQkZ2VuZGVyLCBtZWFuKSAjIGluY29tZeWFiOWvuWdlbmRlcuWIhue7hO+8jOWGjeaxguW5s+Wdh+WAvA0KYGBgDQoNCmBgYHtyfQ0KeCA8LSAxOjEwDQp0IDwtIHJvdW5kKHJ1bmlmKDEwLCAxLCAxMDApICUlIDIpDQp0DQp0YXBwbHkoeCwgdCwgc3VtKQ0KYGBgDQoNCiMjIyMgcmFwcGx5IOmAkuW9kumBjeWOhg0KDQpgcmFwcGx5KG9iamVjdCwgZnVuY3Rpb24sIGNsYXNzZXMgPSAiQU5ZIiwgZGVmbHQgPSBOVUxMLCBob3cgPSBjKCJ1bmxpc3QiLCAicmVwbGFjZSIsICJsaXN0IiksLi4uKWANCg0KYGxhcHBseSgpYCDnmoTmt7HluqbpgJLlvZLniYjvvIzlj6rmjqXlj5dsaXN077yM5aaC5p6cbGlzdOacieWtkGxpc3TvvIzliJnnu6fnu63pgY3ljobov5DnlKhm5aSE55CGDQoNCiMjIyMgZWFwcGx5DQoNCueOr+Wig+epuumXtOmBjeWOhg0KDQojIyDlubbooYzmk43kvZznmoTliKTmlq3ms5vlh70NCg0KcHJlZGljYXRlIGZ1bmN0aW9uYWwNCg0KIyMjIOetm+mAieazm+WHvQ0KDQotICAgYGtlZXAoLngsIC5wKWDvvIznrZvpgIkgLnAg5Y+C5pWw77yI5LiA5Liq5Ye95pWw77yM6YCa5bi45piv5Yy/5ZCN5Ye95pWw77yJ55qE6L+U5Zue5YC85Li6IFRSVUUg55qE5YWD57Sg77yM6ZW/5bqm6YCa5bi45q+UIC54IOefrQ0KLSAgIGBkaXNjYXJkKC54LCAucClg77yM562b6YCJIC5wIOWPguaVsOeahOi/lOWbnuWAvOS4uiBGQUxTRSDnmoTlhYPntKANCi0gICBgZGV0ZWN0KC54LCAuZiwgLi4uLCBkaXIpYCwg6L+U5Zue56ym5ZCI5p2h5Lu255qE56ys5LiA5Liq5oiW5pyA5ZCO5LiA5Liq5YWD57SgDQotICAgYGRldGVjdF9pbmRleCgueCwgLmYsIC4uLiwgZGlyKWAsIOi/lOWbnuespuWQiOadoeS7tueahOesrOS4gOS4quaIluacgOWQjuS4gOS4quWFg+e0oOeahCBpbmRleA0KLSAgIGBoZWFkX3doaWxlKClgDQotICAgYHRhaWxfd2hpbGUoKWANCg0KIyMjIOajgOa1i+azm+WHvQ0KDQotICAgYGV2ZXJ5KC54LCAucClgLCDorqHnrpflh7rnrKzkuIDkuKogRkFMU0Ug5pe25Y2z6L+U5ZueIEZBTFNFDQotICAgYHNvbWUoLngsIC5wKWAsIOiuoeeul+WHuuesrOS4gOS4qiBUUlVFIOaXtuWNs+i/lOWbniBUUlVFDQotICAgYG5vbmUoLngsIC5wKWAsIOaYr+WQpuayoeacieWFg+e0oOmAmui/h+ajgOa1iw0KLSAgIGBoYXNfZWxlbWVudCgueCwgLnkpYCwgLngg5Lit5piv5ZCm5YyF5ZCrIC55DQoNCiMjIOS4suihjOaTjeS9nOeahOmAkuW9kuOAgee0r+iuoeazm+WHvQ0KDQrkuIDkuKrlj6/ov63ku6Plr7nosaEoaXRlcmF0YWJsZSBvYmplY3Qp77yM5YWD57Sg5L6d5qyh5Lik5Lik6L+Q566X77yM5q+P5qyh6L+Q566X5b6X5Yiw5LiA5Liq57uT5p6c77yM5YaN5LiO5LiL5LiA5Liq5YWD57Sg6L+Q566X44CCDQoNCumAkuW9kuWHveaVsGBwdXJycjo6cmVkdWNlKC54LCAuZiwgLi4uLCAuaW5pdClgLCBgcmVkdWNlMigueCwgLnksIC5mLCAuLi4sIC5pbml0KWDnm7TmjqXlvpfliLDmnIDlkI7nmoTnu5PmnpwNCg0K57Sv6K6h5Ye95pWwYHB1cnJyOjphY2N1bXVsYXRlKC54LCBmLCAuLi4sIC5pbml0KWAsIGBhY2N1bXVsYXRlMigueCwgLnksIC5mLCAuLi4sIC5pbml0KWDlkIzml7bmmL7npLrkuK3pl7TnmoTmraXpqqRbXjFdIOOAgg0KDQpbXjFdOiDkvovlpoLvvIzkuIDkuKpsaXN05Lit5YKo5a2Y552A5qC85byP5LiA6Ie055qE5pWw5o2u5qGG77yM55SocmJpbmQoKeWwhuS7luS7rOWQiOW5tuWcqOS4gOi1t++8jHJlZHVjZSgp6L+U5Zue5ZCI5bm255qE5pyA57uI57uT5p6c77yM6ICMYWNjdW11bGF0ZSgp6L+U5Zue5LiA5LiqbGlzdO+8jOavj+S4quWFg+e0oOaYr+WQiOW5tueahOafkOS4gOatpeeahOe7k+aenO+8jOWNs+WJjWvkuKrmlbDmja7moYbnmoTlkIjlubbjgIINCg0KYGBge3J9DQojIOaxguS6pOmbhuWSjOW5tumbhg0KdnMgPC0gbGlzdCgNCiAgYygxLCAzLCA1LCA2LCAxMCksDQogIGMoMSwgMiwgMywgNywgOCwgMTApLA0KICBjKDEsIDIsIDMsIDQsIDgsIDksIDEwKQ0KKQ0KdnMgJT4lIHJlZHVjZShpbnRlcnNlY3QpDQp2cyAlPiUgcmVkdWNlKHVuaW9uKQ0KDQojIOaxgui/nuS5mOenrw0KMToxMCAlPiUgYWNjdW11bGF0ZShgKmApDQpgYGANCg0KYGBge3J9DQojIyBjb25maWcgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCnggPC0gc2VxKDAsIDEwMCwgNSkNCnkgPC0gc2VxKDEwMCwgMjAwLCA1KQ0KcGFyYW1zIDwtIDE6NSAqIDEwDQoNCg0KIyMgcGxvdHRpbmcgPT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT0NCmxpYnJhcnkocGxvdGx5KQ0KDQojIOWbvueahOahhuaetg0KcDAgPC0gcGxvdF9seSh0eXBlID0gInN1cmZhY2UiLCBzaG93c2NhbGUgPSBGKQ0KDQpwIDwtIHBhcmFtcyAlPiUNCiAgIyAxLiDlj4LmlbDnlLHlh73mlbDlt6XljoLliqDlt6XmiJDlh73mlbBsaXN0DQogIG1hcCh+IGZ1bmN0aW9uKGEsIGIpIDAuMDIgKiBhICsgMC4wMTUgKiBiIC0gMC4wMDA4ICogYSAqIGIgKyAwLjAwMDcgKiBhXjIgLSAwLjAwMDIgKiBiXjIgKyAuKSAlPiUNCiAgIyAyLiDlh73mlbBsaXN05L2c55So5LqOeCwgeSwg5b6X5YiwIG1hdHJpeCBsaXN0DQogIG1hcCh+IG91dGVyKHgsIHksIC4pKSAlPiUNCiAgIyAzLiDmiYDmnInnmoQgbWF0cml4IOS+neasoeS9nOS4uuaIqumdou+8jOWPoOWKoOWIsCBwMOS4ig0KICByZWR1Y2UoDQogICAgLmYgPSBmdW5jdGlvbihwLCBtKSBwICU+JSBhZGRfc3VyZmFjZSh4ID0geCwgeSA9IHksIHogPSB+bSksDQogICAgLmluaXQgPSBwMA0KICApDQpwDQpgYGANCg0KIyMg5YW25LuW5rOb5Ye9DQoNCiMjIyBgYWdncmVnYXRlKClg5YiG57uE6K6h566XDQoNCmBhZ2dyZWdhdGUoZm9ybXVsYSwgZGF0YSwgRlVOLCAuLi4sc3Vic2V0LCBuYS5hY3Rpb24gPSBuYS5vbWl0KWANCg0KYGBge3J9DQojIOaMiWN1dOWSjGNvbG9y5YiG57uE77yM5bCGcHJpY2XkvZzkuLrlj4LmlbDkvKDnu5ltZWFuKCnvvIzmlbDmja7mnaXmupDkuLpkaWFtb25kcw0KYWdncmVnYXRlKHByaWNlIH4gY3V0ICsgY29sb3IsIGRpYW1vbmRzLCBtZWFuKQ0KYGBgDQoNCmBgYHtyfQ0KIyBwbHly5YyF55qEZWFjaOWHveaVsO+8jOWPr+S7peS9v2FnZ3JlZ2F0ZeS9v+eUqOWkmuS4quWHveaVsOWvueaVsOaNrui/m+ihjOiuoeeulw0KYWdncmVnYXRlKHByaWNlIH4gY3V0LCBkaWFtb25kcywgcGx5cjo6ZWFjaChtZWFuLCBtZWRpYW4pKQ0KYGBgDQoNCiMjIyBgcmVwbGljYXRlKG4sIGYpYA0KDQrlpJrmrKHmiafooYzlubbmqKrlkJHmi7zmjqXkuLrkuIDkuKrnn6npmLUNCg0K5bi455So5LqO6ZqP5py65pWw5o2u55qE55Sf5oiQDQoNCmBgYHtyfQ0Kc2V0LnNlZWQoMTAxNCkNCmRmIDwtDQogIHJlcGxpY2F0ZSg1LCBzYW1wbGUoYygxOjEwLCAtOTkpLCA2LCByZXBsYWNlID0gVFJVRSkpICU+JSAjIDXova7mir3moLflvaLmiJDnn6npmLUuIHJlcGxpY2F0ZShuLCBmKSwg5Y2z6YeN5aSN6L+Q6KGMZuWHveaVsG7mrKENCiAgZGF0YS50YWJsZSgpICMg5bu656uL5pWw5o2u5qGGDQpgYGANCg==</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("functional.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

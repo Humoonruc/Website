@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Humoon" />
+
+<meta name="date" content="2022-05-07" />
+
+<title>管道传输的链式语法</title>
+
+<script src="libs/header-attrs-2.14/header-attrs.js"></script>
+<script src="libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="libs/bootstrap-3.3.5/css/united.min.css" rel="stylesheet" />
+<script src="libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="libs/navigation-1.1/tabsets.js"></script>
+<script src="libs/navigation-1.1/codefolding.js"></script>
+<script src="libs/navigation-1.1/sourceembed.js"></script>
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; } /* Alert */
+code span.an { color: #008000; } /* Annotation */
+code span.at { } /* Attribute */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #0000ff; } /* ControlFlow */
+code span.ch { color: #008080; } /* Char */
+code span.cn { } /* Constant */
+code span.co { color: #008000; } /* Comment */
+code span.cv { color: #008000; } /* CommentVar */
+code span.do { color: #008000; } /* Documentation */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.im { } /* Import */
+code span.in { color: #008000; } /* Information */
+code span.kw { color: #0000ff; } /* Keyword */
+code span.op { } /* Operator */
+code span.ot { color: #ff4000; } /* Other */
+code span.pp { color: #ff4000; } /* Preprocessor */
+code span.sc { color: #008080; } /* SpecialChar */
+code span.ss { color: #008080; } /* SpecialString */
+code span.st { color: #008080; } /* String */
+code span.va { } /* Variable */
+code span.vs { color: #008080; } /* VerbatimString */
+code span.wa { color: #008000; font-weight: bold; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+<link rel="stylesheet" href="../css/style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">管道传输的链式语法</h1>
+<h4 class="author">Humoon</h4>
+<h4 class="date">2022-05-07</h4>
+
+</div>
+
+
+<div id="pipeline-operator" class="section level2">
+<h2>pipeline operator</h2>
+<p>命令式编程容易出现大量的中间变量，污染全局环境。</p>
+<p>可如果写成一系列函数嵌套的形式，又会造成可读性下降</p>
+<p>pipeline operator 能够解决这个痛点，使代码更加清晰易读</p>
+<div id="section" class="section level3">
+<h3><code>|&gt;</code></h3>
+<p>这是 4.1.0 版本新发布的 base R 管道操作符。</p>
+<p>4.2.0 为其设计了 placeholder <code>_</code>，但这个 placeholder
+不能单独使用，必须在其出现的参数位置写上 <code>paramter = _</code></p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>mtcars <span class="sc">|&gt;</span> <span class="fu">lm</span>(mpg <span class="sc">~</span> disp, <span class="at">data =</span> _) <span class="co"># data = 不可省略，否则会报错</span></span></code></pre></div>
+<pre><code>#&gt; 
+#&gt; Call:
+#&gt; lm(formula = mpg ~ disp, data = mtcars)
+#&gt; 
+#&gt; Coefficients:
+#&gt; (Intercept)         disp  
+#&gt;    29.59985     -0.04122</code></pre>
+<p><code>|&gt;</code> 和 <code>_</code> 这一套的推广，需要 Rstudio 和
+VSCode-R 等 IDE 中快捷键和语法检查的匹配——但它们的更新往往要慢于 R
+base</p>
+</div>
+<div id="右向管道操作符" class="section level3">
+<h3><code>%&gt;%</code> 右向管道操作符</h3>
+<p>传递对象给右边的函数或表达式。当对象在右边函数的第一个参数时，可以省略这个参数；不是第一个参数时，则可以用<code>.</code>代替。如果是一元函数，甚至可以连<code>()</code>也省掉，只保留函数名。</p>
+<div class="figure">
+<img src="img/pipe.png" alt="" />
+<p class="caption">管道操作符</p>
+</div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">10</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>a</span></code></pre></div>
+<pre><code>#&gt;  [1] -0.56047565 -0.23017749  1.55870831  0.07050839  0.12928774  1.71506499
+#&gt;  [7]  0.46091621 -1.26506123 -0.68685285 -0.44566197</code></pre>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 由此可见：`*`和`+`其实是两个函数！接收传来的数据流作为自己的第一个参数</span></span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">*</span><span class="st">`</span>(<span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">+</span><span class="st">`</span>(<span class="dv">5</span>)</span></code></pre></div>
+<pre><code>#&gt;  [1]  2.197622  3.849113 12.793542  5.352542  5.646439 13.575325  7.304581
+#&gt;  [8] -1.325306  1.565736  2.771690</code></pre>
+</div>
+<div id="t-左向管道操作符" class="section level3">
+<h3><code>%T&gt;%</code> 左向管道操作符</h3>
+<p>必须与<code>%&gt;%</code>配合使用。</p>
+<div class="figure">
+<img src="img/T-pipe.png" alt="" />
+<p class="caption">T管道操作符</p>
+</div>
+<p>例1：在数据处理的中间过程，需要打印输出或图片输出（如观察代码是否达到了预设的目的），这时整个过程就会被中断，用向左操作符就可以解决这样的问题。</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 为了提高可读性，%T&gt;% 不换行</span></span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="fu">rnorm</span>(<span class="dv">100</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">matrix</span>(<span class="at">ncol =</span> <span class="dv">2</span>) <span class="sc">%T&gt;%</span> plot <span class="sc">%&gt;%</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">str</span>()</span></code></pre></div>
+<p><img src="../img/unnamed-chunk-3-1.png" width="90%" style="display: block; margin: auto;" /></p>
+<pre><code>#&gt;  num [1:50, 1:2] 1.224 0.36 0.401 0.111 -0.556 ...</code></pre>
+</div>
+<div id="爆炸操作符" class="section level3">
+<h3><code>%$%</code> 爆炸操作符</h3>
+<p>一些基础函数只接受向量作为参数，而不接受数据框，爆炸操作符可以绑定数据框，让右侧的函数可以直接使用列名</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>mtcars <span class="sc">%$%</span> <span class="fu">cor</span>(disp, mpg)</span></code></pre></div>
+<pre><code>#&gt; [1] -0.8475514</code></pre>
+<p>相当于</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">cor</span>(mtcars<span class="sc">$</span>disp, mtcars<span class="sc">$</span>mpg)</span></code></pre></div>
+<pre><code>#&gt; [1] -0.8475514</code></pre>
+</div>
+<div id="复合赋值操作符" class="section level3">
+<h3><code>%&lt;&gt;%</code> 复合赋值操作符</h3>
+<p>功能与<code>%&gt;%</code>基本一样，多了一项额外的操作，就是把结果写回左侧对象。所以其功能就是运算且更新。</p>
+<p>比如，我们需要对一个数据集进行排序，同时需要获得排序的结果，用<code>%&lt;&gt;%</code>就是非常方便的。</p>
+<p>现实原理如下图所示，使用<code>%&lt;&gt;%</code>把左侧的数据集A传递右侧的B函数，B函数的结果数据集再向右侧传递给C函数，C函数结果的数据集再重新赋值给A，完成整个过程。</p>
+<div class="figure">
+<img src="img/composite-pipe.png" alt="" />
+<p class="caption">复合赋值操作符</p>
+</div>
+<p>例：定义符合正态分布的100个随机数，计算绝对值，并按从小到大的顺序排序，获得并取前10个数字赋值给x。</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">100</span>)</span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> x <span class="sc">%&gt;%</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">abs</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sort</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>a</span></code></pre></div>
+<pre><code>#&gt;  [1] 0.001105352 0.016190263 0.028002159 0.039240003 0.044933609 0.053805041
+#&gt;  [7] 0.056128740 0.059313397 0.074341324 0.074564983</code></pre>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>x <span class="sc">%&lt;&gt;%</span> abs <span class="sc">%&gt;%</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sort</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">head</span>(<span class="dv">10</span>)</span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>x</span></code></pre></div>
+<pre><code>#&gt;  [1] 0.001105352 0.016190263 0.028002159 0.039240003 0.044933609 0.053805041
+#&gt;  [7] 0.056128740 0.059313397 0.074341324 0.074564983</code></pre>
+<p><code>%&lt;&gt;%</code>的主要作用是省略一步<code>&lt;-</code>，但会造成变量的改变，程序的稳健性会因此削弱，最好不要用。</p>
+</div>
+</div>
+<div id="流式操作的使用场景" class="section level2">
+<h2>流式操作的使用场景</h2>
+<div id="在函数间传递数据" class="section level3">
+<h3>在函数间传递数据</h3>
+<p>匿名函数<code>function(parameter){...}</code>单独出现时，外面要用括号<code>()</code>括起来</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>iris <span class="sc">%&gt;%</span></span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>  (<span class="cf">function</span>(x) {</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> (<span class="fu">nrow</span>(x) <span class="sc">&gt;</span> <span class="dv">2</span>) {</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>      <span class="fu">bind_rows</span>(<span class="fu">head</span>(x, <span class="dv">1</span>), <span class="fu">tail</span>(x, <span class="dv">1</span>)) <span class="sc">%&gt;%</span> <span class="fu">return</span>()</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>    } <span class="cf">else</span> {</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a>      <span class="fu">return</span>(x)</span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a>  })</span></code></pre></div>
+<pre><code>#&gt;   Sepal.Length Sepal.Width Petal.Length Petal.Width   Species
+#&gt; 1          5.1         3.5          1.4         0.2    setosa
+#&gt; 2          5.9         3.0          5.1         1.8 virginica</code></pre>
+</div>
+<div id="用函数替代运算符" class="section level3">
+<h3>用函数替代运算符</h3>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 本质上，R中的运算符都是函数，故以下两行伪代码等价</span></span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a><span class="fu">fun</span>(sym) <span class="ot">&lt;-</span> value</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a><span class="st">`</span><span class="at">fun&lt;-</span><span class="st">`</span>(sym, value) <span class="co"># 上一行是这一行的语法糖</span></span></code></pre></div>
+<table>
+<colgroup>
+<col width="68%" />
+<col width="31%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>新函数</th>
+<th>原操作符<a href="#fn1" class="footnote-ref"
+id="fnref1"><sup>1</sup></a></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>extract(x, index or 'col_name')</code></td>
+<td><code>[</code>，即<code>[</code>(x, index/‘col_name’)</td>
+</tr>
+<tr class="even">
+<td><code>extract2(x, index or 'col_name')</code></td>
+<td><code>[[</code>，即<code>[[</code>(x, index’col_name’)</td>
+</tr>
+<tr class="odd">
+<td><code>inset()</code></td>
+<td><code>[&lt;-</code></td>
+</tr>
+<tr class="even">
+<td><code>inset2()</code></td>
+<td><code>[[&lt;-</code></td>
+</tr>
+<tr class="odd">
+<td><code>set_colnames()</code></td>
+<td><code>colnames()&lt;-</code></td>
+</tr>
+<tr class="even">
+<td><code>set_rownames()</code></td>
+<td><code>rownames()&lt;-</code></td>
+</tr>
+<tr class="odd">
+<td><code>magrittr::use_series()</code>（可用于list）,
+<code>dplyr::pull()</code>（不适用于list）</td>
+<td><code>$</code></td>
+</tr>
+<tr class="even">
+<td>add</td>
+<td><code>+</code></td>
+</tr>
+<tr class="odd">
+<td>subtract</td>
+<td><code>-</code></td>
+</tr>
+<tr class="even">
+<td>multiply_by</td>
+<td><code>*</code></td>
+</tr>
+<tr class="odd">
+<td>raise_to_power</td>
+<td><code>^</code></td>
+</tr>
+<tr class="even">
+<td>multiply_by_matrix</td>
+<td><code>%*%</code></td>
+</tr>
+<tr class="odd">
+<td>divide_by</td>
+<td><code>/</code></td>
+</tr>
+<tr class="even">
+<td>divide_by_int</td>
+<td><code>%/%</code></td>
+</tr>
+<tr class="odd">
+<td>mod</td>
+<td><code>%%</code></td>
+</tr>
+<tr class="even">
+<td><code>is_in()</code></td>
+<td><code>%in%</code></td>
+</tr>
+<tr class="odd">
+<td>and</td>
+<td><code>&amp;</code></td>
+</tr>
+<tr class="even">
+<td>or</td>
+<td><code>|</code></td>
+</tr>
+<tr class="odd">
+<td>equals</td>
+<td><code>==</code></td>
+</tr>
+<tr class="even">
+<td>is_greater_than</td>
+<td><code>&gt;</code></td>
+</tr>
+<tr class="odd">
+<td>is_weakly_greater_than</td>
+<td><code>&gt;=</code></td>
+</tr>
+<tr class="even">
+<td>is_less_than</td>
+<td><code>&lt;</code></td>
+</tr>
+<tr class="odd">
+<td>is_weakly_less_than</td>
+<td><code>&lt;=</code></td>
+</tr>
+<tr class="even">
+<td>not</td>
+<td><code>!</code></td>
+</tr>
+<tr class="odd">
+<td><code>set_names()</code></td>
+<td><code>names()&lt;-</code></td>
+</tr>
+</tbody>
+</table>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">10</span>)</span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>x</span></code></pre></div>
+<pre><code>#&gt;  [1] -0.6264538  0.1836433 -0.8356286  1.5952808  0.3295078 -0.8204684
+#&gt;  [7]  0.4874291  0.7383247  0.5757814 -0.3053884</code></pre>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>x <span class="sc">%&gt;%</span></span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">multiply_by</span>(<span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add</span>(<span class="dv">5</span>)</span></code></pre></div>
+<pre><code>#&gt;  [1]  1.8677309  5.9182166  0.8218569 12.9764040  6.6475389  0.8976581
+#&gt;  [7]  7.4371453  8.6916235  7.8789068  3.4730581</code></pre>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>x <span class="sc">%&gt;%</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">*</span><span class="st">`</span>(<span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a>  <span class="st">`</span><span class="at">+</span><span class="st">`</span>(<span class="dv">5</span>)</span></code></pre></div>
+<pre><code>#&gt;  [1]  1.8677309  5.9182166  0.8218569 12.9764040  6.6475389  0.8976581
+#&gt;  [7]  7.4371453  8.6916235  7.8789068  3.4730581</code></pre>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span></span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a>x <span class="sc">%&lt;&gt;%</span> <span class="fu">set_names</span>(letters[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>])</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a><span class="co"># 作为参数传入函数时，会自动生成副本，x不会被修改，所以必须加赋值命令</span></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a>x</span></code></pre></div>
+<pre><code>#&gt;  a  b  c  d  e  f  g  h  i  j 
+#&gt;  1  2  3  4  5  6  7  8  9 10</code></pre>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>x <span class="ot">&lt;-</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">10</span></span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>x <span class="sc">%&lt;&gt;%</span> <span class="st">`</span><span class="at">names&lt;-</span><span class="st">`</span>(letters[<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>]) <span class="co"># names()&lt;- 在R中执行的真正形式</span></span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>x</span></code></pre></div>
+<pre><code>#&gt;  a  b  c  d  e  f  g  h  i  j 
+#&gt;  1  2  3  4  5  6  7  8  9 10</code></pre>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>y <span class="ot">&lt;-</span> <span class="fu">list</span>(<span class="fu">c</span>(<span class="dv">1</span>, <span class="dv">2</span>), <span class="fu">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>))</span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>y <span class="sc">%&gt;%</span> <span class="st">`</span><span class="at">[</span><span class="st">`</span>(<span class="dv">2</span>) <span class="co"># 不能直接用extract()，已被其他包同名函数覆盖</span></span></code></pre></div>
+<pre><code>#&gt; [[1]]
+#&gt; [1] &quot;a&quot; &quot;b&quot;</code></pre>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>y <span class="sc">%&gt;%</span> magrittr<span class="sc">::</span><span class="fu">extract</span>(<span class="dv">2</span>)</span></code></pre></div>
+<pre><code>#&gt; [[1]]
+#&gt; [1] &quot;a&quot; &quot;b&quot;</code></pre>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>y <span class="sc">%&gt;%</span> <span class="fu">extract2</span>(<span class="dv">2</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;a&quot; &quot;b&quot;</code></pre>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>y <span class="sc">%&gt;%</span></span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract2</span>(<span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">class</span>()</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;character&quot;</code></pre>
+<div class="sourceCode" id="cb38"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb38-1"><a href="#cb38-1" aria-hidden="true" tabindex="-1"></a>y <span class="sc">%&gt;%</span></span>
+<span id="cb38-2"><a href="#cb38-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract2</span>(<span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb38-3"><a href="#cb38-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">extract2</span>(<span class="dv">2</span>)</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;b&quot;</code></pre>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>y <span class="sc">%&gt;%</span></span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>  <span class="fu">map</span>(extract2, <span class="dv">2</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">unlist</span>()</span></code></pre></div>
+<pre><code>#&gt; [1] &quot;2&quot; &quot;b&quot;</code></pre>
+<div class="sourceCode" id="cb42"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb42-1"><a href="#cb42-1" aria-hidden="true" tabindex="-1"></a><span class="co"># unlist()拆分成vector，必须是同样的数据类型，那只能是数字退化为字符串</span></span>
+<span id="cb42-2"><a href="#cb42-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb42-3"><a href="#cb42-3" aria-hidden="true" tabindex="-1"></a>df <span class="ot">&lt;-</span> <span class="fu">tibble</span>(<span class="at">v1 =</span> <span class="dv">1</span><span class="sc">:</span><span class="dv">26</span>, <span class="at">v2 =</span> letters)</span>
+<span id="cb42-4"><a href="#cb42-4" aria-hidden="true" tabindex="-1"></a><span class="co"># 完成了列名赋值工作</span></span>
+<span id="cb42-5"><a href="#cb42-5" aria-hidden="true" tabindex="-1"></a>df <span class="sc">%&lt;&gt;%</span> <span class="fu">set_colnames</span>(<span class="fu">c</span>(<span class="st">&quot;id&quot;</span>, <span class="st">&quot;name&quot;</span>)) <span class="sc">%&gt;%</span></span>
+<span id="cb42-6"><a href="#cb42-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">filter</span>(id <span class="sc">%&gt;%</span> <span class="fu">is_in</span>(<span class="dv">1</span><span class="sc">:</span><span class="dv">10</span>)) <span class="co"># 替代 %in%</span></span>
+<span id="cb42-7"><a href="#cb42-7" aria-hidden="true" tabindex="-1"></a>df</span></code></pre></div>
+<pre><code>#&gt; # A tibble: 10 × 2
+#&gt;       id name 
+#&gt;    &lt;int&gt; &lt;chr&gt;
+#&gt;  1     1 a    
+#&gt;  2     2 b    
+#&gt;  3     3 c    
+#&gt;  4     4 d    
+#&gt;  5     5 e    
+#&gt;  6     6 f    
+#&gt;  7     7 g    
+#&gt;  8     8 h    
+#&gt;  9     9 i    
+#&gt; 10    10 j</code></pre>
+</div>
+<div id="传递数据给代码块" class="section level3">
+<h3>传递数据给代码块</h3>
+<p>例：对一个包括10个随机数的向量的先*5再+5，求出向量的均值和标准差，并从小到大排序后返回前5条。</p>
+<div class="sourceCode" id="cb44"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb44-1"><a href="#cb44-1" aria-hidden="true" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
+<span id="cb44-2"><a href="#cb44-2" aria-hidden="true" tabindex="-1"></a>a <span class="ot">&lt;-</span> <span class="fu">rnorm</span>(<span class="dv">10</span>)</span>
+<span id="cb44-3"><a href="#cb44-3" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span></span>
+<span id="cb44-4"><a href="#cb44-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">multiply_by</span>(<span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb44-5"><a href="#cb44-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add</span>(<span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb44-6"><a href="#cb44-6" aria-hidden="true" tabindex="-1"></a>  {</span>
+<span id="cb44-7"><a href="#cb44-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">cat</span>(<span class="st">&quot;Mean:&quot;</span>, <span class="fu">mean</span>(.), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">Var:&quot;</span>, <span class="fu">var</span>(.), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb44-8"><a href="#cb44-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">sort</span>(.) <span class="sc">%&gt;%</span> <span class="fu">head</span>(<span class="dv">5</span>)</span>
+<span id="cb44-9"><a href="#cb44-9" aria-hidden="true" tabindex="-1"></a>  }</span></code></pre></div>
+<pre><code>#&gt; Mean: 5.661014 
+#&gt; Var: 15.23286</code></pre>
+<pre><code>#&gt; [1] 0.8218569 0.8976581 1.8677309 3.4730581 5.9182166</code></pre>
+<div class="sourceCode" id="cb47"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb47-1"><a href="#cb47-1" aria-hidden="true" tabindex="-1"></a><span class="co"># 等价于定义一个函数。还是应该定义函数，增强可读性</span></span>
+<span id="cb47-2"><a href="#cb47-2" aria-hidden="true" tabindex="-1"></a>display <span class="ot">&lt;-</span> <span class="cf">function</span>(d) {</span>
+<span id="cb47-3"><a href="#cb47-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Mean:&quot;</span>, <span class="fu">mean</span>(d), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">Var:&quot;</span>, <span class="fu">var</span>(d), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb47-4"><a href="#cb47-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">sort</span>(d) <span class="sc">%&gt;%</span></span>
+<span id="cb47-5"><a href="#cb47-5" aria-hidden="true" tabindex="-1"></a>    <span class="fu">head</span>(<span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb47-6"><a href="#cb47-6" aria-hidden="true" tabindex="-1"></a>    <span class="fu">print</span>()</span>
+<span id="cb47-7"><a href="#cb47-7" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb47-8"><a href="#cb47-8" aria-hidden="true" tabindex="-1"></a>a <span class="sc">%&gt;%</span></span>
+<span id="cb47-9"><a href="#cb47-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">multiply_by</span>(<span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb47-10"><a href="#cb47-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">add</span>(<span class="dv">5</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb47-11"><a href="#cb47-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">display</span>()</span></code></pre></div>
+<pre><code>#&gt; Mean: 5.661014 
+#&gt; Var: 15.23286 
+#&gt; [1] 0.8218569 0.8976581 1.8677309 3.4730581 5.9182166</code></pre>
+</div>
+</div>
+<div class="footnotes footnotes-end-of-document">
+<hr />
+<ol>
+<li id="fn1"><p>R
+中的操作符其实都是函数，只不过是写法上特殊一点的无括号函数。所以在管道操作中，左边函数对右边运算符的替换并不是必须的，因为管道也可以和操作符直接配合，只不过都要用反引号将操作符括起来，显式指明这是一个函数。<a
+href="#fnref1" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
+
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIueuoemBk+S8oOi+k+eahOmTvuW8j+ivreazlSINCnN1YnRpdGxlOiAnJw0KYXV0aG9yOiAiSHVtb29uIg0KZGF0ZTogImByIFN5cy5EYXRlKClgIg0Kb3V0cHV0OiBodG1sX2RvY3VtZW50DQotLS0NCg0KYGBge3Igc2V0dXAsIGluY2x1ZGUgPSBGQUxTRX0NCnNvdXJjZSgiLi4vUm1hcmtkb3duLXRlbXBsYXRlL1JtYXJrZG93bl9jb25maWcuUiIpDQoNCiMjIGdsb2JhbCBvcHRpb25zID09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09PT09DQprbml0cjo6b3B0c19jaHVuayRzZXQoDQogIHdpZHRoID0gY29uZmlnJHdpZHRoLA0KICBmaWcud2lkdGggPSBjb25maWckZmlnLndpZHRoLA0KICBmaWcuYXNwID0gY29uZmlnJGZpZy5hc3AsDQogIG91dC53aWR0aCA9IGNvbmZpZyRvdXQud2lkdGgsDQogIGZpZy5hbGlnbiA9IGNvbmZpZyRmaWcuYWxpZ24sDQogIGZpZy5wYXRoID0gY29uZmlnJGZpZy5wYXRoLA0KICBmaWcuc2hvdyA9IGNvbmZpZyRmaWcuc2hvdywNCiAgd2FybiA9IGNvbmZpZyR3YXJuLA0KICB3YXJuaW5nID0gY29uZmlnJHdhcm5pbmcsDQogIG1lc3NhZ2UgPSBjb25maWckbWVzc2FnZSwNCiAgZWNobyA9IGNvbmZpZyRlY2hvLA0KICBldmFsID0gY29uZmlnJGV2YWwsDQogIHRpZHkgPSBjb25maWckdGlkeSwNCiAgY29tbWVudCA9IGNvbmZpZyRjb21tZW50LA0KICBjb2xsYXBzZSA9IGNvbmZpZyRjb2xsYXBzZSwNCiAgY2FjaGUgPSBjb25maWckY2FjaGUsDQogIGNhY2hlLmNvbW1lbnRzID0gY29uZmlnJGNhY2hlLmNvbW1lbnRzLA0KICBhdXRvZGVwID0gY29uZmlnJGF1dG9kZXANCikNCmBgYA0KDQoNCg0KIyMgcGlwZWxpbmUgb3BlcmF0b3INCg0K5ZG95Luk5byP57yW56iL5a655piT5Ye6546w5aSn6YeP55qE5Lit6Ze05Y+Y6YeP77yM5rGh5p+T5YWo5bGA546v5aKD44CCDQoNCuWPr+WmguaenOWGmeaIkOS4gOezu+WIl+WHveaVsOW1jOWll+eahOW9ouW8j++8jOWPiOS8mumAoOaIkOWPr+ivu+aAp+S4i+mZjQ0KDQpwaXBlbGluZSBvcGVyYXRvciDog73lpJ/op6PlhrPov5nkuKrnl5vngrnvvIzkvb/ku6PnoIHmm7TliqDmuIXmmbDmmJPor7sNCg0KIyMjIGB8PmANCg0K6L+Z5pivIDQuMS4wIOeJiOacrOaWsOWPkeW4g+eahCBiYXNlIFIg566h6YGT5pON5L2c56ym44CCDQoNCjQuMi4wIOS4uuWFtuiuvuiuoeS6hiBwbGFjZWhvbGRlciBgX2DvvIzkvYbov5nkuKogcGxhY2Vob2xkZXIg5LiN6IO95Y2V54us5L2/55So77yM5b+F6aG75Zyo5YW25Ye6546w55qE5Y+C5pWw5L2N572u5YaZ5LiKIGBwYXJhbXRlciA9IF9gDQoNCmBgYHtyfQ0KbXRjYXJzIHw+IGxtKG1wZyB+IGRpc3AsIGRhdGEgPSBfKSAjIGRhdGEgPSDkuI3lj6/nnIHnlaXvvIzlkKbliJnkvJrmiqXplJkNCmBgYA0KDQpgfD5gIOWSjCBgX2Ag6L+Z5LiA5aWX55qE5o6o5bm/77yM6ZyA6KaBIFJzdHVkaW8g5ZKMIFZTQ29kZS1SIOetiSBJREUg5Lit5b+r5o236ZSu5ZKM6K+t5rOV5qOA5p+l55qE5Yy56YWN4oCU4oCU5L2G5a6D5Lus55qE5pu05paw5b6A5b6A6KaB5oWi5LqOIFIgYmFzZQ0KDQojIyMgYCU+JWAg5Y+z5ZCR566h6YGT5pON5L2c56ymDQoNCuS8oOmAkuWvueixoee7meWPs+i+ueeahOWHveaVsOaIluihqOi+vuW8j+OAguW9k+WvueixoeWcqOWPs+i+ueWHveaVsOeahOesrOS4gOS4quWPguaVsOaXtu+8jOWPr+S7peecgeeVpei/meS4quWPguaVsO+8m+S4jeaYr+esrOS4gOS4quWPguaVsOaXtu+8jOWImeWPr+S7peeUqGAuYOS7o+abv+OAguWmguaenOaYr+S4gOWFg+WHveaVsO+8jOeUmuiHs+WPr+S7pei/nmAoKWDkuZ/nnIHmjonvvIzlj6rkv53nlZnlh73mlbDlkI3jgIINCg0KIVvnrqHpgZPmk43kvZznrKZdKGltZy9waXBlLnBuZykNCg0KYGBge3J9DQpzZXQuc2VlZCgxMjMpDQphIDwtIHJub3JtKDEwKQ0KYQ0KDQojIOeUseatpOWPr+inge+8mmAqYOWSjGArYOWFtuWunuaYr+S4pOS4quWHveaVsO+8geaOpeaUtuS8oOadpeeahOaVsOaNrua1geS9nOS4uuiHquW3seeahOesrOS4gOS4quWPguaVsA0KYSAlPiUNCiAgYCpgKDUpICU+JQ0KICBgK2AoNSkNCmBgYA0KDQojIyMgYCVUPiVgIOW3puWQkeeuoemBk+aTjeS9nOespg0KDQrlv4XpobvkuI5gJT4lYOmFjeWQiOS9v+eUqOOAgg0KDQohW1TnrqHpgZPmk43kvZznrKZdKGltZy9ULXBpcGUucG5nKQ0KDQrkvosx77ya5Zyo5pWw5o2u5aSE55CG55qE5Lit6Ze06L+H56iL77yM6ZyA6KaB5omT5Y2w6L6T5Ye65oiW5Zu+54mH6L6T5Ye677yI5aaC6KeC5a+f5Luj56CB5piv5ZCm6L6+5Yiw5LqG6aKE6K6+55qE55uu55qE77yJ77yM6L+Z5pe25pW05Liq6L+H56iL5bCx5Lya6KKr5Lit5pat77yM55So5ZCR5bem5pON5L2c56ym5bCx5Y+v5Lul6Kej5Yaz6L+Z5qC355qE6Zeu6aKY44CCDQoNCmBgYHtyfQ0KIyDkuLrkuobmj5Dpq5jlj6/or7vmgKfvvIwlVD4lIOS4jeaNouihjA0Kcm5vcm0oMTAwKSAlPiUNCiAgbWF0cml4KG5jb2wgPSAyKSAlVD4lIHBsb3QgJT4lDQogIHN0cigpDQpgYGANCg0KIyMjIGAlJCVgIOeIhueCuOaTjeS9nOespg0KDQrkuIDkupvln7rnoYDlh73mlbDlj6rmjqXlj5flkJHph4/kvZzkuLrlj4LmlbDvvIzogIzkuI3mjqXlj5fmlbDmja7moYbvvIzniIbngrjmk43kvZznrKblj6/ku6Xnu5HlrprmlbDmja7moYbvvIzorqnlj7PkvqfnmoTlh73mlbDlj6/ku6Xnm7TmjqXkvb/nlKjliJflkI0NCg0KYGBge3J9DQptdGNhcnMgJSQlIGNvcihkaXNwLCBtcGcpDQpgYGANCg0K55u45b2T5LqODQoNCmBgYHtyfQ0KY29yKG10Y2FycyRkaXNwLCBtdGNhcnMkbXBnKQ0KYGBgDQoNCiMjIyBgJTw+JWAg5aSN5ZCI6LWL5YC85pON5L2c56ymDQoNCuWKn+iDveS4jmAlPiVg5Z+65pys5LiA5qC377yM5aSa5LqG5LiA6aG56aKd5aSW55qE5pON5L2c77yM5bCx5piv5oqK57uT5p6c5YaZ5Zue5bem5L6n5a+56LGh44CC5omA5Lul5YW25Yqf6IO95bCx5piv6L+Q566X5LiU5pu05paw44CCDQoNCuavlOWmgu+8jOaIkeS7rOmcgOimgeWvueS4gOS4quaVsOaNrumbhui/m+ihjOaOkuW6j++8jOWQjOaXtumcgOimgeiOt+W+l+aOkuW6j+eahOe7k+aenO+8jOeUqGAlPD4lYOWwseaYr+mdnuW4uOaWueS+v+eahOOAgg0KDQrnjrDlrp7ljp/nkIblpoLkuIvlm77miYDnpLrvvIzkvb/nlKhgJTw+JWDmiorlt6bkvqfnmoTmlbDmja7pm4ZB5Lyg6YCS5Y+z5L6n55qEQuWHveaVsO+8jELlh73mlbDnmoTnu5PmnpzmlbDmja7pm4blho3lkJHlj7PkvqfkvKDpgJLnu5lD5Ye95pWw77yMQ+WHveaVsOe7k+aenOeahOaVsOaNrumbhuWGjemHjeaWsOi1i+WAvOe7mUHvvIzlrozmiJDmlbTkuKrov4fnqIvjgIINCg0KIVvlpI3lkIjotYvlgLzmk43kvZznrKZdKGltZy9jb21wb3NpdGUtcGlwZS5wbmcpDQoNCuS+i++8muWumuS5ieespuWQiOato+aAgeWIhuW4g+eahDEwMOS4qumaj+acuuaVsO+8jOiuoeeul+e7neWvueWAvO+8jOW5tuaMieS7juWwj+WIsOWkp+eahOmhuuW6j+aOkuW6j++8jOiOt+W+l+W5tuWPluWJjTEw5Liq5pWw5a2X6LWL5YC857uZeOOAgg0KDQpgYGB7cn0NCnNldC5zZWVkKDEpDQp4IDwtIHJub3JtKDEwMCkNCmEgPC0geCAlPiUNCiAgYWJzKCkgJT4lDQogIHNvcnQoKSAlPiUNCiAgaGVhZCgxMCkNCmENCg0KeCAlPD4lIGFicyAlPiUNCiAgc29ydCgpICU+JQ0KICBoZWFkKDEwKQ0KeA0KYGBgDQoNCmAlPD4lYOeahOS4u+imgeS9nOeUqOaYr+ecgeeVpeS4gOatpWA8LWDvvIzkvYbkvJrpgKDmiJDlj5jph4/nmoTmlLnlj5jvvIznqIvluo/nmoTnqLPlgaXmgKfkvJrlm6DmraTliYrlvLHvvIzmnIDlpb3kuI3opoHnlKjjgIINCg0KIyMg5rWB5byP5pON5L2c55qE5L2/55So5Zy65pmvDQoNCiMjIyDlnKjlh73mlbDpl7TkvKDpgJLmlbDmja4NCg0K5Yy/5ZCN5Ye95pWwYGZ1bmN0aW9uKHBhcmFtZXRlcil7Li4ufWDljZXni6zlh7rnjrDml7bvvIzlpJbpnaLopoHnlKjmi6zlj7dgKClg5ous6LW35p2lDQoNCmBgYHtyfQ0KaXJpcyAlPiUNCiAgKGZ1bmN0aW9uKHgpIHsNCiAgICBpZiAobnJvdyh4KSA+IDIpIHsNCiAgICAgIGJpbmRfcm93cyhoZWFkKHgsIDEpLCB0YWlsKHgsIDEpKSAlPiUgcmV0dXJuKCkNCiAgICB9IGVsc2Ugew0KICAgICAgcmV0dXJuKHgpDQogICAgfQ0KICB9KQ0KYGBgDQoNCg0KIyMjIOeUqOWHveaVsOabv+S7o+i/kOeul+espg0KDQpgYGAgcg0KIyDmnKzotKjkuIrvvIxS5Lit55qE6L+Q566X56ym6YO95piv5Ye95pWw77yM5pWF5Lul5LiL5Lik6KGM5Lyq5Luj56CB562J5Lu3DQpmdW4oc3ltKSA8LSB2YWx1ZQ0KYGZ1bjwtYChzeW0sIHZhbHVlKSAjIOS4iuS4gOihjOaYr+i/meS4gOihjOeahOivreazleezlg0KYGBgDQoNCnwg5paw5Ye95pWwICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCDljp/mk43kvZznrKZbXjJdICAgICAgICAgICAgICAgICAgICAgfA0KfC0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS18LS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLS0tLXwNCnwgYGV4dHJhY3QoeCwgaW5kZXggb3IgJ2NvbF9uYW1lJylgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBgW2DvvIzljbNgW2AoeCwgaW5kZXgvJ2NvbF9uYW1lJykgIHwNCnwgYGV4dHJhY3QyKHgsIGluZGV4IG9yICdjb2xfbmFtZScpYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBgW1tg77yM5Y2zYFtbYCh4LCBpbmRleCdjb2xfbmFtZScpIHwNCnwgYGluc2V0KClgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBgWzwtYCAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IGBpbnNldDIoKWAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgYFtbPC1gICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KfCBgc2V0X2NvbG5hbWVzKClgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IGBjb2xuYW1lcygpPC1gICAgICAgICAgICAgICAgICAgIHwNCnwgYHNldF9yb3duYW1lcygpYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBgcm93bmFtZXMoKTwtYCAgICAgICAgICAgICAgICAgICB8DQp8IGBtYWdyaXR0cjo6dXNlX3NlcmllcygpYO+8iOWPr+eUqOS6jmxpc3TvvIksIGBkcGx5cjo6cHVsbCgpYO+8iOS4jemAgueUqOS6jmxpc3TvvIkgfCBgJGAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IGFkZCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgYCtgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KfCBzdWJ0cmFjdCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IGAtYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwgbXVsdGlwbHlfYnkgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBgKmAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IHJhaXNlX3RvX3Bvd2VyICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgYF5gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KfCBtdWx0aXBseV9ieV9tYXRyaXggICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IGAlKiVgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwgZGl2aWRlX2J5ICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBgL2AgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IGRpdmlkZV9ieV9pbnQgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgYCUvJWAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KfCBtb2QgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IGAlJWAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwgYGlzX2luKClgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBgJWluJWAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IGFuZCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgYCZgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KfCBvciAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IGB8YCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwgZXF1YWxzICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBgPT1gICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IGlzX2dyZWF0ZXJfdGhhbiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgYD5gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KfCBpc193ZWFrbHlfZ3JlYXRlcl90aGFuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IGA+PWAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwgaXNfbGVzc190aGFuICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBgPGAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8DQp8IGlzX3dlYWtseV9sZXNzX3RoYW4gICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwgYDw9YCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfA0KfCBub3QgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICB8IGAhYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHwNCnwgYHNldF9uYW1lcygpYCAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgfCBgbmFtZXMoKTwtYCAgICAgICAgICAgICAgICAgICAgICB8DQoNClteMl06IFIg5Lit55qE5pON5L2c56ym5YW25a6e6YO95piv5Ye95pWw77yM5Y+q5LiN6L+H5piv5YaZ5rOV5LiK54m55q6K5LiA54K555qE5peg5ous5Y+35Ye95pWw44CC5omA5Lul5Zyo566h6YGT5pON5L2c5Lit77yM5bem6L655Ye95pWw5a+55Y+z6L656L+Q566X56ym55qE5pu/5o2i5bm25LiN5piv5b+F6aG755qE77yM5Zug5Li6566h6YGT5Lmf5Y+v5Lul5ZKM5pON5L2c56ym55u05o6l6YWN5ZCI77yM5Y+q5LiN6L+H6YO96KaB55So5Y+N5byV5Y+35bCG5pON5L2c56ym5ous6LW35p2l77yM5pi+5byP5oyH5piO6L+Z5piv5LiA5Liq5Ye95pWw44CCDQoNCmBgYHtyfQ0Kc2V0LnNlZWQoMSkNCnggPC0gcm5vcm0oMTApDQp4DQoNCg0KeCAlPiUNCiAgbXVsdGlwbHlfYnkoNSkgJT4lDQogIGFkZCg1KQ0KeCAlPiUNCiAgYCpgKDUpICU+JQ0KICBgK2AoNSkNCg0KDQp4IDwtIDE6MTANCnggJTw+JSBzZXRfbmFtZXMobGV0dGVyc1sxOjEwXSkNCiMg5L2c5Li65Y+C5pWw5Lyg5YWl5Ye95pWw5pe277yM5Lya6Ieq5Yqo55Sf5oiQ5Ymv5pys77yMeOS4jeS8muiiq+S/ruaUue+8jOaJgOS7peW/hemhu+WKoOi1i+WAvOWRveS7pA0KeA0KDQp4IDwtIDE6MTANCnggJTw+JSBgbmFtZXM8LWAobGV0dGVyc1sxOjEwXSkgIyBuYW1lcygpPC0g5ZyoUuS4reaJp+ihjOeahOecn+ato+W9ouW8jw0KeA0KDQoNCnkgPC0gbGlzdChjKDEsIDIpLCBjKCJhIiwgImIiKSkNCnkgJT4lIGBbYCgyKSAjIOS4jeiDveebtOaOpeeUqGV4dHJhY3QoKe+8jOW3suiiq+WFtuS7luWMheWQjOWQjeWHveaVsOimhueblg0KeSAlPiUgbWFncml0dHI6OmV4dHJhY3QoMikNCg0KeSAlPiUgZXh0cmFjdDIoMikNCnkgJT4lDQogIGV4dHJhY3QyKDIpICU+JQ0KICBjbGFzcygpDQp5ICU+JQ0KICBleHRyYWN0MigyKSAlPiUNCiAgZXh0cmFjdDIoMikNCnkgJT4lDQogIG1hcChleHRyYWN0MiwgMikgJT4lDQogIHVubGlzdCgpDQojIHVubGlzdCgp5ouG5YiG5oiQdmVjdG9y77yM5b+F6aG75piv5ZCM5qC355qE5pWw5o2u57G75Z6L77yM6YKj5Y+q6IO95piv5pWw5a2X6YCA5YyW5Li65a2X56ym5LiyDQoNCmRmIDwtIHRpYmJsZSh2MSA9IDE6MjYsIHYyID0gbGV0dGVycykNCiMg5a6M5oiQ5LqG5YiX5ZCN6LWL5YC85bel5L2cDQpkZiAlPD4lIHNldF9jb2xuYW1lcyhjKCJpZCIsICJuYW1lIikpICU+JQ0KICBmaWx0ZXIoaWQgJT4lIGlzX2luKDE6MTApKSAjIOabv+S7oyAlaW4lDQpkZg0KYGBgDQoNCiMjIyDkvKDpgJLmlbDmja7nu5nku6PnoIHlnZcNCg0K5L6L77ya5a+55LiA5Liq5YyF5ousMTDkuKrpmo/mnLrmlbDnmoTlkJHph4/nmoTlhYhcKjXlho0rNe+8jOaxguWHuuWQkemHj+eahOWdh+WAvOWSjOagh+WHhuW3ru+8jOW5tuS7juWwj+WIsOWkp+aOkuW6j+WQjui/lOWbnuWJjTXmnaHjgIINCg0KYGBge3J9DQpzZXQuc2VlZCgxKQ0KYSA8LSBybm9ybSgxMCkNCmEgJT4lDQogIG11bHRpcGx5X2J5KDUpICU+JQ0KICBhZGQoNSkgJT4lDQogIHsNCiAgICBjYXQoIk1lYW46IiwgbWVhbiguKSwgIlxuVmFyOiIsIHZhciguKSwgIlxuIikNCiAgICBzb3J0KC4pICU+JSBoZWFkKDUpDQogIH0NCg0KIyDnrYnku7fkuo7lrprkuYnkuIDkuKrlh73mlbDjgILov5jmmK/lupTor6XlrprkuYnlh73mlbDvvIzlop7lvLrlj6/or7vmgKcNCmRpc3BsYXkgPC0gZnVuY3Rpb24oZCkgew0KICBjYXQoIk1lYW46IiwgbWVhbihkKSwgIlxuVmFyOiIsIHZhcihkKSwgIlxuIikNCiAgc29ydChkKSAlPiUNCiAgICBoZWFkKDUpICU+JQ0KICAgIHByaW50KCkNCn0NCmEgJT4lDQogIG11bHRpcGx5X2J5KDUpICU+JQ0KICBhZGQoNSkgJT4lDQogIGRpc3BsYXkoKQ0KYGBgDQo=</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("pipeline.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3,h4",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

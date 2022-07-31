@@ -1,0 +1,210 @@
+---
+title: "Function Factory"
+subtitle: ''
+author: "Humoon"
+date: "`r Sys.Date()`"
+output: html_document
+---
+
+```{r setup, include = FALSE}
+source("../Rmarkdown-template/Rmarkdown_config.R")
+
+## global options ===================================
+knitr::opts_chunk$set(
+  width = config$width,
+  fig.width = config$fig.width,
+  fig.asp = config$fig.asp,
+  out.width = config$out.width,
+  fig.align = config$fig.align,
+  fig.path = config$fig.path,
+  fig.show = config$fig.show,
+  warn = config$warn,
+  warning = config$warning,
+  message = config$message,
+  echo = config$echo,
+  eval = config$eval,
+  tidy = config$tidy,
+  comment = config$comment,
+  collapse = config$collapse,
+  cache = config$cache,
+  cache.comments = config$cache.comments,
+  autodep = config$autodep
+)
+
+library(rlang)
+library(scales)
+```
+
+### Basic
+
+要旨：
+1. function factory 所制造的函数（闭包, closure）的封装环境（**the** enclosing environment, 定义时的环境）是函数工厂的一个执行环境（**an** execution environment）。
+2. 闭包（Closure）内含一些实例化时接收的工厂参数信息。闭包是带有数据的函数。
+
+```{r}
+#' @title 函数工厂
+power1 <- function(exp) {
+  function(x) {
+    x^exp
+  }
+}
+
+square <- power1(2)
+pryr::unenclose(square) # 查看生产出来的函数里面参数值
+cube <- power1(3)
+pryr::unenclose(cube)
+
+square(3)
+cube(3)
+```
+
+
+#### Enviroment
+
+```{r}
+# square() 和 cube() 有相同的父环境，即全局环境，也是 power1 的封装环境
+rlang::env_print(square)
+rlang::env_print(cube)
+
+rlang::fn_env(square) # square()的封装环境，也是power1 的一个执行环境
+rlang::fn_env(square) %>% ls() # 其中只有 exp 一个对象
+rlang::fn_env(square)$exp # exp = 2 储存在这个封装环境中
+rlang::fn_env(cube) # cube()的封装环境，power1 的另一个执行环境
+rlang::fn_env(cube)$exp
+```
+
+#### Forcing evaluation
+
+```{r}
+t <- 2
+square <- power1(t)
+pryr::unenclose(square) # 封装环境中 exp 指向 t
+t <- 3 # t 值已变
+rlang::fn_env(square)$exp
+square(x = 3) # 运行时计算 t，但 t 已指向 3
+```
+
+惰性求值的机制，使 power1() 运行时，exp 指向 t；直到 square() 运行时，t 才被计算，但此时 t 指向的值（在全局环境中）已经变为 3.
+
+强制求值可以避免产生这种错误。
+
+```{r}
+power2 <- function(exp) {
+  force(exp) # 强制求值
+  function(x) {
+    x^exp
+  }
+}
+
+t <- 2
+square <- power2(t) # 由于强制求值，exp 已经被赋值为 2
+t <- 3
+rlang::fn_env(square)$exp
+square(3) # 3^2
+```
+
+#### 例: 计数器
+
+```{r}
+new_counter <- function() {
+  i <- 0
+
+  #' @title 匿名函数，由于使用了 <<- 赋值运算符，
+  #'   可以修改其父环境/封装环境（new_counter() 的某一个执行环境）中的数据
+  function() {
+    i <<- i + 1
+    i
+  }
+}
+
+counter_one <- new_counter()
+counter_two <- new_counter()
+rlang::fn_env(counter_one)$i
+rlang::fn_env(counter_two)$i
+
+counter_one()
+rlang::fn_env(counter_one)$i # counter_one() 封装环境中的数据 i，只能被 counter_one() 修改
+rlang::fn_env(counter_two)$i # counter_two() 封装环境中的数据 i，只能被 counter_two() 修改
+
+counter_one()
+rlang::fn_env(counter_two)$i
+
+counter_two()
+rlang::fn_env(counter_one)$i
+```
+
+
+### Application: 图形工厂
+
+鉴于绘图的灵活性，绘图函数通常需要提供许多参数。如果大多数情况下，只使用部分参数，就可以创建一个专用的简版函数，这样可以使代码更容易编写和阅读。
+
+#### Labelling
+
+`label_number()`/`label_comma()`/`label_scientific()` 返回闭包，可以对数字进行格式化
+
+```{r}
+y <- c(12345, 123456, 1234567)
+scales::label_comma()(y)
+scales::label_number(scale = 1e-3, suffix = " K")(y)
+scales::label_scientific()(y)
+```
+
+ggplot 图形设定比例尺时，labels 参数可以接收函数
+
+```{r}
+df <- data.frame(x = 1, y = y)
+core <- ggplot(df, aes(x, y)) +
+  geom_point() +
+  scale_x_continuous(breaks = 1, labels = NULL) +
+  labs(x = NULL, y = NULL)
+
+core
+core + scale_y_continuous(
+  labels = scales::label_comma()
+)
+core + scale_y_continuous(
+  labels = scales::label_number(scale = 1e-3, suffix = " K")
+)
+core + scale_y_continuous(
+  labels = scales::label_scientific()
+)
+```
+
+### Application: 统计工厂
+
+#### MLE estimator
+
+Maximum Likelihood Estimation, MLE
+
+以泊松分布为例，对于数据 $\boldsymbol{x} = x_1, x_2, \cdots, x_n$，其 likelihood probability 为 
+
+$$
+P(\lambda, \boldsymbol{x})=\prod_{i=1}^n \frac{\lambda^{x_i}e^{-\lambda}}{x_i!}
+$$
+
+则对数似然函数可以简化为 
+
+$$
+\ln P(\lambda, \boldsymbol{x}) = \ln \lambda \cdot \sum_{i=1}^nx_i-n\cdot\lambda-\sum_{i=1}^n\ln x_i!
+$$
+
+求参数 $\lambda$，使对数似然函数取得极大值
+
+```{r}
+#' @title log likelihood poisson 函数工厂
+ll_poisson <- function(x) {
+  n <- length(x)
+  sum_x <- sum(x)
+
+  #' @return 闭包，接收lambda，返回对数似然函数的值
+  function(lambda) {
+    # lfactorial() 为向量化函数
+    log(lambda) * sum_x - n * lambda - sum(lfactorial(x))
+  }
+}
+
+x1 <- c(41, 30, 31, 38, 29, 24, 30, 29, 31, 38)
+ll_1 <- ll_poisson(x1) # 闭包
+
+optimise(f = ll_1, interval = c(0, 100), maximum = TRUE) # 求得 MLE estimator
+```
