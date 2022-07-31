@@ -54,7 +54,7 @@ footnotereturnlinkcontents = "↩"
     weight = 10
 
 [params]
-    description = "Across Mountains and Seas: Odýsseia"
+    description = "Across Mountains and Seas"
     footer = "&copy; 2019-2022 [京ICP备2021008534号-1](https://beian.miit.gov.cn/)"
 
   highlightjsVersion = "9.12.0"
