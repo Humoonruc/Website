@@ -1,13 +1,17 @@
-# -*- coding: utf-8 -*-
+# ## import packages and module
+using CSV, JSON, DataFrames, Pipe
 
-
-# ## Using Packages
-using CSV, DataFrames, Pipe
+include("RootSolving.jl")
+using .RootSolving
 
 
 # ## config
-J = 40
-N = 31
+scalars = JSON.parsefile("./data/scalar.json")
+J = scalars["J"]
+N = scalars["N"]
+δ = scalars["delta"] # 反馈系数
+tol = scalars["tolerance"] # 精度
+max_itr = scalars["maxIterator"] # 最大迭代次数
 
 
 # ## read data
@@ -28,6 +32,7 @@ data_θ = "./data/T.txt" # 20×1, 可贸易部门的 θʲ
 function read_table(data, N, j)::Matrix
     CSV.read(data, DataFrame; header=false, skipto=N * (j - 1) + 1, limit=N) |> Matrix
 end
+
 
 """
 将二维数据读取为三维张量，三个维度分别代表本国、外国、部门
@@ -123,11 +128,3 @@ Iₙ = Yₙˡ + Rₙ + Dₙ
 
 
 
-
-
-
-
-
-vfactor = -0.2 # 迭代的负反馈系数
-tol = 1e-7 # 误差容忍度（精度）
-maxitr = 1e10 # 最大迭代次数

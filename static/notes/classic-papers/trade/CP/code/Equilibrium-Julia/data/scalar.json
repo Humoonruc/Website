@@ -1,0 +1,7 @@
+{
+    "J": 40,
+    "N": 31,
+    "delta": 0.3,
+    "tolerance": 1e-8,
+    "maxIterator": 1000
+}

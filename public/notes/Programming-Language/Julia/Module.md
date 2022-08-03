@@ -46,7 +46,13 @@ end
 
 ### 调用模块中的变量
 
-module 中的对象，如果有一行 `export xxx`，那么在主文件使用 `using/import .ModuleName` 之后，就可以直接使用其中的变量了
+module 中的对象，
+
+（1）如果有一行 `export xxx`
+
+（2）在主文件使用 `using/import .ModuleName` 之后
+
+就可以直接使用其中的变量了
 
 ```julia
 include("./toolkit/HandleDF.jl")
