@@ -7,7 +7,7 @@ editor_options:
 
 <h1 style="font-size:44px; color:royalblue; font-family: STKaiTi, &#39;Times New Roman&#39;, Times, serif; font-weight: bold; " align="center">工欲善其事    必先利其器</h1>
 
-<h1 style="font-size:32px; color:royalblue; font-family: STKaiTi, &#39;Times New Roman&#39;, Times, serif; font-weight: bold; " align="center">Work With Code    关注工具变革的力量</h1>
+<h1 style="font-size:32px; font-family: STKaiTi, &#39;Times New Roman&#39;, Times, serif; font-weight: bold; " align="center">Work with Code    关注工具变革的力量</h1>
 
 <br/>
 
@@ -36,62 +36,55 @@ editor_options:
 <img src="http://humoon-image-hosting-service.oss-cn-beijing.aliyuncs.com/img/typora/JavaScript/python-logo.png" alt="Github repo" style="width:120px;float:right;"/>
 
 > <div>
->
-> <br/> <strong>Life is Short</strong><br/> <strong>You Need
+><br/> <strong>Life is Short</strong><br/> <strong>You Need
 > Python</strong><br/>
->
 > </div>
 
 <br/>
 
-## 名言警句
+<h1 style="font-size:44px; color:royalblue; font-family: STKaiTi, &#39;Times New Roman&#39;, Times, serif; font-weight: bold; " align="center">名人名言</h1>
 
 > <div>
 >
 > <p>
->
-> <strong>"未来是传统行业利用互联网技术在云端用人工智能的方式处理大数据。"</strong>
->
-> </p>
->
-> <p align="right">
->
-> ------马化腾
->
-> </p>
->
-> <br/>
->
-> <p>
->
-> <strong>"在财政和信贷之间、通胀和资产泡沫之间，可能存在几十年一个轮回的周期转换。"</strong>
->
-> </p>
->
-> <p align="right">
->
-> ------彭文生
->
-> </p>
->
-> </div>
+><strong>"未来是传统行业利用互联网技术在云端用人工智能的方式处理大数据。"</strong>
+> 
+></p>
+> 
+><p align="right">
+> 
+>------马化腾
+> 
+></p>
+> 
+><br/>
+> 
+><p>
+> 
+><strong>"在财政和信贷之间、通胀和资产泡沫之间，可能存在几十年一个轮回的周期转换。"</strong>
+> 
+></p>
+> 
+><p align="right">
+> 
+>------彭文生
+> 
+></p>
+> 
+></div>
 
 <br>
 
+<h1 style="font-size:44px; color:royalblue; font-family: STKaiTi, &#39;Times New Roman&#39;, Times, serif; font-weight: bold; " align="center">Notes of Programming Language</h1>
 
-# **Notes of Programming Language**
+## **Julia**
 
-## **JavaScript: 前端之王，全栈信仰**
-
-**旧版**笔记地址：[CODING](https://humoonruc.coding.net/p/notes/d/Notes-of-Programming-Languages/git/tree/master/Notes-JavaScript)
-
-## **R: 为数据科学而生**
-
-**旧版**笔记地址：[CODING](https://humoonruc.coding.net/p/notes/d/Notes-of-Programming-Languages/git/tree/master/Notes-R)
+- [Basic-Grammar](/notes/Programming-Language/Julia/Basic-Grammar.md)
+- building…
 
 
 
-**新版**笔记（核心章节）
+## **R**
 
 1. [R Engineering](/notes/Programming-Language/R/00-R-Engineering/R-Engineering.html)
 2. Basic Grammar
@@ -131,11 +124,13 @@ editor_options:
 
 
 
-## **Python: 万能胶水**
+## **Microsoft Office**
 
-**旧版**笔记地址：[CODING](https://humoonruc.coding.net/p/notes/d/Notes-of-Programming-Languages/git/tree/master/Notes-Python)
+- [MS Office 高级应用笔记](/notes/MS-Office高级应用笔记/_book/section.html)
 
 
 
-# **Recent Blog**
+<h1 style="font-size:44px; color:royalblue; font-family: STKaiTi, &#39;Times New Roman&#39;, Times, serif; font-weight: bold; " align="center">Recent Blog</h1>
+
+
 
