@@ -18,9 +18,9 @@ $40 \times 31$ 矩阵，行为部门，列为国家
 
 #### IO.txt
 
-input-output coefficients for each country, $\gamma_n^{k,j}$
+input-output coefficients for each country, 但==注意，这个值不是 $\gamma_n^{k,j}$==，而与其成正比。因为 $\sum_{k=1}^J \gamma_n^{k,j}=1-\gamma_n^j$，但 IO 表中相应一列的和就是 1.
 
-$1240 \times 40$ 矩阵，每 40 行为一个国家的 I-O 矩阵。行为 destination sectors，列为 source sectors
+$1240 \times 40$ 矩阵，每 40 行为一个国家的 I-O 矩阵。行为 source sectors，列为 destination sectors （即对每个国家而言，各列的和为1）
 
 #### tariffs1993.txt
 
@@ -115,11 +115,6 @@ without input-output linkages，展示 TABLE 11
 #### 文件夹 Counterfactuals_no_materials
 
 #### 文件夹 Counterfactuals_no_io
-
-
-
-
-
 
 
 

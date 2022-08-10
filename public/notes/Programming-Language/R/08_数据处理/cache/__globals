@@ -1,0 +1,2 @@
+example-data.table-split-10	$	.	.N	.SD	all.equal	as.character	as.data.frame	as.factor	c	data.table	lapply	letters	list	names	rep	rnorm	sample	set.seed	setDT	sort	split	x1	x2	x3	y
+example-data.table-split-1	$	.	.N	.SD	all.equal	as.character	as.data.frame	as.factor	c	data.table	lapply	letters	list	names	rep	rnorm	sample	set.seed	setDT	sort	split	x1	x2	x3	y

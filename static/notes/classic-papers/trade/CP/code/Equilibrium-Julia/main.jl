@@ -1,129 +1,161 @@
-# ## import packages and module
-using CSV, JSON, DataFrames, Pipe
+# -*- coding: utf-8 -*-
 
-include("RootSolving.jl")
-using .RootSolving
+using Markdown, Pipe
+using CSV, JSON, DataFrames
+using LinearAlgebra
 
 
-# ## config
+md"# Pre Simulation"
+
+
+md"## Config"
+
 scalars = JSON.parsefile("./data/scalar.json")
-J = scalars["J"]
-N = scalars["N"]
-δ = scalars["delta"] # 反馈系数
-tol = scalars["tolerance"] # 精度
-max_itr = scalars["maxIterator"] # 最大迭代次数
+
+# 标量都用普通字体，向量和矩阵用粗斜体
+const J = scalars["J"]; # number of factors
+const N = scalars["N"]; # number of countries
+const δ = scalars["delta"]; # 反馈系数
+const tol = scalars["tolerance"]; # 精度
+const max_itr = scalars["maxIterator"]; # 最大迭代次数
 
 
-# ## read data
-# 将数据尽可能读为3维张量，三个维度分别代表本国, 他国, 部门    
-# 不论观察还是操作数据，一眼就能看明白是哪个坐标
-data_trade = "./data/xbilat1993.txt" # 20N×N, 每 N 行为一个可贸易部门的双边贸易量矩阵，共20个可贸易部门
-data_τ1993 = "./data/tariffs1993.txt" # 20N×N, 每 N 行为一个可贸易部门的双边关税矩阵，共20个可贸易部门
-data_τ2005 = "./data/tariffs1993.txt"
-data_io = "./data/IO.txt" # NJ×J, 每 J 行为一个国家的行业 I-O 矩阵，共N个。行为 destination sectors，列为 source sectors
-data_γʲ = "./data/B.txt" # J×N, γₙʲ, 行为部门，列为国家. 
-data_Y = "./data/GO.txt" # J×N, Yₙʲ, 行为部门，列为国家
-data_θ = "./data/T.txt" # 20×1, 可贸易部门的 θʲ
+md"## Read data"
+
+md"### Data File Path"
+
+data_trade = "./data/xbilat1993.txt"; # 20N×N, 每 N 行为一个可贸易部门的双边贸易量矩阵, 共20个可贸易部门
+data_τ1993 = "./data/tariffs1993.txt"; # 20N×N, 每 N 行为一个可贸易部门的双边关税矩阵, 共20个可贸易部门
+data_τ2005 = "./data/tariffs2005.txt"; # 20N×N, 每 N 行为一个可贸易部门的双边关税矩阵, 共20个可贸易部门
+data_IO = "./data/IO.txt"; # NJ×J, 每 J 行为一个国家的行业 I-O 矩阵。注意，行表示中间品来源，列表示中间品去处，各列之和为 1
+data_γʲ = "./data/B.txt"; # J×N, γₙʲ, 劳动收入占比. 行为部门, 列为国家. 
+data_Y = "./data/GO.txt"; # J×N, Yₙʲ, 部门产出. 行为部门, 列为国家
+data_θ = "./data/T.txt"; # 20×1, θʲ, 20个可贸易部门的θ
 
 
-"""
-读取N行数据，返回矩阵; j决定读取哪N行
-"""
-function read_table(data, N, j)::Matrix
-    CSV.read(data, DataFrame; header=false, skipto=N * (j - 1) + 1, limit=N) |> Matrix
-end
+md"### Custom Reading Functions"
 
+include("ReadData.jl")
+using .ReadData
 
-"""
-将二维数据读取为三维张量，三个维度分别代表本国、外国、部门
-
-# Arguments
-- `data`, 二维数据文件，一般有N×J行，M列，每N行、M列构成一个具有意义的二维表，第三维在行方向排列
-"""
-function to_tensor(data, N, M, J)
-    tables = [read_table(data, N, j) for j ∈ 1:J]
-    vector = vcat([table[:] for table ∈ tables]...)
-    reshape(vector, (N, M, J))
-end
-
+md"### Data Reading and Wrangling"
 
 # 双边贸易
-tensor_X = to_tensor(data_trade, N, N, 20)
-X = 1000 * cat(tensor_X, zeros(N, N, 20); dims=3)
+trade = 1000 * cat(to_tensor(data_trade, N, N, 20), zeros(N, N, 20); dims=3) # 在第三个维度(部门)上连接
 
-# 双边关税率
-tensor_τ = to_tensor(data_τ1993, N, N, 20)
-τ̃₁₉₉₃ = 1 .+ cat(tensor_τ, zeros(N, N, 20); dims=3) / 100
+# 双边关税率 
+𝝉 = cat(to_tensor(data_τ1993, N, N, 20), zeros(N, N, 20); dims=3) / 100
+𝝉̃ = 1 .+ 𝝉
+# 𝝉′ = 𝝉
+𝝉′ = cat(to_tensor(data_τ2005, N, N, 20), zeros(N, N, 20); dims=3) / 100
+𝝉̃′ = 1 .+ 𝝉′
 
-# 投入产出表数据比较特殊，它本质上是四个维度的数据(部门维度有两个)，故对其进行特殊处理
-tensor_IO = @pipe to_tensor(data_io, J, J, N)
+# 投入产出表数据比较特殊, 三个维度分别为 k, j, n
+tensor_IO = to_tensor(data_IO, J, J, N)
+# mapslices(sum, tensor_IO[:, :, 3]; dims=1) # 验证某国各列和为1
 
 # 劳动成本在总成本中占比
-γʲ = @pipe to_tensor(data_γʲ, 1, N, J) |> reshape(_, (N, 1, J))
+𝜸ʲ = to_matrix(data_γʲ)'
+
+# 计算 𝜸ᵏʲ, j部门产品总成本中k部门中间品所占的份额
+𝜸ᵏʲ = zeros(J, J, N)
+for k ∈ 1:J, j ∈ 1:J, n ∈ 1:N
+    𝜸ᵏʲ[k, j, n] = tensor_IO[k, j, n] * (1 - 𝜸ʲ[n, j])
+end
+# 𝜸ᵏʲ
 
 # 部门产出
-Y = @pipe to_tensor(data_Y, 1, N, J) |> reshape(_, (N, 1, J))
+𝒀 = to_matrix(data_Y)'
 
-# 部门常数
-θ = @pipe to_tensor(data_θ, 1, 1, 20) |> reshape(_, (1, 1, 20))
-T = 1 ./ cat(θ, fill(8.22, (1, 1, 20)); dims=3) # 非贸易部门的θ是8.22
+# 部门技术分布常数, 非贸易部门的θ是8.22
+𝜽 = @pipe to_matrix(data_θ) |> vcat(_, fill(8.22, (20, 1)))
 
 
-# ## data processing
+md"## Data Transformation"
+
 # 进出口
-E = @pipe mapslices(sum, X; dims=1) |> reshape(_, (N, 1, J)) # 对n加总为总出口
-M = @pipe mapslices(sum, X; dims=2) # 对i加总为总进口
+𝑬𝑿 = @pipe mapslices(sum, trade; dims=1) |> reshape(_, (N, J)) # 对n加总为某国总出口
+𝑰𝑴 = @pipe mapslices(sum, trade; dims=2) |> reshape(_, (N, J)) # 对i加总为某国总进口
 
-Xₙₙ = max.(E, Y) - E # 产出减出口为国内销售
-Sales = Xₙₙ + E # 总销售
+# 对国内产品的支出
+𝑿ₙₙ = max.(𝑬𝑿, 𝒀) - 𝑬𝑿 # 产出减出口，即国内销售
 
-EX = X .* τ̃₁₉₉₃ # X乘以关税才是对外国的支出数据
-[EX[n, n, j] = Xₙₙ[n, 1, j] for n ∈ 1:N for j ∈ 1:J] # X每张table的对角元都是0，加上国内销售数据，才是完整的支出数据
-EXₙ = mapslices(sum, EX; dims=2) # 某国总支出，对i（第二个维度）求和即可
-Pi = EX ./ EXₙ # 支出份额
+# 支出张量
+𝑿 = trade .* 𝝉̃ # 进口额加上关税才是对外国的支出
+for n ∈ 1:N, j ∈ 1:J
+    𝑿[n, n, j] = 𝑿ₙₙ[n, j] # 再加上对国内产品的支出, 才是完整的支出数据
+end
 
+# 各国总支出
+𝑿ₙ = @pipe mapslices(sum, 𝑿; dims=2) |> reshape(_, (N, J)) # 对进口来源（第二个维度）求和
 
-# 某国各部门间的投入产出表
-IOₙ = n -> tensor_IO[:, :, n]
-# 某国各部门中间品成本
-m_costₙ = n -> ((1 .- γʲ[n, :, :]) .* Sales[n, :, :])'
-# 生产过程中对各种中间产品的引致需求
-m_demand = @pipe [IOₙ(n) * m_costₙ(n) for n ∈ 1:N] .|>
-                 transpose |> vcat(_...) |> reshape(_, (N, 1, J))
-# 对最终产品的需求
-final_demand = EXₙ - m_demand
+# 支出份额
+𝝅 = 𝑿 ./ mapslices(sum, 𝑿; dims=2) # 除数的第二个维度自动扩展
+#= 标量写法
+𝝅 = zeros(N, N, J)
+for n ∈ 1:N, i ∈ 1:N, j ∈ 1:J
+    𝝅[n, i, j] = 𝑿[n, i, j] / 𝑿ₙ[n, j]
+end
+=#
 
+# 总劳动收入, 对部门加总即可
+𝒘𝑳 = @pipe (𝜸ʲ .* 𝒀) |> mapslices(sum, _; dims=2)
 
-# 总劳动收入，对第三个坐标（部门）加总即可
-Yₙˡ = @pipe (γʲ .* Y) |> mapslices(sum, _; dims=3)
-# 关税转移支付，先对第二个坐标（进口来源国）加总，再对部门加总
-Rₙ = @pipe EXₙ .* (1 .- mapslices(sum, Pi ./ τ̃₁₉₉₃; dims=2)) |>
-           mapslices(sum, _; dims=3)
-# 贸易赤字，对部门加总
-Dₙ = @pipe (M - E) |> mapslices(sum, _; dims=3)
+# 关税转移支付. 此式不能以直觉理解，是推导出来的，见 CP 笔记 (8.5) 式
+𝑻𝑹 = @pipe reshape(𝑿ₙ, (N, 1, J)) .* (1 .- mapslices(sum, 𝝅 ./ 𝝉̃; dims=2)) |> # 对出口国i加总 
+           mapslices(sum, _; dims=3) |> # 对部门j加总
+           reshape(_, N)
+
+# 贸易赤字, 对部门加总
+𝑫 = @pipe (𝑰𝑴 - 𝑬𝑿) |> mapslices(sum, _; dims=2)
+
 # 总预算
-Iₙ = Yₙˡ + Rₙ + Dₙ
+𝑰 = 𝒘𝑳 + 𝑻𝑹 + 𝑫
 
+
+"""
+n国对各部门中间产品的引致需求，返回行向量
+"""
+function derive_demand(n::Int64)::Matrix
+    # n国各部门总销售
+    Sales = 𝑿ₙₙ + 𝑬𝑿
+
+    # n国各部门投入的中间品总成本
+    intermediate_cost = (1 .- 𝜸ʲ[n, :]) .* Sales[n, :]
+
+    # n国各部门间的投入产出表：行部门产品，在列部门所有中间品需求中的比率
+    IO_matrix::Matrix = tensor_IO[:, :, n]
+
+    (IO_matrix * intermediate_cost[:])' # 等价写法：intermediate_cost' * IO_matrix'
+end
+
+# 生产过程中对各种中间产品的需求)
+intermediate_demand = @pipe derive_demand.(1:N) |> vcat(_...)
+
+# 各国对各部门最终产品的需求
+final_demand = 𝑿ₙ - intermediate_demand
 
 # 最终消费品在总预算中的占比
-αs = @pipe (final_demand ./ Iₙ) |> replace(x -> x < 0 ? 0 : x, _)
-αs = αs ./ mapslices(sum, αs; dims=3) # 因为将负数变成了0，各部门α总和未必是1，要重新归一化
+𝜶 = @pipe (final_demand ./ 𝑰) |>
+          replace(x -> x < 0 ? 0 : x, _) # 小于0的值全部以0替代
+
+𝜶 = 𝜶 ./ mapslices(sum, 𝜶; dims=2) # 因为将负数变成了0, 各部门α总和未必是1, 要重新归一化
+# 验证重新对 α 归一
+# mapslices(sum, 𝜶; dims=2) 
 
 
+md"# Simulation"
 
 
+md"## Import Modules"
+
+include("Equilibrium.jl")
+using .Equilibrium
 
 
+md"## BaseLine"
 
-
-
-
-
-
-
-
-
-
+solve_equilibrium(N, J, δ, tol, max_itr, 𝝉̃, 𝝉̃′, 𝜸ʲ, 𝜸ᵏʲ, 𝜽, 𝝅, 𝑿ₙ, 𝒘𝑳, 𝑫, 𝜶)
 
 
 

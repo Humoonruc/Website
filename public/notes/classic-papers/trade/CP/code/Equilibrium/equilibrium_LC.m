@@ -24,10 +24,9 @@ function [wf0 pf0 PQ Fp Dinp ZW Snp c DP PF] = equilibrium_LC(tau_hat, taup, alp
             Fp(j, :) = sum((Dinp(irow, :) ./ taup(irow, :))');
         end
 
-        % % Expenditure MATRIX 
+        % % Expenditure MATRIX
         PQ = expenditure(alphas, B, G, Dinp, taup, Fp, VAn, wf0, Sn, J, N);
 
-        
         
         % 以下两行都没什么用，因为后面负反馈调整wf0时，用的是贸易赤字指标，wf1被赋了另外一个值，仅作为一个过渡性的中间变量
         wf1 = LMC(PQ, Dinp_om, J, N, B, VAn); % Iterating using LMC,

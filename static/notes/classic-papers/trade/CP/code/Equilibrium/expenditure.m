@@ -35,9 +35,9 @@ function [PQ] = expenditure(alphas, B, G, Dinp, taup, Fp, VAn, wf0, Sn, J, N)
     GP = GG .* NNBP;
 
     OM = eye(J * N, J * N) - (GP + IA);
-    Vb = alphas .* kron(ones(J, 1), (wf0 .* VAn)');
-    Vb = reshape(Vb, J * N, 1);
-    Bb = -alphas .* ((Sn) * ones(1, J))';
+    Vb = alphas .* kron(ones(J, 1), (wf0 .* VAn)'); % alpha * w\hat * wL
+    Vb = reshape(Vb, J * N, 1); 
+    Bb = -alphas .* ((Sn) * ones(1, J))'; % alpha * Dn
     Bb = reshape(Bb, J * N, 1);
 
     DD1 = (OM^ - 1) * Vb;

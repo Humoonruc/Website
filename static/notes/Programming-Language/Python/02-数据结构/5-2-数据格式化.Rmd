@@ -32,7 +32,7 @@ documentclass: ctexart
 classoption: hyperref,
 ---
 
-```{css, echo=FALSE}
+```{css echo=FALSE, language="css"}
 /* 除了直接在Rmd中写css，还可以在 yaml 头部加入 css:"style.css" 来使用外部css文件 */
   
   
@@ -280,7 +280,7 @@ div.toc-content {
 }
 ```
 
-```{r setup, include = FALSE}
+```{r setup, include=FALSE}
 ## global options
 knitr::opts_chunk$set(
   fig.width = 7,

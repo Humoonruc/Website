@@ -107,7 +107,7 @@ P_{n}^j=\left\{\int_{0}^{1} \left[p_{n}^j(\omega^j)\right]^{1-\sigma^j} d \omega
 $$
 其中 $p_{n}^j(\omega^j)$ 是每种产品经过充分市场竞争后的最低价格。
 
-可以从中求           得关系式：
+可以从中求得关系式：
 $$
 r_{n}^{j}\left(\omega^{j}\right)=\left[\frac{p_{n}^{j}\left(\omega^{j}\right)}{P_{n}^{j}}\right]^{-\sigma^{j}} Q_{n}^{j}
 $$
@@ -126,7 +126,7 @@ $$
 $$
 \kappa_{ni}^{j} \equiv \tilde\tau_{ni}^j d_{ni}^j \tag{3}
 $$
-此外，**假设 $\kappa_{nh}^j \kappa_{hi}^j \ge \kappa_{ni}^j$ 恒成立，即不会出现转口贸易**（即 $h$ 国从 $i$ 国进口商品再转售给 $n$ 国，这比 $n$ 国直接从 $i$ 国购买贵，因而无利可图）——**这是一个很强的假设**，因为现实中存在一些由于关税结构不同而发生的转口贸易（虽然多数时候 $n$ 国都会尽量堵上这种漏洞，防止 $n$ 国对 $i$ 国设立的关税水平沦为废纸）——**于是任意行业的出口不会大于产出**。
+此外，**假设 $\kappa_{nh}^j \kappa_{hi}^j \ge \kappa_{ni}^j$ 恒成立，即不会出现转口贸易**（即 $h$ 国从 $i$ 国进口商品再转售给 $n$ 国，这比 $n$ 国直接从 $i$ 国购买贵，因而无利可图）——**这是一个很强的假设**，因为现实中存在一些由于关税结构不同而发生的转口贸易（虽然多数时候 $n$ 国都会尽量堵上这种漏洞，防止 $n$ 国对 $i$ 国设                                                                                                                                                    立的关税水平沦为废纸）——**于是任意行业的出口不会大于产出**。
 
 
 
@@ -180,11 +180,14 @@ $$
 其中预算可以展开为：
 
 $$
-I_{n}=w_{n} L_{n}+R_{n}+D_{n} \tag{8}
+I_{n}=w_{n} L_{n}+TR_{n}+D_{n} \tag{8}
 $$
 - 右边第 1 项为工资收入。事实上有 $\begin{aligned} w_nL_n=\sum_{k=1}^{J} \gamma_{n}^{k}Y_n^k = \sum_{k=1}^{J} \gamma_{n}^{k} \sum_{i=1}^{N} X_{i}^{k} \frac{\pi_{i n}^{k}}{1+\tau_{i n}^{k}} \end{aligned}$，但在本模型中部门增加值（部门工资收入）外生，从而国别工资收入外生，因此无需展开。
 
-- 右边第 2 项为关税收入转移支付，$\begin{aligned} R_n = \sum_{j=1}^J\sum_{i=1}^N\tau_{ni}^j M_{ni}^j \end{aligned}$ ，进口额（不含关税价） $\begin{aligned} M_{ni}^j=X_n^j \frac{\pi_{ni}^j}{1+\tau_{ni}^j} \end{aligned}$. 可以证明，$$\begin{aligned} R_n = \sum_{j=1}^J \left[  X_{n}^j \sum_{i=1}^N \left(1-\frac{1}{1+\tau_{ni}^j} \right)\pi_{ni}^j \right]= \sum_{j=1}^J \left[  X_{n}^j\left(1 - \sum_{i=1}^N \frac{1}{1+\tau_{ni}^j}\pi_{ni}^j \right) \right]\end{aligned}$$
+- 右边第 2 项为关税收入转移支付，$\begin{aligned} TR_n = \sum_{j=1}^J\sum_{i=1}^N\tau_{ni}^j M_{ni}^j \end{aligned}$ ，进口额（不含关税价） $\begin{aligned} M_{ni}^j=X_n^j \frac{\pi_{ni}^j}{1+\tau_{ni}^j} \end{aligned}$. 可以证明，
+  $$
+  \begin{aligned} TR_n = \sum_{j=1}^J \left[  X_{n}^j \sum_{i=1}^N \left(1-\frac{1}{1+\tau_{ni}^j} \right)\pi_{ni}^j \right]= \sum_{j=1}^J \left[  X_{n}^j\left(1 - \sum_{i=1}^N \frac{\pi_{ni}^j}{1+\tau_{ni}^j} \right) \right]\end{aligned} \tag{8.5}
+  $$
 
 - 右边第 3 项为国别贸易赤字（通过资本账户融资，以支持本国国民直接收入以外的支出），这是一个外生变量（宏观统计数据）。
 
@@ -237,8 +240,10 @@ $$
 $$
 
 $$
-I_{n}^{\prime}=\widehat{w}_{n} w_{n} L_{n}+\sum_{j=1}^{J} \sum_{i=1}^{N} \tau_{n i}^{j^{\prime}} \frac{\pi_{n i}^{j^{\prime}}}{1+\tau_{n i}^{j^{\prime}}} X_{n}^{j^{\prime}}+D_{n}
+I_{n}^{\prime}=\widehat{w}_{n} w_{n} L_{n}+\sum_{j=1}^{J} \sum_{i=1}^{N} \tau_{n i}^{j^{\prime}} \frac{\pi_{n i}^{j^{\prime}}}{1+\tau_{n i}^{j^{\prime}}} X_{n}^{j^{\prime}}+D_{n}^{\prime}
 $$
+
+只考虑基年模拟时，$D_n^{\prime} = D_n$
 
 由 (10)-(13) 式可看出
 
@@ -328,12 +333,18 @@ $$
 编程思路如下：
 
 1. 猜测一个相对工资向量 $\boldsymbol{\hat{w}} \equiv (\hat{w_1},\cdots ,\hat{w_N})$
-2. (10) 和 (11) 共有 $2\times J \times N$ 个方程，有 $J \times N$ 个未知数 $\hat{P}_n^j$ 和 $J \times N$ 个未知数 $\hat{c}_n^j$，因此可解。
-3. 然后根据 (12) 式可计算 $\hat{\pi}_{n i}^{j}$，从而可计算 ${\pi_{n i}^{j}}'$
-4. 根据 (14) 可计算 ${X_{n}^{j}}'$
-5. 最后将所有计算出的变量带入 (13)，观察方程是否平衡。如果不平衡，则调整 $\boldsymbol{\hat{w}}$，直至方程平衡。
 
-详见附录 Solving the Model（模型的矩阵形式）
+2. (10) 和 (11) 共有 $2\times J \times N$ 个方程，有 $J \times N$ 个未知数 $\hat{P}_n^j$ 和 $J \times N$ 个未知数 $\hat{c}_n^j$，因此可解。
+
+3. 然后根据 (12) 式可计算 $\hat{\pi}_{n i}^{j}$，从而可计算 ${\pi_{n i}^{j}}'$
+
+4. 根据 (13) 可计算 ${X_{n}^{j}}'$，其中转移支付部门可以用 (8.5) 式化简
+   $$
+   X_{n}^{j^{\prime}}=\sum_{k=1}^{J} \gamma_{n}^{j, k} \sum_{i=1}^{N} \frac{\pi_{i n}^{k^{\prime}}}{1+\tau_{i n}^{k^{\prime}}} X_{i}^{k \prime}+\alpha_{n}^{j}\left(\widehat{w}_{n} w_{n} L_{n}+\sum_{j=1}^J \left[{X_{n}^j}'\left(1 - \sum_{i=1}^N \frac{\pi_{ni}^{j'}}{1+\tau_{ni}^{j'}} \right) \right]+D_{n}^{\prime}\right) \tag{C1}
+   $$
+   可以用附录 C 给出的矩阵乘法方式求解，也可以试一下多元方程组求解器（线性方程组，一般都会收敛）
+
+5. 最后将所有计算出的变量带入 (14)，计算方程是否平衡。如果不平衡，则调整 $\boldsymbol{\hat{w}}$，直至方程平衡。
 
 ## Section 4 估计 $\theta^{j}$
 

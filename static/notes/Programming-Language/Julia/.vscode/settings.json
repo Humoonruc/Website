@@ -1,9 +1,11 @@
 {
-  "workbench.colorCustomizations": {
-    "editor.lineHighlightBackground": "#1073cf2d",
-    "editor.lineHighlightBorder": "#9fced11f",
-    "activityBar.background": "#182C06",
-    "titleBar.activeBackground": "#213E09",
-    "titleBar.activeForeground": "#F4FCEC"
-  }
+    "workbench.colorCustomizations": {
+        "editor.lineHighlightBackground": "#1073cf2d",
+        "editor.lineHighlightBorder": "#9fced11f",
+        "activityBar.background": "#182C06",
+        "titleBar.activeBackground": "#213E09",
+        "titleBar.activeForeground": "#F4FCEC"
+    },
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "aiXcoder.showTrayIcon": true
 }

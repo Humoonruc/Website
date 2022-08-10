@@ -1,0 +1,63 @@
+---
+title: "Pipeline"
+format:
+  html:
+    toc: true
+    number-sections: true
+    code-tools: true
+    highlight-style: monokai
+    code-copy: true
+    self-contained: true
+execute: 
+  cache: true
+  daemon: true
+  output: asis
+jupyter: julia-1.7
+---
+
+## 链式操作的两种写法
+
+```{julia}
+"adbec" |> collect |> sort |> join # 管道
+(join ∘ sort ∘ collect)("adbec") # 复合函数
+```
+
+`∘` **\circ TAB**
+
+## 向量化操作配合管道
+
+```{julia}
+#| eval: false
+
+split(str) .|> uppercasefirst # 所有单词首字母大写
+```
+
+## 管道中的多元函数
+
+Julia 管道流中的函数只能是一元函数，要使用多元函数，需要以下几种方式之一：
+
+### 多元函数一元化
+
+写成匿名函数
+
+```{julia}
+[1, 2, 3] |> arr -> join(arr, " ")
+```
+
+特别地，关系运算符本来都是二元函数，但 Julia 中有语法糖 `==(a)`，与一元函数 `x -> ==(x, a)` 等价——这种写法可以匹配管道：
+
+```{julia}
+1 |> ==(1.0)
+"abc" |> collect .|> ∈("aeiou")
+```
+
+### `@pipe`
+
+引入第三方库 `Pipe` 中的 `@pipe`
+
+```{julia}
+#| eval: false
+
+using Pipe
+@pipe a |> foo(x, _)       # foo(x,a) 
+```

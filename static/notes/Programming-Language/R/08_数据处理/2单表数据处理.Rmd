@@ -102,6 +102,21 @@ not_cancelled <- flights %>%
 
 filter() 只能筛选出条件为 TRUE 的行；它会排除那些条件为 FALSE **和 NA 的行。如果想保留缺失值，需要明确指出**。
 
+
+#### 结合`if_any()`/`if_all()`多列筛选
+
+`if_any(.cols = everything(), .fns = NULL, ..., .names = NULL)`
+
+`if_all(.cols = everything(), .fns = NULL, ..., .names = NULL)`
+
+```{r}
+iris %>%
+  filter(if_any(ends_with("Width"), ~ . > 4))
+
+iris %>%
+  filter(if_all(ends_with("Width"), ~ . > 2))
+```
+
 ### 索引切片 `silce()`
 
 `dplyr::slice(data, ...)` 可以选择指定序号的行子集，正的序号表示保留，负的序号表示排除。如：
@@ -245,6 +260,27 @@ add_column(mtcars, new = 1:32)
 rename(iris, Length = Sepal.Length)
 ```
 
+### 将操作作用于多列
+
+`across(.cols = everything(), .fns = NULL, ..., .names = NULL)`
+
+![](img/across.png)
+
+```{r}
+# .col 可以是列名（不用字符串）
+iris %>% mutate(across(c(Sepal.Length, Sepal.Width), round))
+
+# .col 可以是列 index
+iris %>% mutate(across(c(1, 2), round))
+
+# 二者的混合
+iris %>% mutate(across(1:Sepal.Width, round))
+
+# A purrr-style formula
+iris %>%
+  group_by(Species) %>%
+  summarise(across(starts_with("Sepal"), ~ mean(.x, na.rm = TRUE)))
+```
 
 ### 计算新列的函数
 
@@ -618,3 +654,7 @@ not_cancelled %>%
   group_by(year, month, day) %>%
   summarize(hour_perc = mean(arr_delay > 60))
 ```
+
+
+
+

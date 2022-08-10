@@ -2,19 +2,18 @@ module RootSolving
 
 export Newton_solve, feedback_solve
 
-using Calculus, NLsolve
+using Calculus, NLsolve, Markdown
 
-########################
-## 辅助函数
-########################
+
+md"# 辅助函数"
+
 function modulus(x::Vector)::Float64
-    √sum(x .* x)
+    √sum(x .^ 2)
 end
 
 
-########################
-## 手写牛顿迭代法
-########################
+md"# 手写牛顿迭代法"
+
 """
     Newton_solve(f, x₀[; tol, max_iter])
 # Newton迭代法解一元方程 ``f(x) = 0``
@@ -35,14 +34,12 @@ function Newton_solve(f, x₀; tol=1e-10, max_iter=500)
     println("Maximum number of iterations exceeded.")
 end
 
-
 # Newton_solve(atan, 1.391)
 # Newton_solve(atan, 2)
 
 
-########################
-## 手写反馈迭代法
-########################
+md"# 手写反馈迭代法"
+
 """
     feedback_solve(Q, X₀, Q₀[; δ, tol, max_iter])
 # 反馈迭代法解多元非线性方程组 ``F(X) = Q(X) - Q₀ = 0``
@@ -67,7 +64,6 @@ function feedback_solve(Q, X₀::Vector, Q₀::Vector; δ=0.3, tol=1e-10, max_it
     println("Maximum number of iterations exceeded.")
 end
 
-
 # function Q(X::Vector)::Vector
 #     Q = zeros(length(X))
 #     Q[1] = 10 / X[1]
@@ -75,21 +71,19 @@ end
 #     return Q
 # end
 
-
 # feedback_solve(Q, [1, 1], [2, 5])
 
 
-########################
-## NLsolve 包提供的方程组求解器
-########################
+md"# NLsolve 包提供的方程组求解器"
+
 function equations!(F, X)
     F[1] = X[1] * X[2] - 600
     F[2] = X[2] - 30
 end
 
-
 # solve = NLsolve.nlsolve(equations!, [2.0, 2.0]; ftol=1e-10, iterations=500,
 #     show_trace=true, extended_trace=true)
 # Dict(:X => solve.zero, :iter => solve.iterations)
+
 
 end

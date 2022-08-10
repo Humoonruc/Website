@@ -6,7 +6,25 @@
     <description>Recent content in Categories on 万水千山</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-us</language>
-    <lastBuildDate>Wed, 03 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
+    <lastBuildDate>Wed, 10 Aug 2022 00:00:00 +0000</lastBuildDate><atom:link href="/categories/index.xml" rel="self" type="application/rss+xml" />
+    <item>
+      <title>文史</title>
+      <link>/categories/%E6%96%87%E5%8F%B2/</link>
+      <pubDate>Wed, 10 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/%E6%96%87%E5%8F%B2/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>社会</title>
+      <link>/categories/%E7%A4%BE%E4%BC%9A/</link>
+      <pubDate>Wed, 10 Aug 2022 00:00:00 +0000</pubDate>
+      
+      <guid>/categories/%E7%A4%BE%E4%BC%9A/</guid>
+      <description></description>
+    </item>
+    
     <item>
       <title>International Relation</title>
       <link>/categories/international-relation/</link>
@@ -26,29 +44,11 @@
     </item>
     
     <item>
-      <title>文史</title>
-      <link>/categories/%E6%96%87%E5%8F%B2/</link>
-      <pubDate>Fri, 26 Feb 2021 00:00:00 +0000</pubDate>
-      
-      <guid>/categories/%E6%96%87%E5%8F%B2/</guid>
-      <description></description>
-    </item>
-    
-    <item>
       <title>ICT</title>
       <link>/categories/ict/</link>
       <pubDate>Fri, 30 Oct 2020 00:00:00 +0000</pubDate>
       
       <guid>/categories/ict/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>社会</title>
-      <link>/categories/%E7%A4%BE%E4%BC%9A/</link>
-      <pubDate>Sun, 27 Oct 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/categories/%E7%A4%BE%E4%BC%9A/</guid>
       <description></description>
     </item>
     

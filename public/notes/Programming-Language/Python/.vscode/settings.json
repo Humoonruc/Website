@@ -5,5 +5,7 @@
         "activityBar.background": "#62001B",
         "titleBar.activeBackground": "#890026",
         "titleBar.activeForeground": "#FFFBFC"
-    }
+    },
+    "editor.suggest.snippetsPreventQuickSuggestions": false,
+    "aiXcoder.showTrayIcon": true
 }

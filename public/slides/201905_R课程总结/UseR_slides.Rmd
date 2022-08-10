@@ -120,11 +120,14 @@ R对Office Access的支持不太好，可以考虑使用MySQL建立个人数据�
 
 ---
 
-```{r, cache=FALSE}
+```{r, cache=TRUE}
 # 爬取一个月内的波罗的海干散货指数 
 'https://cn.investing.com/indices/baltic-dry-historical-data' %>% 
-  read_html(encoding = 'UTF-8') %>% html_node("table") %>% 
-  html_table(header = T, fill = T) %>% select(-6) %>% 
+  read_html(encoding = 'UTF-8') %>% 
+  html_elements("table") %>% # 页面中的所有表格
+  html_table(header = T, fill = T) %>% 
+  extract2(2) %>% # 选第二个表格
+  select(-6) %>% 
   DT::datatable(options = list(pageLength = 5), 
             fillContainer = F, caption = 'BDI指数每日行情')
 ```
@@ -678,7 +681,7 @@ background-position: 90% 40%
 
 # 开发交互式Web应用：Shiny
 
-- 接受定制，服务于他人需求<img src="https://www.rstudio.com/wp-content/uploads/2014/04/shiny-200x232.png" width="30%" align="right" />
+- 接受定制，服务于他人需求<img src="https://github.com/rstudio/shiny/raw/main/man/figures/logo.png" width="30%" align="right" />
 
 - 傻瓜化操作，不需要使用者懂 R
 
@@ -725,6 +728,12 @@ class: inverse, center, middle, animated, zoomIn
 自动化报告的例子：回归-参数-模型-应用，全部要手动
 
 可重复研究的例子：更新数据-重跑一边；给别人跑
+
+---
+
+.center[<img src="Figs/tidy-workflow.png"/>]
+
+## .center[现已成熟的 tidy 工作流]
 
 ---
 
