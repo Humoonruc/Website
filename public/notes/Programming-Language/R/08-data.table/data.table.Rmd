@@ -46,14 +46,15 @@ library(htmlwidgets)
 
 <object data="../pdf/cheatsheet-data.table.pdf" type="application/pdf" width="100%" height="100%"></object>
 
+data.table 是 data.frame 的扩展，兼容 dplyr 包中的函数，被其操作后，返回值仍为 data.table。故今后凡是操作数据框都可以默认先转换为 data.table. 需要保留原始数据时，使用 dplyr 系列函数；不需要保留时，使用 data.table 的象牙操作符，追求速度和简洁。
 
-data.table 是 data.frame 的扩展，兼容 dplyr 包中的函数，被其操作后，返回值仍为 data.table
-
-故今后凡是操作数据框都可以默认先转换为 data.table. 然后，当需要保留原始数据时，使用 dplyr 系列函数；不需要保留时，使用 data.table 的象牙操作符，追求速度和简洁。
+data.table 的高性能来源于内存管理（引用语法）、并行化和大量精细优化。
 
 ## 创建
 
-### 直接创建data.table
+### 直接创建
+
+`data.table()`
 
 ```{r}
 dt <- data.table(
@@ -65,9 +66,7 @@ class(dt)
 
 ### 将 data.frame 转化为 data.table
 
-#### `as.data.table()`; `setDT()`
-
-前者创建一份拷贝并转换，后者原地转换。
+`as.data.table()`和`setDT()`，前者创建一份拷贝并转换，后者原地转换。
 
 ```{r}
 df <- data.frame(
@@ -83,7 +82,7 @@ library(sqldf)
 options(sqldf.driver = "SQLite")
 channel <- dbConnect(
   SQLite(),
-  dbname = "C:/Users/Humoonruc/OneDrive/ICT/DataBase/SQLite/trade.db"
+  dbname = "C:/Users/humoo/OneDrive/ICT/DataBase/SQLite/trade.db"
 )
 total <- dbReadTable(channel, "total") %>%
   select(-time) %>%
@@ -92,31 +91,22 @@ class(total)
 dbDisconnect(channel)
 ```
 
-#### `set*()`函数族
-
-不复制数据，节省时间
+`set*()`函数族不复制数据，节省时间
 
 ```{r}
-df <- data.frame(
-  a = c("A", "B", "C", "A", "A", "B"),
-  b = 1:6
-)
-dt3 <- setDT(df, key = "b")
-df3 <- setDF(dt3)
-
 setnames(total, "trade", "total") # 将列名trade改为total
 head(total)
 total[, id := .I] # .I意为1:.N，这句为total加了一个序号索引列
 
+setcolorder(total, neworder = "id") 
 # setcolorder() 列的重排序
 # 默认第二个参数是一个列名向量。如果只写出了一部分列，则其他列按照原来的顺序
-setcolorder(total, neworder = "id") 
 head(total)
 ```
 
 
 
-| set*()                                                       |                                                     |
+| `set*()`函数族                                                 |                                                     |
 | ------------------------------------------------------------ | --------------------------------------------------- |
 | `setDT()`, `setDF()`                                         |                                                     |
 | `setattr()` `setnames()`                                     | Set attributes of objects by reference              |
@@ -124,13 +114,11 @@ head(total)
 | `setcolorder()`                                              | Fast column reordering of a data.table by reference |
 | `setorder(dt, a, -b)` `setorderv()`                          | Fast row reordering of a data.table by reference    |
 
+### 读取文件创建 data.table
 
+- `fread() `可以将能直接将.csv .txt 等格式的文件读为 data.table
 
-### 读取文件
-
-- `fread() `可以将能直接将.csv .txt 等格式的文件读为 data.table 格式
-
-- `fwrite() `可以写 data.table 数据。
+- `fwrite() `可以写 data.table 到文件
 
 在处理大数据时，它们的速度非常快。**建议读写文件统一使用这两个函数**
 
@@ -144,9 +132,9 @@ dt[i, j, by = list(), ...]
 
 很像 SQL 语句
 
-1. `i`: Subset 行（就像 WHERE 子句）
+1. `i`: subset 行（就像 WHERE 子句）
 2. `by`/`keyby`[^1] : 分组（就像 GROUP BY 子句）
-3. `j`: Subset[^2] 或 Manipulate 列 （就像 SELECT 子句），甚至可以是一个匿名函数
+3. `j`: subset[^2] 或 manipulate 列 （就像 SELECT 子句），甚至可以是一个匿名函数
 
 [^1]: 能自动将分组变量设为key.
 
@@ -216,7 +204,6 @@ dt3[c(1, .N)]
 # 选出满足特定条件的行
 dt3[b == "A", ]
 
-
 # 行排序，负号表示降序
 total[order(-month)] %>% head()
 
@@ -230,7 +217,6 @@ total %>% head()
 ```{r}
 dt[, c(2)] # 提取第2列
 ```
-
 
 #### 象牙操作符 `:=`[^3]
 
@@ -296,7 +282,7 @@ dt
 ```{r}
 total[, .(year, month, export, import, ratio = export / import)]
 
-total
+total # 原始数据不变
 ```
 
 #### 匿名函数
@@ -316,10 +302,10 @@ diamonds[,
 ```
 
 
-
 ### Group according to by
 
 by 分组
+
 keyby 不仅分组且立刻定义键，并按照键对行排序
 
 ```{r}
@@ -346,7 +332,6 @@ total[, .N, by = year]
 total[, .N, by = .(year, month)] # year 和 month 是有先后顺序的
 total[, .(avg_ex = mean(export)), by = year] # 即使只有一列，也要用列表
 ```
-
 
 
 ## 独立辅助函数
@@ -376,7 +361,7 @@ dt[, c := shift(a, 1, type = "lead")]
 dt
 ```
 
-这样可以很容易地加入提前或滞后列，进行同比增长率等计算
+**这样可以很容易地加入提前或滞后列，进行同比增长率等计算**
 
 ### 遍历操作各列
 

@@ -36,9 +36,9 @@ $620 \times 31$ matrix，每 31 行为一个可贸易部门的双边关税矩阵
 
 1993 年双边贸易流矩阵 $M_{ni}^j$，单位为 $10^3$ dollar
 
-$620 \times 31$ matrix，每 31 行为一个可贸易部门的双边贸易量矩阵。行为 destination countries，列为 source countries.
+$620 \times 31$ matrix，每 31 行为一个可贸易部门的双边贸易量矩阵。行为 destination countries，列为   source countries.
 
-#### alphas.mat
+#### alphas.mat 
 
 最终消费中各部门产品所占份额 $\alpha_n^j$，在 matlab 内部计算出来的
 
@@ -64,7 +64,7 @@ $20 \times 1$ matrix
 
 TABLE1, TABLE A.2
 
-Sample_100.m，100% 样本的 data and the statistics 
+Sample_100.m，100% 样   本的 data and the statistics 
 
 Sample_99.m，99% 样本的 data and the statistics 
 
@@ -115,7 +115,6 @@ without input-output linkages，展示 TABLE 11
 #### 文件夹 Counterfactuals_no_materials
 
 #### 文件夹 Counterfactuals_no_io
-
 
 
 

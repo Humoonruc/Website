@@ -1,0 +1,312 @@
+---
+title: "财富管理的定位与前景"
+subtitle: ""
+author: '黄  蒙'
+institute: "&amp;#9993; huangmeng001@bjhyjb.com.cn"
+date: "`r Sys.Date()`"
+output:
+  xaringan::moon_reader:
+    css: 
+      - default
+      - 'zh-CN.css'
+      - "extra.css"
+      - "https://cdnjs.cloudflare.com/ajax/libs/animate.css/3.7.0/animate.min.css"
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+      countdown: 120000
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(
+  fig.width = 8, fig.asp = 0.618,
+  out.width = "100%", fig.align = "center",
+  fig.path = 'Figs/',fig.show = "asis",
+  warning = FALSE, message = FALSE, 
+  cache = T, cache.comments = F, comment = '', 
+  options(digits = 4))
+```
+
+```{r setup, include=FALSE, cache=FALSE}
+# use necessary packages
+library('pacman')
+p_load(tidyverse, reshape2, magrittr, readxl,
+       ggthemes, showtext, ggrepel,
+       lmtest, nycflights13, car, 
+       rvest)
+
+options(htmltools.dir.version = FALSE)
+
+# 自定义偏好字体
+pdf.options(family = "GB1")
+windowsFonts(H = windowsFont("Microsoft YaHei"))
+showtext_auto(enable = TRUE)
+# 代码块需要fig.showtext=TRUE选项，ggplot2图形再加一行 + theme(text = element_text(family = 'H'))来定义字体，才能正常显示图中的中文。
+
+# 自定义主题
+mytheme <- theme_economist_white() +
+  theme(text = element_text(family = 'H'),
+        plot.title = element_text(face = 'bold', size = 14), 
+        plot.subtitle = element_text(size = 12),
+        plot.caption = element_text(hjust = 0, size = 10, margin = margin(2,0,0,0,'pt')),
+        plot.margin = margin(12,10,12,0,'pt'),
+        legend.position = 'top',
+        legend.justification = 'left',
+        legend.margin = margin(4,0,0,0,'pt'),
+        legend.key.size = unit(1,'lines'),
+        legend.title = element_text(size = 12),
+        legend.text = element_text(size = 10, margin = margin(0,0,0,0,'pt')),
+        axis.text = element_text(size = 10, margin = margin(2,0,2,0,'pt')),
+        axis.ticks.length = unit(-4,'pt')
+        )
+```
+
+class: inverse, center, middle
+
+![](img/logo.png)
+
+---
+
+layout: false
+class: inverse, center, middle, animated, zoomIn
+
+# 一 从宏观经济看财富管理
+
+---
+
+## 财富管理属于服务业
+
+--
+
+.pull-left[
+
+随着收入提高，服务需求增速大于物质产品需求
+  - 生活性服务业：高质量的教育、健康、养老、金融、文体娱乐……
+  - 生产性服务业：制造业越来越强大的“后勤”，极少数人制造即可满足全社会需要
+
+
+官方话语中制造业与服务业的占比问题
+  - 贸易战之前的宣传误区和某些地方政府的实践误区
+  - 贸易战之后的纠偏
+  - 长期：从制造到服务
+
+]
+
+--
+
+.pull-right[
+
+![](img/从制造到服务.png)
+
+]
+
+
+---
+
+## 财富管理的市场空间
+
+### 1 家庭储蓄池
+
+居民部门可投资财富增长迅猛（年均增速10%以上），显著大于收入增速和GDP增速
+
+---
+
+## 财富管理的市场空间
+
+### 2 储蓄脱离房市
+
+--
+
+- 房市不再普涨，不再是人人可以无脑入手的优良标的
+
+  - 人口政策延误，结婚率和生育率暴跌，直接抑制刚需
+  
+--
+  - 区域发展和城市化政策纠偏，大城市放松人口限制，中小城市房市进入长期下行通道
+  
+--
+  - 房地产投资门槛提高：只有核心城市、核心地段，房产有投资价值
+
+--
+
+- 国家也感受到了房市过多承载投资功能的切肤之痛
+
+  - 非刚需在预期转向时可能大进大出，形成踩踏
+  - 房产和土地作为贷款抵押，价格大跌会对金融机构的资产负债表造成沉重打击
+  - 房市成为中美金融战场上的薄弱环节
+  - 财税改革也因此受到拖累
+
+---
+
+## 财富管理的市场空间
+
+### 3 储蓄必将转入财富管理市场
+
+- 暂时流向现金和存款
+
+  - 疫情后的风险偏好
+  
+--
+  - 财富管理行业声誉不佳
+  
+--
+
+- 长远来看，财富管理市场必将承接大量资金，改变家庭以现金和存款为主的金融资产结构
+
+--
+  - 居民金融资产中，中国居民的现金类资产占比40%，发达国家只有12%
+  - 结构上有巨大的转变空间（瑞幸给投资人讲的故事有吹嘘的嫌疑，但瑞幸的结果表明毕竟还是有一定空间存在的）
+
+---
+
+## 客户需要财富管理做什么
+
+### 1 跑赢通胀，保值增值
+
+--
+- 化债需要通胀
+
+   - 房企债、地方债必须软着陆，否则会拖垮银行的资产负债表
+   - 通胀降低实际利率，是最好的化债方式
+
+---
+
+## 客户需要财富管理做什么
+
+### 1 跑赢通胀，保值增值
+
+
+.pull-left[
+
+- 增长需要通胀
+
+   - 中国的经济结构、分配结构，使得储蓄过高，消费长期不足
+      - 在居民部门内部的原因，一是收入分配，二是保障体系不健全
+      - 在部门之间，则存在国企的大量利润向居民部门、财政回流不畅的问题。2021年我国国企对财政的资本回报率仅为0.22%
+      - 重大结构性改革出台前，消费很难挑起大梁
+]
+
+.pull-right[
+
+<img src="img/消费不足.png" width="450" height="300">
+
+]
+
+---
+## 客户需要财富管理做什么
+
+### 1 跑赢通胀，保值增值
+
+- 增长需要通胀
+
+   - 近年来资本回报率逐渐下降，导致私人投资不足
+   - 随着中国经济占全球的比例越来越高、外部环境也越来越差，净出口弥补中国储蓄与投资缺口的能力快速收缩
+   https://humoonruc-hugo-website.netlify.app/application/202102-trade-influence-sphere-change-usa-deu-chn/
+
+--
+   - 三驾马车都缺乏动能，经济增长就必然**长期依赖**财政，推高中央政府债务
+   - 稍有冲击，就会走向财政赤字货币化的结局
+
+---
+
+layout: false
+class: inverse, center, middle, animated, zoomIn
+
+
+## 一定会有长通胀：
+
+### 谁持币，谁分摊成本；谁占有资产，谁规避损失
+
+---
+## 客户需要财富管理做什么
+
+### 2 养老
+
+- 《十四五规划》：发展多层次、多支柱养老保险体系，规范发展**第三支柱商业养老保险**
+- 政府主导的是第一支柱，现收现付制
+- 企业和机关事业单位作为福利提供的企业年金和职业年金是第二支柱
+- 个人资源购买、商业机构提供的是第三支柱
+- 国内目前第一支柱一支独大，占比58%、35.5%、6.5%
+
+---
+
+## 客户需要财富管理做什么
+
+### 2 养老
+
+- 第一支柱的问题
+
+  - 不是储蓄，而是税：年轻人交税，老年人接受转移支付
+  - 老年人能拿到多少钱，受到人口年龄结构的强烈影响
+  - 在宏观层面：没有新生儿，就没有养老保障
+      - 日本的老年贫困问题
+  - 未来养老注定无法完全靠国家
+
+--
+- 改革方向
+
+  - 第一支柱提供基本的最底线的保障（意味着它会很少）
+  - 第二、第三支柱挑大梁，且作为长期资金参与资本市场，以实现保值增值（尽量跑赢通胀）
+
+---
+## 客户需要财富管理做什么
+
+### 3 财富代际转移
+
+--
+
+- 财产税、遗产税逐步推出后，财富代际转移的困难增加
+    - 更多针对高净值客户
+    - 法律、会计领域的高端人才
+
+---
+
+## 财富管理：参与中国金融体系转型
+
+### 1 间接融资占比太高
+
+- 我国社会融资中超过95%是债权型融资（银行信贷和债券融资），社会融资会直接推升国内债务规模，提升杠杆率。
+- 近些年国家害怕杠杆率过高会导致系统性金融风险，往往使用行政命令去杠杆。
+- 强行去杠杆属于禁止有意愿的买卖双方做生意，只会造成绕过监管的冲动。结果就是监管部门千方百计堵截，很忙；金融机构千方百计绕过监管把钱贷给高杠杆率的资金需求方，也很忙。
+- 绕过监管的复杂努力反而提高了资金成本，造成企业更大的困难。
+
+---
+
+## 财富管理：参与中国金融体系转型
+
+### 2 提升直接融资比例，完善资本市场
+
+- 股市、债市、PE/VC、信托……
+    - 门槛都比较高，不适合大众
+
+--
+
+- 未来的大众投资产业链：
+    - 客户（投资人）-**财富管理机构**-资产管理机构-基金经理-资产标的（股票、债券、中小企业股权、房产、黄金、外汇……）
+  
+- 财富管理机构主要是一个咨询/服务机构，最靠近资金的提供方
+  - 从信息流的角度，财富管理机构处于一个承上启下的位置
+  - 从资金流的角度，财富管理机构处于资金供需的链条之外
+
+--
+
+- 国家非常需要提高直接融资比例，而资本市场要做大做强、要吸纳大众的储蓄，财富管理机构是其中非常重要的一个环节
+
+
+---
+
+layout: false
+class: inverse, middle, animated, zoomIn
+
+# 总结：从宏观经济看财富管理
+
+- ### 财富管理行业的性质
+- ### 财富管理的市场空间
+- ### 财富管理的任务
+- ### 财富管理在宏观经济中的位置和意义
+
+---
+
+

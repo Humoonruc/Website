@@ -6,7 +6,7 @@
 
 ## Range
 
-Range 是一种迭代器，不自动展开为数组，有利于节省内存
+Range 是一种迭代器（iterator），不自动展开为数组，有利于节省内存
 
 ### 创建
 
@@ -16,7 +16,7 @@ Range 是一种迭代器，不自动展开为数组，有利于节省内存
 
 #### `range()`
 
-注意 `range()` 符合多重分发，实际上有多个函数
+注意 `range()` 符合多重派发，实际上有多个函数
 
 ```julia
 julia> range(1, length=100)
@@ -47,7 +47,7 @@ julia> range(start=1, step=1, stop=10)
 1:1:10
 ```
 
-### `Range -> Vector`
+### 将 iterator 转化为 array
 
 1. **`[Range...]`**
 2. **`collect(range)`**
@@ -94,12 +94,43 @@ julia> myarray = ["text", 1, :symbol] # 公共父类型为 Any
 
 ### 构造
 
-#### 数组字面量 `T[]`
+#### 数组字面量（literal） `T[]`
 
-- 一维 Vector 元素用**逗号**分隔
+- 一维 Vector 的元素用**逗号**或**分号**分隔
+
 - 二维 Matrix，**空格**分隔不同的列（行方向上的分隔），**分号**或**换行**分隔不同的行（列方向上的分隔）
+
+  - 用`[]`创建的矩阵，如果只有一列，会自动降维成列向量
+
+  - 如果要表明这是一个单列矩阵，需要多加一个`;`
+
+    ```julia
+    julia> [1; 2;]
+    2-element Vector{Int64}:
+     1
+     2
+    
+    julia> [1; 2;;]
+    2×1 Matrix{Int64}:
+     1
+     2
+    
+    julia> [1; 2;;;]
+    2×1×1 Array{Int64, 3}:
+    [:, :, 1] =
+     1
+     2
+    
+    julia> [1;;]
+    1×1 Matrix{Int64}:
+     1
+    ```
+
+  - 行向量转置在 Julia 中的类型不是简单的（列）向量，而是 `adjoint(::Matrix{Int64})`，保留这种特殊的数据类型有利于提高计算效率
+
 - 数据类型写在 `[]` 之前
-- `[]` 中可以是 Range 的展开：`Range...`
+
+- `[]` 中可以是`Range...`
 
 ```julia
 julia> Bool[0, 1, 0, 1]
@@ -281,6 +312,43 @@ julia> my_matrix_ones = ones(Int64, 3, 2)
 
 创建元素均为 true/flase 的数组
 
+
+
+#### 创建空数组（预分配空间）
+
+##### 自定义元素类型
+
+`Array{T}(undef, dims::Tuple)`
+
+```julia
+julia> x = Array{Float64}(undef, 2, 2)
+2×2 Matrix{Float64}:
+ 0.0           6.95269e-310
+ 6.95269e-310  0.0
+```
+
+打印出的值没有意义
+
+##### 基于已有数组的元素类型、size
+
+`similar(array, [element_type=eltype(array)], [dims=size(array)])`
+
+```julia
+julia> similar([1.0, 2.0])
+2-element Vector{Float64}:
+ 2.0e-322
+ 4.0e-323
+
+julia> similar([1.0, 2.0], Int64, 2, 2)
+2×2 Matrix{Int64}:
+  1  2582652512784
+ 12  2582652512848
+```
+
+同样，数值是随机的，没有实际意义
+
+
+
 #### 重复
 
 `repeat()`
@@ -333,15 +401,23 @@ julia> repeat([1 2; 3 4], inner=(2, 1), outer=(1, 3))
  3  4  3  4  3  4
 ```
 
-#### 拷贝
 
-数组是可变对象，直接 `=` 赋值只是起了一个别名。要想拷贝一份一模一样的，必须用 `copy()`/`deepcopy()`，后者为深拷贝（对嵌套数组）
 
 #### 随机数数组
 
 ##### `rand()`/`randn()`
 
 构造随机数组，前者为 `[0, 1)` 均匀分布，后者为标准正态分布
+
+
+
+#### 拷贝
+
+数组是可变对象，直接 `=` 赋值只是起了一个别名，而非在内存中生成了一个新变量。
+
+要想拷贝一份一模一样的，必须用 `copy()`/`deepcopy()`，后者为深拷贝（对嵌套数组）
+
+
 
 ### Convert
 
@@ -351,6 +427,62 @@ julia> repeat([1 2; 3 4], inner=(2, 1), outer=(1, 3))
 
 `reshape(A, dims...) -> AbstractArray`
 `reshape(A, dims) -> AbstractArray`
+
+注意，此函数返回现有 array 的一个 view，更新元素会影响到参数 array！
+
+```julia
+julia> a = [10, 20, 30, 40]
+4-element Vector{Int64}:
+ 10
+ 20
+ 30
+ 40
+
+julia> b = reshape(a, 2, 2)
+2×2 Matrix{Int64}:
+ 10  30
+ 20  40
+
+julia> b[1, 1] = 100  # continuing the previous example
+100
+
+julia> b
+2×2 Matrix{Int64}:
+ 100  30
+  20  40
+
+julia> a
+4-element Vector{Int64}:
+ 100
+  20
+  30
+  40
+```
+
+
+
+##### `dropdims(A; dims)`
+
+> Remove the dimensions specified by `dims` from array `A`. Elements of `dims` must be unique and within the range `1:ndims(A)`. `size(A,i)` must equal 1 for all `i` in `dims`.
+
+
+
+```julia
+julia> a = reshape(Vector(1:4),(2,2,1))
+2×2×1 Array{Int64, 3}:
+[:, :, 1] =
+ 1  3
+ 2  4
+
+julia> dropdims(a; dims=3) # 第三个维度的 size 为 1，事实上是一个没用的维度，因此可以删掉
+2×2 Matrix{Int64}:
+ 1  3
+ 2  4
+```
+
+
+
+
 
 ##### 矩阵与向量的相互转化
 
@@ -367,9 +499,8 @@ julia> reshape(Vector(1:16), (4, 4)) # 等价于reshape(Vector(1:16), 4, 4)
  4  8  12  16
 ```
 
-- 矩阵->向量，一列一列的展开
-  - `A[:]`
-  - `reshape(A, length(A))`
+- 矩阵->向量，默认沿着列展开
+  - `A[:]`/`reshape(A, length(A))`
 
 ```julia
 a = [1 2; 3 4; 5 6]
@@ -404,6 +535,8 @@ digits(123) # [3, 2, 1]
 
 ### `[]`选择器
 
+选择器不仅能提取部分元素，还可以重新赋值这些元素
+
 #### Int/Vector{Int}/Range
 
 - Vector
@@ -411,10 +544,10 @@ digits(123) # [3, 2, 1]
   - `end` 关键字
   - Range 索引 `[n1:n2]`
   - 整数向量索引 `[[1, 2, 3]]`
-  - `:`表示所有值，建立整个 Vector 的副本
+  - `:`表示所有值，**建立整个 Vector 的副本**
 - Matrix
   - 一元索引 `[k]` 将其作为一个按列展开的大 Vector 检索
-  - 二元索引 `[i, j]`，`:`表示该维度上的所有值
+  - 二元索引 `[i, j]`，**`:`表示其他维度上索引确定后的所有值**，**`:`会建立副本**
   - 一个维度上使用单值索引时，切片所得只有一行或一列，自动退化为 Vector；**若不想退化，哪怕只有一行、一列，也要用 Range 索引**
   - `CartesianIndices()` 返回对矩阵 `[i, j]` 对的索引
 
@@ -460,6 +593,8 @@ julia> [index[2] for index in CartesianIndices(A)]
 
 #### BitVector
 
+用维度相同的布尔数组可以提取部分元素，常用于条件选取
+
 ```julia
 julia> a = [1, 2, 3, 4, 5]
 5-element Vector{Int64}:
@@ -469,7 +604,7 @@ julia> a = [1, 2, 3, 4, 5]
  4
  5
 
-julia> a.>2
+julia> a.>2 # 这种写法可行，是因为 Julia 支持关系运算符的向量版本
 5-element BitVector:
  0
  0
@@ -520,88 +655,6 @@ A[Not([2, 3]), :]
 `size(matrix, dim_index)` 返回相应维度的 size
 
 `eachindex(A)` 一个访问 `A` 中每一个位置的高效迭代器
-
-### 矩阵运算
-
-#### 基本运算
-
-`+` 加，`-` 减，两个 size 相同的矩阵对应元素加减可以省略 `.`
-
-`*` 数乘和矩阵乘法
-
-`.*` 对应元素相乘（哈达马积）
-
-`⊗` (**\otimes TAB**) 克罗内克积 `using Kronecker`
-
-```julia
-using Kronecker
-[1, 1, 1] ⊗ [1 2; 3 4]
-```
-
-`'` /`transpose()`转置
-
-`inv()`求逆
-
-`A\b` 求解线性方程组 $\boldsymbol{Ax=b}$
-
-```julia
-using Statistics
-
-julia> names(Statistics)
-14-element Vector{Symbol}:
- :Statistics
- :cor
- :cov
- :mean
- :mean!
- :median
- :median!
- :middle
- :quantile
- :quantile!
- :std
- :stdm
- :var
- :varm
-
-julia> D = [1 2;3 4]
-2×2 Matrix{Int64}:
- 1  2
- 3  4
-
-julia> mean(D, dims=1)
-1×2 Matrix{Float64}:
- 2.0  3.0
-
-julia> mean(D, dims=2)
-2×1 Matrix{Float64}:
- 1.5
- 3.5
-```
-
-#### LinearAlgebra 包
-
-```julia
-using LinearAlgebra
-```
-
-`dot(x, y)` 点积
-
-`diag(A)` 提取主对角线元素
-
-`diagm(Vector)` 由 Vector 构建对角矩阵
-
-```julia
-A = diagm(ones(Int, 3))
-```
-
-`I(k)` 表示k 阶单位阵的一个对象，可以参与各种矩阵运算；传给 `Matrix()`就能生成相应矩阵
-
-`Matrix{T}(I, m, n)`, `m` 行 `n` 列的主对角线为 1 的矩阵
-
-`eigen(A)` 返回对矩阵特征值和特征向量的封装，用`.`提取
-
-`UpperTriangular(A)`/`LowerTriangular(A)` 上/下三角矩阵
 
 ### 增删改查
 
@@ -803,7 +856,8 @@ unique_in_order("aabbccaa")
 #### 平行遍历多向量
 
 - `zip(v1, v2, ...)`
-  - 返回类型为 Base.Iterators.Zip，可以用`collect(itr)`或`[itr...]`展开为 Vector{Tuple}
+
+返回类型为 Base.Iterators.Zip，可以用`collect(itr)`或`[itr...]`展开为 Vector{Tuple}
 
 ```{julia}
 zip([1,2,3] , [4,5,6]) |> typeof
@@ -811,7 +865,7 @@ zip([1,2,3] , [4,5,6]) |> typeof
 
 ```{julia}
 # 三种等价写法
-[tuple for tuple in zip([1, 2, 3], [4, 5, 6])]
+[tuple for tuple in zip([1, 2, 3], [4, 5, 6])] # 每个可迭代对象都是 tuple
 collect(zip([1, 2, 3], [4, 5, 6]))
 [zip([1, 2, 3], [4, 5, 6])...]
 ```
@@ -906,6 +960,185 @@ CartesianIndices(A)
 ```{julia}
 [A[indices[1], 4-indices[2]] for indices in CartesianIndices(A)]
 ```
+
+## Tuple
+
+元组是不可变的，不能修改其元素
+
+### 创建和索引
+
+可以包含多种类型的数据的、不可变的容器，可以用小括号（也可以省略）或 `tuple()` 显式定义
+
+```julia
+julia> x = "foo", 1
+("foo", 1)
+```
+
+
+
+创建只有一个元素的 tuple 时，必须在这个元素后面加上逗号，否则编译器会将其视为无括号的单个元素
+
+```julia
+julia> tuple(1,)
+(1,)
+```
+
+可以用 `[n]` 索引访问
+
+### 解构赋值
+
+```julia
+julia> word, val = x
+("foo", 1)
+
+julia> println("word = $word, val = $val")
+word = foo, val = 1
+```
+
+
+
+### Named Tuple
+
+Named Tuple，命名元组，很像 R 中具有 names 属性的向量，便于用 names 去取其中的值，增强代码可读性。
+
+==**Named Tuple 很适合用来装载一系列常量、参数**==
+
+例：不动点问题 $f(x^\star) = x^\star$
+
+```julia
+using LinearAlgebra # 为了其中的 norm() 函数
+
+# good style
+function fixedpointmap(f, iv; tolerance=1E-7, maxiter=1000)
+    # setup the algorithm
+    x_old = iv
+    normdiff = Inf
+    iter = 1
+    while normdiff > tolerance && iter <= maxiter
+        x_new = f(x_old)
+        normdiff = norm(x_new - x_old)
+        x_old = x_new
+        iter = iter + 1
+    end
+    return (;value = x_old, normdiff, iter) # A named tuple
+  	# 将问题的解作为一个整体传递出来，然后用 tuple.name 的形式引用，增强可读性
+end
+
+# define a map and parameters
+p = 1.0
+β = 0.9
+f(v) = p + β * v
+
+sol = fixedpointmap(f, 0.8; tolerance=1.0E-8) # don't need to pass
+println("Fixed point = $(sol.value)
+  |f(x) - x| = $(sol.normdiff) in $(sol.iter) iterations")
+
+# 也可以解构赋值
+(;value, normdiff, iter) = fixedpointmap(f, 0.8; tolerance=1.0E-8)
+println("Fixed point = $value
+  |f(x) - x| = $normdiff in $iter iterations")
+```
+
+
+
+#### 创建
+
+1. 最简单的 `(name1 = value1, name2 = value2, ...)`
+
+为了缩短定义的代码长度，在使用已经有 names 的 values 时，可以在 names 前加 `;`
+
+```julia
+i = 1
+f = 3.14
+s = "Julia"
+
+# 一般 tuple
+(i, f, s) # (1, 3.14, "Julia") 
+
+# named tuple
+my_quick_namedtuple = (; i, f, s) # (i = 1, f = 3.14, s = "Julia")
+```
+
+
+
+2. `NamedTuple{names[, T]}(args::Tuple)` 
+
+```julia
+NamedTuple{(:i, :f, :s)}((i, f, s))
+```
+
+
+
+3. `NamedTuple(itr)`/`(; itr...)`，很像 Dict 的构造
+
+```julia
+keys = (:a, :b, :c)
+values = (1, 2, 3)
+
+NamedTuple(zip(keys, values))
+(; zip(keys, values)...)
+```
+
+
+
+#### Index and Subset
+
+除了数字索引，还可以使用 Symbol 索引，以及用 `.name` 访问
+
+```julia
+julia> x = (a=1, b=2)
+(a = 1, b = 2)
+
+julia> typeof(x)
+NamedTuple{(:a, :b), Tuple{Int64, Int64}}
+
+julia> x[1]
+1
+
+julia> x.a
+1
+
+julia> x[:a]
+1
+
+julia> x[(:a,)] # subset
+(a = 1,)
+```
+
+
+
+#### Iterator
+
+```julia
+julia> keys(x)
+(:a, :b)
+
+julia> values(x)
+(1, 2)
+
+julia> collect(x)
+2-element Vector{Int64}:
+ 1
+ 2
+
+julia> pairs(x)
+pairs(::NamedTuple) with 2 entries:
+  :a => 1
+  :b => 2
+
+julia> collect(pairs(x))
+2-element Vector{Pair{Symbol, Int64}}:
+ :a => 1
+ :b => 2
+```
+
+
+
+#### 合并
+
+`merge(...)`
+
+合并两个命名元组，若有重复的键，后者的 value 覆盖前者
 
 ## Pair
 
@@ -1035,6 +1268,17 @@ end
 
 ### 增删改查
 
+#### Lookup
+
+Dict 的核心功能是查找（Lookup），即**根据 key 返回 value**，它的实现结构使查找速度非常快
+
+- `dict[key]`
+- `get(dict, "a", x)` 输出 dict 中 key 为 "a" 的 value，若不存在这个键则返回 x
+
+#### reverse lookup
+
+根据 value 返回 [keys]，如 `findall(isequal(value), dict)`
+
 #### 增删改
 
 ```julia
@@ -1065,16 +1309,7 @@ julia> "two" in keys(d)
 true
 ```
 
-#### Lookup
 
-Dict 的核心功能是查找（Lookup），即**根据 key 返回 value**，它的实现结构使查找速度非常快
-
-- `dict[key]`
-- `get(dict, "a", x)` 输出 dict 中 key 为 "a" 的 value，若不存在这个键则返回 x
-
-#### reverse lookup
-
-根据 value 返回 [keys]，如 `findall(isequal(value), dict)`
 
 #### `findmax()`/`findmin()`
 
@@ -1093,8 +1328,6 @@ julia> findmin(dict1)
 ### 判断
 
 #### `haskey(dict, key)`/`∈(pair, dict)`
-
-
 
 ### Iterator
 
@@ -1132,121 +1365,15 @@ julia> ["$k: $v" for (k, v) ∈ d] # (k, v) 取出了 key 和 value
 
 合并两个 Dict，若有重复的键，后面 Dict 的 value 覆盖前面 Dict
 
+### 性能
 
+由于可以储存任何数据类型，Dict 的性能不佳
 
-## Tuple
-
-元组是不可变的，不能修改其元素
-
-### 创建和索引
-
-可以包含多种类型的数据的、不可变的容器，可以用小括号或 `tuple()` 显式定义
-
-创建只有一个元素的 tuple 时，必须在这个元素后面加上逗号，否则编译器会将其视为无括号的单个元素
-
-```julia
-julia> tuple(1,)
-(1,)
-```
-
-可以用 `[n]` 索引访问
-
-### Named Tuple
-
-NamedTuple，命名元组，很像 R 中具有 names 属性的向量
-
-#### 创建
-
-1. 最简单的 `(name1 = value1, name2 = value2, ...)`
-
-为了缩短定义的代码长度，在使用已经有 names 的 values 时，可以在 names 前加 `;`
-
-```julia
-i = 1
-f = 3.14
-s = "Julia"
-
-# 一般 tuple
-(i, f, s) # (1, 3.14, "Julia") 
-
-# named tuple
-my_quick_namedtuple = (; i, f, s) # (i = 1, f = 3.14, s = "Julia")
-```
+尽可能使用 named tuple 替代 Dict，有利于编译器优化性能
 
 
 
-2. `NamedTuple{names[, T]}(args::Tuple)` 
 
-```julia
-NamedTuple{(:i, :f, :s)}((i, f, s))
-```
-
-
-
-3. `NamedTuple(itr)`/`(; itr...)`，很像 Dict 的构造
-
-```julia
-keys = (:a, :b, :c)
-values = (1, 2, 3)
-
-NamedTuple(zip(keys, values))
-(; zip(keys, values)...)
-```
-
-#### Index and Subset
-
-除了数字索引，还可以使用 Symbol 索引，以及用 `.name` 访问
-
-```julia
-julia> x = (a=1, b=2)
-(a = 1, b = 2)
-
-julia> typeof(x)
-NamedTuple{(:a, :b), Tuple{Int64, Int64}}
-
-julia> x[1]
-1
-
-julia> x.a
-1
-
-julia> x[:a]
-1
-
-julia> x[(:a,)] # subset
-(a = 1,)
-```
-
-#### Iterator
-
-```julia
-julia> keys(x)
-(:a, :b)
-
-julia> values(x)
-(1, 2)
-
-julia> collect(x)
-2-element Vector{Int64}:
- 1
- 2
-
-julia> pairs(x)
-pairs(::NamedTuple) with 2 entries:
-  :a => 1
-  :b => 2
-
-julia> collect(pairs(x))
-2-element Vector{Pair{Symbol, Int64}}:
- :a => 1
- :b => 2
-```
-
-#### 合并
-
-`merge(...)`
-
-合并两个命名元组，若有重复的键，后者的 value 覆盖前者
 
 ## Set
 

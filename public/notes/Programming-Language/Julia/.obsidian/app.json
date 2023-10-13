@@ -12,5 +12,6 @@
     "zh-CN",
     "en-US"
   ],
-  "useTab": true
+  "useTab": true,
+  "defaultViewMode": "preview"
 }

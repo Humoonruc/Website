@@ -6,17 +6,27 @@
 
 `$HOME/.julia/config` 目录中可以建立 `startup.jl` 文件，存放每次 REPL 启动时要运行的代码
 
+在 Windows 系统中，`$HOME` 就是 `C:/Users/用户名`
+
 ## REPL
 
-### Help 模式
+ REPL (Read-Evaluate-Print-Loop),
 
 
 
-按 `?` 进入帮助模式
-
-### Pkg 模式
-
-按 `]` 进入 pkg 模式 `add 包名` 即可安装包
+|                                        |                                              |
+| -------------------------------------- | -------------------------------------------- |
+| 帮助模式                               | `?` on empty line                            |
+| See all places where `func` is defined | `apropos("func")`                            |
+| 包管理模式                             | `]` on empty line. 然后`add 包名` 即可安装包 |
+| Command line mode                      | `;` on empty line                            |
+| Exit special mode / Return to REPL     | [Backspace] on empty line                    |
+| Exit REPL                              | `exit()` or [Ctrl] + [D]                     |
+|                                        |                                              |
+| 获得上一步计算的结果                   | `ans`                                        |
+| Interrupt execution                    | [Ctrl] + [C]                                 |
+| Clear screen                           | [Ctrl] + [L]                                 |
+| Run script                             | `include("filename.jl")`                     |
 
 
 
@@ -64,19 +74,117 @@ cmd = `md5 $filename`
 res = read(cmd, String)
 ```
 
-
-
-### 程序运行时间
+### 记录程序运行时间
 
 1. `@time`
 2. BenchmarkTools 包的 `@btime` 更准确
-3. BenchmarkTools 包的 `@benchmark` 多次代码段统计平均时长
+
+```julia
+julia> A = rand(3,3)
+3×3 Matrix{Float64}:
+ 0.639429  0.531428  0.915683
+ 0.457444  0.221791  0.713925
+ 0.811219  0.263119  0.622511
+
+julia> inv(A)
+3×3 Matrix{Float64}:
+ -0.710358  -1.28268   2.51594
+  4.20089   -4.91984  -0.536994
+ -0.849907   3.751    -1.44525
+
+julia> @time inv(A)
+  0.000019 seconds (4 allocations: 1.859 KiB)
+3×3 Matrix{Float64}:
+ -0.710358  -1.28268   2.51594
+  4.20089   -4.91984  -0.536994
+ -0.849907   3.751    -1.44525
+
+julia> @btime inv(A)
+  521.579 ns (4 allocations: 1.86 KiB)
+3×3 Matrix{Float64}:
+ -0.710358  -1.28268   2.51594
+  4.20089   -4.91984  -0.536994
+ -0.849907   3.751    -1.44525
+
+julia> @btime inv($A) # $表示其后的变量 A is "pre-computed" before the benchmarking begins
+  486.082 ns (4 allocations: 1.86 KiB)
+3×3 Matrix{Float64}:
+ -0.710358  -1.28268   2.51594
+  4.20089   -4.91984  -0.536994
+ -0.849907   3.751    -1.44525
+```
+
+
+
+3. BenchmarkTools 包的 `@benchmark` 多次运行代码段统计平均时长
+
+```julia
+function estimate_pi(n) # 蒙特卡洛方法估计 pi
+    n_circle = 0
+    for i in 1:n
+        x = 2*rand() - 1 # x,y的范围均为[-1, 1]
+        y = 2*rand() - 1
+        if sqrt(x^2 + y^2) <= 1 # 是否在原点为圆心、半径为1的圆内
+           n_circle += 1
+        end
+    end
+    return 4*n_circle/n # 落在圆内点的比例应为圆与正方形的的面积之比，即pi/4
+end
+```
+
+```shell
+julia> using BenchmarkTools
+
+julia> n = 10000000
+10000000
+
+julia> @benchmark estimate_pi(n) # 运行了56轮，每轮都撒了10000000个点
+BenchmarkTools.Trial: 56 samples with 1 evaluation.
+ Range (min … max):  86.735 ms … 94.346 ms  ┊ GC (min … max): 0.00% … 0.00%
+ Time  (median):     89.119 ms              ┊ GC (median):    0.00%
+ Time  (mean ± σ):   89.358 ms ±  1.659 ms  ┊ GC (mean ± σ):  0.00% ± 0.00%
+
+                 ▁   ▃   █                                     
+  ▄▁▄▇▁▇▇▁▁▄▄▄▄▄▄█▄▄▁█▄▄▁█▇▇▄▁▁▁▄▄▁▁▇▇▁▇▁▇▄▁▄▁▁▁▁▄▄▁▇▁▁▁▁▄▄▁▄ ▁
+  86.7 ms         Histogram: frequency by time        92.7 ms <
+
+ Memory estimate: 16 bytes, allocs estimate: 1.
+```
+
+### 显示 for 循环的进度条
+
+ProgressMeter.jl
+
+```julia
+julia> using ProgressMeter
+
+julia> @showprogress 1 "Computing..." for i in 1:50 # 每1秒刷新一次
+           sleep(0.1)
+       end
+Computing... 20%|███████▊                               |  ETA: 0:00:04
+
+
+julia> x, n = 1 , 10;
+
+julia> p = Progress(n);
+
+julia> for iter in 1:10
+           x *= 2
+           sleep(0.5)
+           ProgressMeter.next!(p; showvalues = [(:iter, iter), (:x, x)])
+       end
+Progress: 100%|█████████████████████████████████████████| Time: 0:00:10
+  iter:  10
+  x:     1024
+```
+
+
 
 
 
 ## File System
 
-Julia 核心库 Base 的 Filesystem 模块  
+Julia 核心库 Base 的 Filesystem 模块
 
 [Filesystem · The Julia Language](https://docs.julialang.org/en/v1/base/file/)
 

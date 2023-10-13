@@ -36,10 +36,10 @@ knitr::opts_chunk$set(
 
 ## Vector 的分类
 
-1. atomic vector, matrix, array 都要求单一数据类型 (homogeneous data type)，**根基是 atomic vector**
+1. atomic vector, matrix, array 都要求单一数据类型 (homogeneous data type)，均由 **atomic vector** 派生
    1. atomic vector 添加维度属性可生成 matrix, array
    2. atomic vector 添加 class 属性可生成 factor, date 和 date-time
-2. list, data.frame 可以装载不同数据类型 (heterogeneous data types)，**根基是 list**
+2. list, data.frame 可以装载不同数据类型 (heterogeneous data types)，均由 **list** 派生
    1. 列表**提高了存储的灵活性**，但**降低了存储和运算效率**
    2. 数据框是一种特殊的列表
 3. atomic vector 和 list 可统称为 vector
@@ -174,6 +174,8 @@ a
 
 ![](https://d33wubrfki0l68.cloudfront.net/baa19d0ebf9b97949a7ad259b29a1c4ae031c8e2/8e9b8/diagrams/vectors/summary-tree-s3-1.png)
 
+由上图可知，因子由整数向量派生而得，日期由数值向量派生而得。
+
 #### Factor
 
 ```{r}
@@ -240,7 +242,7 @@ attributes(one_week_2)
 
 ### Create
 
-#### `vector()`
+#### 创建空向量
 
 - `vector(mode = 'double', length = N)`，生成长度为 N 的空向量
    - 参数 mode 可以为 "integer"/"double"/"numeric"/"logical"/"character" 等，为 "list" 则生成列表
@@ -261,14 +263,15 @@ w
 ```
 
 
-#### `c()`
+#### 串联合并向量
 
-组合向量（将多个单元素向量和多元素向量连接起来构成一个向量），其他语言一般用`[]`
+`c()`串联合并向量（将多个单元素向量和多元素向量连接起来构成一个向量），其他语言一般用`[]`
 
-`c()` 中即使嵌套，也会被自动展开为 atomic vector
+`c()`中即使嵌套使用`c()`，也会被自动展开为 atomic vector
 
 ```{r}
 c(1, 2, c(3, 4, 5:7))
+#> [1] 1 2 3 4 5 6 7
 ```
 
 create 向量时可以命名
@@ -279,15 +282,15 @@ x
 str(x) # 可见属性 names 保存着元素的名称
 ```
 
-#### `m:n`
+#### 连续整数向量
 
-连续整数向量，类型为 integer vector
+`m:n`创建连续整数向量，类型为 integer vector
 
 ```{r}
 typeof(1:3)
 ```
 
-#### `seq*()`
+#### 等差数列
 
 - `seq(from, to, by=1, length.out)`，等差数列，给出三个参数即可
 - `seq_len(n)`，等价于`1:n`
@@ -298,9 +301,9 @@ typeof(1:3)
 seq_along(LETTERS)
 ```
 
-#### `rep(x, ...)`
+#### 数值多次复现的向量
 
-... 中的参数包括：
+`rep(x, ...)`，x 为需要复制的基础向量，... 中的参数包括：
 
 1. times, 重复对象 x 整体的次数，一般为标量
    1. 该参数也可以是与 x 长度一致的向量，表示对应元素重复对应次数
@@ -460,10 +463,19 @@ pmatch(rep(1, 3), rep(1, 5))
 
 ### Operation
 
-R 对向量的操作都要在原向量的拷贝上进行，不改变原向量（只有直接赋值能改变原向量）。好处是安全，坏处是慢。
+R 对向量的大部分操作都在原向量的拷贝上进行，不改变原向量（只有直接赋值能改变原向量）。好处是安全，坏处是慢。
 
 
 #### 增删改
+
+若要直接改变原向量，只需对原向量或其子集直接赋值；对不存在的位置赋值时，该位置前面未被定义的元素默认用 NA 补齐。
+
+```{r}
+v <- 1:5
+v[10] <- 8
+v
+```
+
 
 -   `append()` 返回插入元素后的拷贝. <span style='color:red'>**注意，R 中一般不直接修改原对象，所以如果要保留这个操作，一定要记得赋值给原变量。**</span>
 -   `x <- x[-index]` 删除选集
@@ -486,10 +498,11 @@ a
 
 #### Sort
 
-- `rank(x)`返回x中各元素相对大小的排序（默认升序）
-- `order(x)`返回按照递增/递减的次序重排列x后，新序列各元素在原序列x中的位置
-- `sort(x)`返回排序后的向量，对于数字默认升序，对于字符串默认字典顺序
+- `sort(x, decreasing = FALSE, na.last = FALSE, ...)`返回排序后的向量，对于数字默认升序，对于字符串默认字典顺序
 - `rev(x)`逆序排列
+- `rank(x)`返回x中各元素相对大小的index（默认升序）
+- `order(x)`返回按照递增/递减的次序重排列x后，新序列各元素在原序列x中的位置。`x[order(x)]`等同于`sort(x)`
+
 
 ```{r}
 x
@@ -617,7 +630,7 @@ dim(x) <- c(3, 3)
 x # 这种方式改变了变量 x 的值，不是很推荐，还是第一种更好
 ```
 
-#### `diag()`
+#### `diag()`创建对角矩阵
 
 1. `diag(x = 1, nrow, ncol, names = TRUE)`
    1. x 为标量或向量时，`diag()`表示根据对角元 create 矩阵
@@ -659,12 +672,11 @@ x
 
 ### Label
 
-在默认情况下，创建矩阵时不会自动分配行名和列名。当不同的行列有不同的含义时，
-为其命名就显得必要且直观。
+在默认情况下，创建矩阵时不会自动分配行名和列名。当不同的行列有不同的含义时，为其命名就显得必要且直观。
 
 #### 创建矩阵时为行列命名
 
-`matrix()` 的 dimnames 参数，取值为 list(row_name_vector, col_name_vector)
+`matrix()` 的 dimnames 参数，格式为 list(row_name_vector, col_name_vector)
 
 #### 创建矩阵后为行列命名
 
@@ -836,7 +848,7 @@ apply(A, 2, mean)
 
 ## Array
 
-张量，或更高维度的向量
+更高维度的数组
 
 ### Create
 

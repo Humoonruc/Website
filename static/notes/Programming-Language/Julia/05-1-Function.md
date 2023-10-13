@@ -6,13 +6,17 @@
 
 ### 定义
 
+Julia 中函数的定义有多种形式，这带来了编码的灵活性。
+
 #### 完整形式
 
 ```julia
 function foo(x)
-	return x^2
+	return x^2 # return 可省略
 end
 ```
+
+注意，return 关键字是可以省略的！
 
 #### 仿数学形式
 
@@ -58,8 +62,6 @@ open("myfile.txt", "w") do io
     write(io, "Hello world!")
 end;
 ```
-
-​         
 
 
 
@@ -173,6 +175,15 @@ Closest candidates are:
 Stacktrace:
  [1] top-level scope
    @ REPL[4]:1
+```
+
+如果关键字参数是 named tuple 或 struct 中的一个字段，且 key 与关键字参数的 key 相同时，可以省略 `key = `
+
+```julia
+f(x; a = 1) = exp(cos(a * x))  
+
+nt = (a = 2, b = 10)
+f(pi; nt.a) # equivalent to f(pi; a = nt.a)
 ```
 
 #### 设置参数类型
@@ -311,7 +322,7 @@ been_called
 
 #### 相关概念
 
-- 堕胎函数 polymorphic function
+- 多态函数 polymorphic function
 - 泛型编程 generic programming
 
 #### 具体实现
@@ -321,14 +332,43 @@ been_called
 - 操作符重载 [Operators Overloading](Basic-Grammar.md#Operators%20Overloading)，一个操作符可以作用于多种参数
 	- 比如 `sum()`，只要参数（序列）中的元素支持 `+()`，这个函数都适用，抽象程度很高。
 
+## 闭包
+
+实践中，常常要避免全局变量
+
+变量被储存到函数内部时，变量变为局部变量，函数变为闭包
+
+```julia
+"""
+该函数中的 2 和 3 都是局部变量，可以避免被修改
+"""
+function solvemodel(x)
+    a = x^2
+    b = 3 * a
+    c = a + b
+    return (;a, b, c)  # note local scope of tuples!
+end
+
+solvemodel(0.1)
+```
+
+
 
 ## 高阶函数
 
-### 映射 `map()`
+将函数按照参数和返回值是否是函数进行分类，如下图。
+
+![](img/fp.png)
+
+除了 regular function，其他三种函数统称为高阶函数。
+
+### Functional 泛函
+
+#### 映射 `map()`
 
 `map(f, ...)`
 
-#### 多元函数
+##### 多元函数
 
 `map()` 的第一个参数 f 可以是多元函数，除了 f，其他参数的长度应相等，对应元素参与计算；若长度不等，则在其中任何一个用完时停止。
 
@@ -340,17 +380,17 @@ julia> map(+, [1, 2, 3], [10, 20, 30, 400, 5000])
  33
 ```
 
-#### 字符串
+##### 字符串
 
 `map()` 作用于字符串、且 f 返回单个字符时，会自动将字符串视为字符向量，对每个字符分别操作，最后返回合并在一起的新字符串
 
-### 过滤器 `filter()`
+#### 过滤器 `filter()`
 
 `filter(f, a)`
 
 返回集合`a`的副本，保留`f`为`true`的元素。函数 `f` 被传递一个参数。
 
-### 归约 `reduce()`
+#### 归约 `reduce()`
 
 串行连续操作
 
@@ -392,17 +432,13 @@ julia> reduce(max, a, dims=1)
  4  8  12  16
 ```
 
-
-
-### `accumulate()`
+#### `accumulate()`
 
 `accumulate(op, A; dims::Integer, [init])`
 
 返回累计数组
 
-
-
-### `mapreduce()`
+#### `mapreduce()`
 
 map 与 reduce 的混合，既有串行也有并行
 
@@ -413,7 +449,46 @@ julia> mapreduce(x->x^2, +, [1:3;]) # == 1 + 4 + 9
 14
 ```
 
-## 闭包
+### Function Factory
+
+要旨： function factory 所返回的函数是闭包 (closure)，内含一些实例化时接收的工厂参数信息。
+
+```julia
+function power1(exp)
+    return x -> x^exp
+end
+
+square = power1(2) 
+cube = power1(3) # square 和 cube 都是 closure
+
+square(5) # 25
+cube(5) # 125
+```
+
+应用一例：鉴于绘图的灵活性，绘图函数通常需要提供许多参数。如果大多数情况下，只使用部分参数，就可以创建一个专用的简版函数，这样可以使代码更容易编写和阅读。
+
+### Function Operator
+
+以函数作为输入、并将函数作为输出的函数，是从函数域到函数域的变换。
+
+```julia
+using Plots
+
+function snapabove2(g, a)
+    return x -> x > a ? g(x) : g(a) # returns a closure
+end
+
+f1(x) = x^2
+f2(x) = x^3
+
+domain = 0.0:0.1:4.0
+
+# 比较不同的函数
+plot(snapabove2(f1, 1.0), domain)
+plot(snapabove2(f2, 1.0), domain) 
+```
+
+
 
 ## 函子 functor
 
@@ -440,7 +515,7 @@ function (p::Polynomial)(x)
     for coeff in p.coeff[end-1:-1:1]
         val = val * x + coeff
     end
-    val
+    return val
 end
 
 

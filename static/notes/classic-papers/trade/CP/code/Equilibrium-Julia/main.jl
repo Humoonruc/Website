@@ -156,7 +156,3 @@ using .Equilibrium
 md"## BaseLine"
 
 solve_equilibrium(N, J, δ, tol, max_itr, 𝝉̃, 𝝉̃′, 𝜸ʲ, 𝜸ᵏʲ, 𝜽, 𝝅, 𝑿ₙ, 𝒘𝑳, 𝑫, 𝜶)
-
-
-
-

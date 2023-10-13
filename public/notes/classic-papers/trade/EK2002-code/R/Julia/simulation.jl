@@ -316,7 +316,6 @@ autarky_immobile = model_immobile(absolute_tech, D_autarky)
 100 * log.(autarky_mobile["W"] ./ baseline_mobile["W"])
 100 * log.(autarky_immobile["W"] ./ baseline_immobile["W"])
 
-
 # 价格变化
 100 * log.(autarky_mobile["p"] ./ baseline_mobile["p"])
 100 * log.(autarky_immobile["p"] ./ baseline_immobile["p"])

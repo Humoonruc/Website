@@ -15,7 +15,7 @@ const scalars = JSON.parsefile("../data/scalar.json")
 const country_table = CSV.read("../data/country_code.csv", DataFrame);
 country_table |> println
 
-const regression_data =  CSV.read("../data/regression_data.csv", DataFrame)
+const regression_data = CSV.read("../data/regression_data.csv", DataFrame)
 first(regression_data, 3) |> println
 
 const price_table = CSV.read("../data/price.csv", DataFrame)
@@ -25,7 +25,7 @@ const N = scalars["N"]
 
 const β = scalars["beta"]
 
-const θₛ= scalars["theta"] # 三种方法估计出的 θ 值
+const θₛ = scalars["theta"] # 三种方法估计出的 θ 值
 
 """
 select(df, args...) 返回 DataFrame，有时候计算起来不方便
@@ -56,10 +56,10 @@ dist = select(regression_data, 6:11)
 
 # 是否 share border/language
 border = select(regression_data, :border);
-language =  select(regression_data, :common_language);
+language = select(regression_data, :common_language);
 
 # 是否在同一个 RTA 中（欧共体EEC是EU的前身，EFTA是欧自联）
-RTA = select(regression_data, :both_in_EU, :both_in_EFTA); 
+RTA = select(regression_data, :both_in_EU, :both_in_EFTA);
 
 # 横向合并 distance, border, language, RTA 等虚拟变量
 # 注意，六档距离只需要 5 个 dummy variable 
@@ -84,7 +84,7 @@ ln_distance = extract(regression_data, :distance) .|> log
 - k 代表 index_n 或 index_i
 """
 function render_line(k::Int)
-  [x == k ? 1 : 0 for x ∈ 1:19]'
+    [x == k ? 1 : 0 for x ∈ 1:19]'
 end
 
 # 进口国（目的地国）虚拟变量的矩阵，第 index_n 列标 1
@@ -105,13 +105,13 @@ destination_dummy = destination_matrix;
 # 以其中一个虚拟变量为基准，用其他虚拟变量与这个基准的相对差异，作为回归模型的自变量
 # 以美国（第19列）为基准，前18列都减去19列
 relative_source_dummy = DataFrame(
-  source_dummy[:, 1:(N-1)] .- source_dummy[:, N], # 第一个参数是构成 df 主体的矩阵
-  "S" .* string.(1:(N-1)) # DataFrame 的第二个参数是列名向量
+    source_dummy[:, 1:(N-1)] .- source_dummy[:, N], # 第一个参数是构成 df 主体的矩阵
+    "S" .* string.(1:(N-1)) # DataFrame 的第二个参数是列名向量
 );
 
 relative_destination_dummy = DataFrame(
-  destination_dummy[:, 1:(N-1)] .- destination_dummy[:, N],
-  "m" .* string.(1:(N-1)) # 列名
+    destination_dummy[:, 1:(N-1)] .- destination_dummy[:, N],
+    "m" .* string.(1:(N-1)) # 列名
 );
 
 price = extract(price_table, Not(:country));
@@ -124,8 +124,8 @@ relative_price = vcat([(price[n:n, :] .- price[i:i, :]) for n ∈ 1:N for i ∈ 
 # relative_price = destination_price .- source_price
 
 function max2(vector)
-  sorted = vector |> sort |> reverse # 此处不要改变原矩阵，拷贝一份
-  sorted[2] 
+    sorted = vector |> sort |> reverse # 此处不要改变原矩阵，拷贝一份
+    sorted[2]
 end
 
 ln_dₙᵢ = mapslices(max2, relative_price; dims=2);
@@ -153,7 +153,7 @@ normalized_trade_share_valid = normalized_trade_share[valid_index]
 
 # exp(D_{ni})，用于 Figure 2
 Dni_valid = Dni[valid_index]
-price_measure = exp.(Dni_valid) 
+price_measure = exp.(Dni_valid)
 
 # ln_distance
 ln_distance_valid = ln_distance[valid_index];
@@ -173,7 +173,7 @@ lowest, highest = exp.(normalized_trade_share_valid) |> extrema
 println(highest)
 
 # 横跨近四个数量级
-log10(highest/lowest)
+log10(highest / lowest)
 
 # 相关系数 correlation
 cor(Dni_valid, normalized_trade_share_valid)
@@ -257,7 +257,7 @@ sigma2_square
 """
 # $ee_matrix 前面的 $ 表示这个矩阵本来是 julia 变量
 
-sigma_square_sum - @rget sigma2_square 
+sigma_square_sum - @rget sigma2_square
 
 R"""
 Omega <- diag(nrow(observation_valid)) * $sigma_square_sum
@@ -338,12 +338,12 @@ table3 %>%
 table3_estimate = @rget gls_estimate
 
 # 拟合值: d_measure
-geography_dummy = Matrix(regression_data[!, [6:12;18:20]])
+geography_dummy = Matrix(regression_data[!, [6:12; 18:20]])
 barrier_dummy = hcat(geography_dummy, destination_dummy) # 保留 invalid 行，与前面不同
 
-barrier_estimate =table3_estimate[[1:10;30:48]] 
+barrier_estimate = table3_estimate[[1:10; 30:48]]
 barrier_sum = barrier_dummy * barrier_estimate
-barrier_sum[index_n .== index_i] .= 0
+barrier_sum[index_n.==index_i] .= 0
 dni_measure = reshape(barrier_sum, N, N)' |> Matrix
 
-save("../data/table3-output.jld", "table3_estimate", table3_estimate, "dni_measure", dni_measure) 
+save("../data/table3-output.jld", "table3_estimate", table3_estimate, "dni_measure", dni_measure)

@@ -4,13 +4,41 @@
 
 ## 包
 
-#### `Pkg.status()`/`Pkg.installed()`
 
-已安装的包
 
-#### `Pkg.update()`
+|                                          |                            |
+| ---------------------------------------- | -------------------------- |
+| List installed packages (human-readable) | `Pkg.status()`             |
+| Update all packages                      | `Pkg.update()`             |
+| Install package                          | `Pkg.add("PackageName")`   |
+| Rebuild package                          | `Pkg.build("PackageName")` |
+| Use package (after install)              | `using PackageName`        |
+| Remove package                           | `Pkg.rm("PackageName")`    |
 
-升级所有包Module
+
+
+```shell
+julia> Pkg.status()
+Status `C:\Users\humoo\.julia\environments\v1.8\Project.toml`
+  [336ed68f] CSV v0.10.9
+  [49dc2e85] Calculus v0.5.1
+  [a93c6f00] DataFrames v1.5.0
+  [60bf3e95] GLPK v1.1.1
+  [b6b21f68] Ipopt v1.2.0
+  [682c06a0] JSON v0.21.3
+  [4076af6c] JuMP v1.9.0
+  [2621e9c9] MadNLP v0.6.0
+  [b98c9c47] Pipe v1.3.0
+  [f0f68f2c] PlotlyJS v0.18.10
+  [91a5bcdd] Plots v1.38.8
+  [438e738f] PyCall v1.95.1
+  [274fc56d] PythonPlot v1.0.2
+  [6f49c342] RCall v0.13.14
+  [37e2e46d] LinearAlgebra
+  [10745b16] Statistics
+```
+
+
 
 ## 文件
 

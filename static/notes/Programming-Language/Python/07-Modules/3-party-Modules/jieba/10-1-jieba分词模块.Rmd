@@ -1,0 +1,483 @@
+---
+title: "10-1 jieba分词模块"
+subtitle: ''
+author: "Humoon"
+date: "`r Sys.Date()`"
+output:
+  html_document: 
+    code_download: true
+    fig_caption: yes
+    theme: united
+    highlight: haddock
+    number_sections: yes
+    toc: yes
+    toc_depth: 3
+    toc_float:
+      collapsed: yes
+      smooth_scroll: yes
+  rticles::ctex:
+    df_print: default
+    fig_caption: yes
+    number_sections: false
+  word_document:
+    fig_caption: yes
+    toc: yes
+    toc_depth: 3
+    reference_docx: 
+  pdf_document: 
+    toc: yes
+    toc_depth: 2
+    latex_engine: xelatex
+documentclass: ctexart
+classoption: hyperref,
+---
+
+```{css, echo=FALSE}
+/* 除了直接在Rmd中写css，还可以在 yaml 头部加入 css:"style.css" 来使用外部css文件 */
+  
+  
+/* 全局 */
+
+body {
+    font-size: 16px;
+    color: #333333;
+    font-family: sans-serif, 'Segoe UI', Tahoma, Geneva, Verdana, SimSun;
+}
+
+p,
+blockquote,
+ul,
+ol,
+dl,
+table {
+    margin: 0.8em 0;
+}
+
+
+/* 多级标题 */
+
+h1 {
+    font-size: 32px;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    color: red;
+    font-weight: bold;
+}
+
+h2 {
+    font-size: 28px;
+    margin-top: 1em;
+    margin-bottom: 1em;
+    color: purple;
+    font-weight: bold;
+}
+
+h3 {
+    color: darkslateblue;
+    font-size: 24px;
+    margin-top: 0.5em;
+    margin-bottom: 0.5em;
+    font-weight: bold;
+}
+
+h4 {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+h1.title,
+h3.subtitle,
+h4.author,
+h4.date {
+    margin-top: 0.5em;
+    margin-bottom: 0em;
+}
+
+h4.date {
+  margin-bottom: 2em;
+}
+
+/* 链接 */
+
+a {
+  color: blue;
+}
+
+/* 代码 */
+
+code,
+.md-fences {
+  color: darkred;
+  font-family: Courier;
+  font-weight: bold;
+}
+
+div.sourceCode code {
+  font-size: 14px;
+  color: black;
+  font-family: Consolas;
+  font-weight: normal;
+}
+
+div.sourceCode code.sourceCode span.fu {
+  color: #F75000;
+}
+
+div.sourceCode code.sourceCode span.sc {
+  color: blue;
+}
+
+div.sourceCode code.sourceCode span.st {
+  color: green;
+}
+
+div.sourceCode code.sourceCode span.co {
+  color: grey;
+}
+
+div.sourceCode code.sourceCode span.dv {
+  color: BlueViolet;
+}
+
+div.sourceCode code.sourceCode span.cn {
+  color: darkcyan;
+}
+
+div.sourceCode code.sourceCode span.at {
+  color: royalblue;
+}
+
+/* 粗体 */
+strong {
+  font-family: 'Microsoft YaHei';
+}
+
+/* 列表项 */
+
+ul,
+ol {
+    margin: 0 0 1.5em 0.5em;
+}
+
+h3+ul,
+h4+ul,
+h5+ul,
+h6+ul,
+h3+ol,
+h4+ol,
+h5+ol,
+h6+ol {
+    margin-top: 0.5em;
+}
+
+p+ul,
+p+ol {
+    margin-top: 0.5em;
+}
+
+li>ul,
+li>ol {
+    margin-top: inherit;
+    margin-bottom: 0;
+    margin-left: 0.5em;
+}
+
+ul>li {
+    list-style-type: disc;
+    list-style-position: outside;
+}
+
+li ul>li {
+    list-style-type: circle;
+}
+
+ol>li {
+    list-style-type: decimal;
+    list-style-position: outside;
+}
+
+li ol>li {
+    list-style-type: upper-alpha;
+}
+
+li li ol>li {
+    list-style-type: lower-greek;
+}
+
+
+/* 首行缩进 */
+
+p {
+    text-indent: 0em;
+}
+
+
+/* 表格 */
+  
+div.pagedtable{
+  font-size:12px;
+}
+
+table {
+    padding: 0;
+    word-break: initial;
+}
+
+table tr {
+    border-top: 1px solid #dfe2e5;
+    margin: 0;
+    padding: 0;
+}
+
+table tr:nth-child(2n),
+thead {
+    background-color: #fafafa;
+}
+
+table tr th {
+    font-weight: bold;
+    border: 1px solid #dfe2e5;
+    border-bottom: 0;
+    text-align: left;
+    margin: 0;
+    padding: 6px 13px;
+}
+
+table tr td {
+    border: 1px solid #dfe2e5;
+    text-align: left;
+    margin: 0;
+    padding: 6px 13px;
+}
+
+table tr th:first-child,
+table tr td:first-child {
+    margin-top: 0;
+}
+
+table tr th:last-child,
+table tr td:last-child {
+    margin-bottom: 0;
+}
+
+
+/* 侧边栏 */
+div.col-lg-3 {
+  width: 25%;
+  max-width: 250px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 200px;
+  max-height: 90%;
+  font-size: 16px;
+}
+
+div.toc-content {
+  padding-left: 0px;
+  padding-right: 40px;
+}
+```
+
+```{r setup, include = FALSE}
+## global options
+knitr::opts_chunk$set(
+  fig.width = 7,
+  fig.asp = 0.618,
+  out.width = "90%",
+  fig.align = "center",
+  fig.path = 'Figures/',
+  fig.show = "hold",
+  warn = 1,
+  warning = FALSE,
+  message = FALSE,
+  echo = TRUE, # 是否显示代码
+  eval = TRUE, # 是否运行代码块
+  tidy = TRUE, # 代码排版
+  comment = '>>>',
+  collapse = F, # 代码与结果是否显示在同一代码块
+  cache = T,
+  cache.comments = F,
+  autodep = TRUE
+)
+
+## use necessary packages
+library('pacman')
+p_load(
+  # data processing
+  tidyverse, lubridate, data.table, magrittr,
+  # visualization
+  ggthemes, showtext, gridExtra, r2d3, 
+  # 可交互表格 DT::datatable()
+  DT,
+  # I/O 
+  sqldf,
+  # web crawler
+  rvest, httr, reticulate
+  )
+
+## database engine
+options(sqldf.driver = "SQLite")
+
+# d3绘图的前景色和背景色
+options(r2d3.theme = list(background = "white", foreground = "royalblack"))
+
+## plotting
+pdf.options(family = "GB1")
+# 包含图的代码块需要fig.showtext = TRUE选项
+showtext_auto(enable = TRUE)
+
+
+## 自定义图形主题
+# common template
+mytheme <- theme_economist_white() +
+  theme(
+    text = element_text(family = 'YaHei'),
+    plot.title = element_text(face = 'bold', size = 14),
+    plot.subtitle = element_text(size = 12),
+    plot.caption = element_text(
+      hjust = 0,
+      size = 10,
+      margin = margin(2, 0, 0, 0, 'pt')
+    ),
+    plot.margin = margin(12, 10, 12, 0, 'pt'),
+    legend.position = 'top',
+    legend.justification = 'left',
+    legend.margin = margin(4, 0, 0, 0, 'pt'),
+    legend.key.size = unit(1, 'lines'),
+    legend.title = element_text(size = 12),
+    legend.text = element_text(size = 10, margin = margin(0, 0, 0, 0, 'pt')),
+    axis.text = element_text(size = 10, margin = margin(2, 0, 2, 0, 'pt')),
+    axis.ticks.length = unit(-4, 'pt')
+  )
+# histogram template
+theme_bar <- theme_economist_white() +
+  theme(
+    text = element_text(family = 'YaHei'),
+    plot.title = element_text(face = 'bold', size = 14),
+    plot.subtitle = element_text(size = 12),
+    plot.caption = element_text(
+      hjust = 0,
+      size = 10,
+      margin = margin(0, 0, 0, 0, 'pt')
+    ),
+    plot.margin = margin(12, 0, 12, 10, 'pt'),
+    legend.position = 'top',
+    legend.justification = 'left',
+    legend.margin = margin(4, 0, 0, 0, 'pt'),
+    legend.key.size = unit(0.7, 'lines'),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 10, margin = margin(0, 8, 0, 4, 'pt')),
+    axis.text = element_text(size = 10),
+    axis.ticks.length = unit(0, 'pt') # 不要坐标轴须
+  )
+```
+
+
+
+# jieba 库
+
+## 原理
+
+- 利用一个中文词库，获得汉字之间的关联概率
+- 汉字间概率大的组成词语，形成分词结果
+
+## 使用说明
+
+- 精确模式，不存在冗余单词
+- 全模式，所有可能的切分，有冗余
+- 搜索引擎模式，精确模式的基础上对长词语进行再切分，有冗余
+
+## 函数
+
+- jieba.lcut(s)，返回精确模式的分词结果
+- jieba.lcut(s, cut_all=True)，全模式
+- jieba.lcut_for_search(s)，搜索引擎模式
+- jieba.add_word(w)，向分词词典增加新词
+
+```{python}
+import jieba
+jieba.lcut('中华人民共和国是伟大的')
+jieba.lcut('中华人民共和国是伟大的', cut_all=True)
+jieba.lcut_for_search('中华人民共和国是伟大的')
+```
+
+## 实例
+
+### 英文文本
+```{python}
+def getText(path):
+    txt = open(path, 'r').read()
+    txt = txt.lower()
+    for ch in '!"#$%&()*+,-./:;<=>?@[\\]^_`{|}~':
+        txt = txt.replace(ch, ' ')
+    return txt
+
+hamletTxt = getText('hamlet.txt')
+words = hamletTxt.split()
+counts = {} # 空字典
+for word in words: # 遍历文本，填充字典
+    counts[word] = counts.get(word, 0) + 1 # 好函数
+items = list(counts.items())
+items.sort(key = lambda x:x[1], reverse=True) # 列表排序，按照键值对的第二个元素进行倒序排列
+for i in range(10):
+    word, count = items[i]
+    print('{0:<10}{1:>5}'.format(word, count))
+```
+
+
+### 中文文本
+
+词频统计
+```{python}
+import jieba
+
+txt = open('threekingdoms.txt', 'r', encoding='utf-8').read()
+words = jieba.lcut(txt)
+counts = {}
+for word in words:
+    if len(word) == 1:
+        continue
+    else:
+        counts[word] = counts.get(word, 0) + 1
+items = list(counts.items())
+items.sort(key = lambda x:x[1], reverse=True)
+for i in range(15):
+    word, count = items[i]
+    print('{0:<10}{1:>5}'.format(word, count))
+```
+
+人物出场统计
+```{python}
+import jieba
+
+txt = open('threekingdoms.txt', 'r', encoding='utf-8').read()
+words = jieba.lcut(txt)
+counts = {}
+
+for word in words:
+    if len(word) == 1:
+        continue
+    elif word == '诸葛亮' or word == '孔明曰':
+        rword = '孔明'
+    elif word == '关公' or word == '云长':
+        rword = '关羽'
+    elif word == '玄德' or word == '玄德曰':
+        rword = '刘备'
+    elif word == '孟德' or word == '丞相':
+        rword = '曹操'
+    else:
+        rword = word
+    counts[rword] = counts.get(rword, 0) + 1
+
+excludes = {'将军', '却说', '荆州', '二人', '不可', '不能', '如此'}
+for word in excludes:
+    del counts[word]
+items = list(counts.items())
+items.sort(key = lambda x:x[1], reverse=True)
+for i in range(15):
+    word, count = items[i]
+    print('{0:<10}{1:>5}'.format(word, count))
+```
+

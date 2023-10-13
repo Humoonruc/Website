@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.0.37">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+
+<title>basic</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } /* Alert */
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #7d9029; } /* Attribute */
+code span.bn { color: #40a070; } /* BaseN */
+code span.bu { } /* BuiltIn */
+code span.cf { color: #007020; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4070a0; } /* Char */
+code span.cn { color: #880000; } /* Constant */
+code span.co { color: #60a0b0; font-style: italic; } /* Comment */
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #ba2121; font-style: italic; } /* Documentation */
+code span.dt { color: #902000; } /* DataType */
+code span.dv { color: #40a070; } /* DecVal */
+code span.er { color: #ff0000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #40a070; } /* Float */
+code span.fu { color: #06287e; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #007020; font-weight: bold; } /* Keyword */
+code span.op { color: #666666; } /* Operator */
+code span.ot { color: #007020; } /* Other */
+code span.pp { color: #bc7a00; } /* Preprocessor */
+code span.sc { color: #4070a0; } /* SpecialChar */
+code span.ss { color: #bb6688; } /* SpecialString */
+code span.st { color: #4070a0; } /* String */
+code span.va { color: #19177c; } /* Variable */
+code span.vs { color: #4070a0; } /* VerbatimString */
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } /* Warning */
+</style>
+
+
+<script src="01-Basic_files/libs/clipboard/clipboard.min.js"></script>
+<script src="01-Basic_files/libs/quarto-html/quarto.js"></script>
+<script src="01-Basic_files/libs/quarto-html/popper.min.js"></script>
+<script src="01-Basic_files/libs/quarto-html/tippy.umd.min.js"></script>
+<script src="01-Basic_files/libs/quarto-html/anchor.min.js"></script>
+<link href="01-Basic_files/libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="01-Basic_files/libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="01-Basic_files/libs/bootstrap/bootstrap.min.js"></script>
+<link href="01-Basic_files/libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="01-Basic_files/libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+
+
+</head>
+
+<body class="fullcontent">
+
+<div id="quarto-content" class="page-columns page-rows-contents page-layout-article">
+
+<main class="content" id="quarto-document-content">
+
+
+
+<section id="basic-grammar" class="level1">
+<h1>Basic Grammar</h1>
+<section id="标识符" class="level2">
+<h2 class="anchored" data-anchor-id="标识符">标识符</h2>
+<p>Python 3 中，允许非 ASCII 标识符</p>
+<div class="cell" data-execution_count="1">
+<div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a>θ <span class="op">=</span> <span class="dv">5</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(θ)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>5</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="1">
+<pre><code>range</code></pre>
+</div>
+</div>
+</section>
+<section id="保留字" class="level2">
+<h2 class="anchored" data-anchor-id="保留字">保留字</h2>
+<div class="cell" data-execution_count="3">
+<div class="sourceCode cell-code" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> keyword</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>keyword.kwlist <span class="co"># 所有的保留字</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="3">
+<pre><code>['False',
+ 'None',
+ 'True',
+ 'and',
+ 'as',
+ 'assert',
+ 'async',
+ 'await',
+ 'break',
+ 'class',
+ 'continue',
+ 'def',
+ 'del',
+ 'elif',
+ 'else',
+ 'except',
+ 'finally',
+ 'for',
+ 'from',
+ 'global',
+ 'if',
+ 'import',
+ 'in',
+ 'is',
+ 'lambda',
+ 'nonlocal',
+ 'not',
+ 'or',
+ 'pass',
+ 'raise',
+ 'return',
+ 'try',
+ 'while',
+ 'with',
+ 'yield']</code></pre>
+</div>
+</div>
+</section>
+<section id="变量" class="level2">
+<h2 class="anchored" data-anchor-id="变量">变量</h2>
+<section id="变量名" class="level3">
+<h3 class="anchored" data-anchor-id="变量名">变量名</h3>
+<ul>
+<li>自定义的变量名首尾不能都有双下划线</li>
+<li>受保护的变量一般用单个下划线开头</li>
+<li>私有的变量一般用两个下划线开头</li>
+</ul>
+</section>
+<section id="链式赋值" class="level3">
+<h3 class="anchored" data-anchor-id="链式赋值">链式赋值</h3>
+<p>一个值可以赋给多个变量（标签/指针）</p>
+<div class="cell" data-execution_count="4">
+<div class="sourceCode cell-code" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>n <span class="op">=</span> age <span class="op">=</span> chest <span class="op">=</span> <span class="dv">183</span></span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(n, age, chest)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>183 183 183</code></pre>
+</div>
+</div>
+<p>交换赋值</p>
+<div class="cell" data-execution_count="5">
+<div class="sourceCode cell-code" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>age <span class="op">=</span> <span class="dv">15</span></span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>chest <span class="op">=</span> <span class="dv">20</span></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>age, chest <span class="op">=</span> chest, age</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(age, chest)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>20 15</code></pre>
+</div>
+</div>
+</section>
+</section>
+<section id="注释" class="level2">
+<h2 class="anchored" data-anchor-id="注释">注释</h2>
+<ol type="1">
+<li>以 <code>#</code> 开头，只能表示单行注释</li>
+<li>用一对 <code>'''</code> 或 <code>"""</code>，实为多行字符串，但由于没有返回值，可以表示多行注释</li>
+</ol>
+<div class="cell" data-execution_count="2">
+<div class="sourceCode cell-code" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a><span class="co">自定义函数</span></span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a><span class="co">Version: 0.1</span></span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a><span class="co">Author: 骆昊</span></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="co">"""</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> math</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> foo(x):</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""斐波那契数列"""</span></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> math.factorial(x)</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a><span class="cf">if</span> <span class="va">__name__</span> <span class="op">==</span> <span class="st">"__main__"</span>:</span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(foo(<span class="dv">5</span>))</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>120</code></pre>
+</div>
+</div>
+</section>
+<section id="缩进与空行" class="level2">
+<h2 class="anchored" data-anchor-id="缩进与空行">缩进与空行</h2>
+<p>用 <code>:</code> 和缩进表示代码块</p>
+<p>函数之间或类的方法之间用空行分隔，表示一段新的代码的开始。类和函数入口之间也用一行空行分隔，以突出函数入口的开始。</p>
+<p>空行与代码缩进不同，空行并不是 Python 语法的一部分。书写时不插入空行，Python 解释器运行也不会出错。但是空行的作用在于分隔两段不同功能或含义的代码，便于日后代码的维护或重构。</p>
+</section>
+<section id="表达式" class="level2">
+<h2 class="anchored" data-anchor-id="表达式">表达式</h2>
+<p>python 的赋值表达式没有返回值，既不能 return，也不能 print</p>
+</section>
+<section id="语句" class="level2">
+<h2 class="anchored" data-anchor-id="语句">语句</h2>
+<section id="行中语句" class="level3">
+<h3 class="anchored" data-anchor-id="行中语句">行中语句</h3>
+<p>同一行中可以使用多条语句，语句之间使用分号 <code>;</code> 分割</p>
+<div class="cell" data-execution_count="9">
+<div class="sourceCode cell-code" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> sys<span class="op">;</span> x <span class="op">=</span> <span class="st">'runoob'</span><span class="op">;</span> sys.stdout.write(x <span class="op">+</span> <span class="st">'</span><span class="ch">\n</span><span class="st">'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>runoob</code></pre>
+</div>
+<div class="cell-output cell-output-display" data-execution_count="9">
+<pre><code>7</code></pre>
+</div>
+</div>
+<p>其中 7 表示字符数：<code>'runoob'</code> 有 6 个字符，<code>\n</code> 表示一个字符，加起来 7 个字符</p>
+</section>
+<section id="多行语句" class="level3">
+<h3 class="anchored" data-anchor-id="多行语句">多行语句</h3>
+<p>反斜杠 <code>\</code> 代表换行</p>
+<p>在 <code>[]</code>, <code>{}</code>, 或 <code>()</code> 中的多行语句，不需要使用反斜杠 <code>\</code></p>
+<div class="cell" data-execution_count="10">
+<div class="sourceCode cell-code" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>total <span class="op">=</span> <span class="dv">1</span> <span class="op">+</span> <span class="op">\</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>        <span class="dv">2</span> <span class="op">+</span> <span class="op">\</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a>        <span class="dv">3</span></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(total)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>6</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="11">
+<div class="sourceCode cell-code" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>total <span class="op">=</span> [<span class="st">'item_one'</span>, <span class="st">'item_two'</span>, <span class="st">'item_three'</span>,</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>        <span class="st">'item_four'</span>, <span class="st">'item_five'</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</div>
+</section>
+</section>
+<section id="模块" class="level2">
+<h2 class="anchored" data-anchor-id="模块">模块</h2>
+<ul>
+<li>导入模块 <code>import somemodule</code></li>
+<li>导入函数 <code>from somemodule import firstfun, secondfun, ...</code></li>
+<li>导入模块中的全部函数 <code>from somemodule import *</code></li>
+</ul>
+<div class="cell" data-execution_count="12">
+<div class="sourceCode cell-code" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'================Python import mode=========================='</span>)</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (<span class="st">'命令行参数为:'</span>)</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> sys.argv:</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span> (i)</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span> (<span class="st">'</span><span class="ch">\n</span><span class="st"> python 路径为'</span>,sys.path)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>================Python import mode==========================
+命令行参数为:
+C:\Users\humoo\AppData\Local\Programs\Python\Python310\lib\site-packages\ipykernel_launcher.py
+-f
+C:\Users\humoo\AppData\Roaming\jupyter\runtime\kernel-38cd715c-38c1-4cef-b805-2c724f31fd20.json
+
+ python 路径为 ['C:\\Users\\humoo\\OneDrive\\ICT\\Website\\static\\notes\\Programming-Language\\Python', 'C:\\Users\\humoo\\AppData\\Local\\Programs\\Python\\Python310\\python310.zip', 'C:\\Users\\humoo\\AppData\\Local\\Programs\\Python\\Python310\\DLLs', 'C:\\Users\\humoo\\AppData\\Local\\Programs\\Python\\Python310\\lib', 'C:\\Users\\humoo\\AppData\\Local\\Programs\\Python\\Python310', '', 'C:\\Users\\humoo\\AppData\\Local\\Programs\\Python\\Python310\\lib\\site-packages', 'C:\\Users\\humoo\\AppData\\Local\\Programs\\Python\\Python310\\lib\\site-packages\\win32', 'C:\\Users\\humoo\\AppData\\Local\\Programs\\Python\\Python310\\lib\\site-packages\\win32\\lib', 'C:\\Users\\humoo\\AppData\\Local\\Programs\\Python\\Python310\\lib\\site-packages\\Pythonwin', 'C:\\Users\\humoo\\AppData\\Local\\Programs\\Python\\Python310\\lib\\site-packages\\IPython\\extensions', 'C:\\Users\\humoo\\.ipython']</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="13">
+<div class="sourceCode cell-code" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sys <span class="im">import</span> argv,path  <span class="co">#  导入特定的成员</span></span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a> </span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'================python from import==================================='</span>)</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'path:'</span>,path) <span class="co"># 因为已经导入path成员，所以此处引用时不需要加sys.path</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>================python from import===================================
+path: ['C:\\Users\\humoo\\OneDrive\\ICT\\Website\\static\\notes\\Programming-Language\\Python', 'C:\\Users\\humoo\\AppData\\Local\\Programs\\Python\\Python310\\python310.zip', 'C:\\Users\\humoo\\AppData\\Local\\Programs\\Python\\Python310\\DLLs', 'C:\\Users\\humoo\\AppData\\Local\\Programs\\Python\\Python310\\lib', 'C:\\Users\\humoo\\AppData\\Local\\Programs\\Python\\Python310', '', 'C:\\Users\\humoo\\AppData\\Local\\Programs\\Python\\Python310\\lib\\site-packages', 'C:\\Users\\humoo\\AppData\\Local\\Programs\\Python\\Python310\\lib\\site-packages\\win32', 'C:\\Users\\humoo\\AppData\\Local\\Programs\\Python\\Python310\\lib\\site-packages\\win32\\lib', 'C:\\Users\\humoo\\AppData\\Local\\Programs\\Python\\Python310\\lib\\site-packages\\Pythonwin', 'C:\\Users\\humoo\\AppData\\Local\\Programs\\Python\\Python310\\lib\\site-packages\\IPython\\extensions', 'C:\\Users\\humoo\\.ipython']</code></pre>
+</div>
+</div>
+</section>
+<section id="命令行参数" class="level2">
+<h2 class="anchored" data-anchor-id="命令行参数">命令行参数</h2>
+<p><code>$ python -h</code> 查看</p>
+</section>
+<section id="operator" class="level2">
+<h2 class="anchored" data-anchor-id="operator">Operator</h2>
+<section id="index" class="level3">
+<h3 class="anchored" data-anchor-id="index">index</h3>
+<table class="table">
+<colgroup>
+<col style="width: 61%">
+<col style="width: 38%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>运算符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>[]</code> <code>[:]</code></td>
+<td>下标，切片</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="算数" class="level3">
+<h3 class="anchored" data-anchor-id="算数">算数</h3>
+<table class="table">
+<colgroup>
+<col style="width: 21%">
+<col style="width: 78%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>符号</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><strong>算数运算符</strong></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>+</code></td>
+<td>算数加法；<font color="red"><strong>字符串和序列的连接</strong></font></td>
+</tr>
+<tr class="odd">
+<td><code>-</code></td>
+<td>算数减法；取负值</td>
+</tr>
+<tr class="even">
+<td><code>*</code></td>
+<td>算数乘法；字符串或序列复制 n 次</td>
+</tr>
+<tr class="odd">
+<td><code>/</code></td>
+<td>算数除法，将<strong>返回浮点数</strong></td>
+</tr>
+<tr class="even">
+<td><code>//</code></td>
+<td>除法<strong>取整</strong>，永远返回整数。若不希望出现浮点数，即使能够整除也要用<code>//</code></td>
+</tr>
+<tr class="odd">
+<td><code>%</code></td>
+<td>除法取余</td>
+</tr>
+<tr class="even">
+<td><code>**</code></td>
+<td>幂运算，同<code>pow()</code>，第二个参数可以是小于1的小数，比如<code>x**0.5</code>即<code>sqrt(x)</code></td>
+</tr>
+<tr class="odd">
+<td><strong>增强赋值操作符</strong></td>
+<td></td>
+</tr>
+<tr class="even">
+<td><code>x op= y</code></td>
+<td>即<code>x = x op y</code>，先计算再赋值。Python中没有 i++ 这种语法，只能写成 i += 1</td>
+</tr>
+</tbody>
+</table>
+<div class="cell" data-execution_count="14">
+<div class="sourceCode cell-code" id="cb22"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="dv">5</span> <span class="op">**</span> <span class="dv">2</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="dv">5</span> <span class="op">//</span> <span class="dv">2</span>)</span>
+<span id="cb22-3"><a href="#cb22-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="dv">5</span> <span class="op">%</span> <span class="dv">2</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>25
+2
+1</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb24"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb24-1"><a href="#cb24-1" aria-hidden="true" tabindex="-1"></a>weekStr <span class="op">=</span> <span class="st">'一二三四五六日'</span></span>
+<span id="cb24-2"><a href="#cb24-2" aria-hidden="true" tabindex="-1"></a>weekId <span class="op">=</span> <span class="bu">eval</span>(<span class="bu">input</span>(<span class="st">'请输入星期数字(1-7)：'</span>))</span>
+<span id="cb24-3"><a href="#cb24-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'星期'</span> <span class="op">+</span> weekStr[weekId<span class="op">-</span><span class="dv">1</span>])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>请输入星期数字(1-7)： 3
+星期三</code></pre>
+</div>
+</div>
+</section>
+<section id="关系比较" class="level3">
+<h3 class="anchored" data-anchor-id="关系比较">关系/比较</h3>
+<table class="table">
+<colgroup>
+<col style="width: 61%">
+<col style="width: 38%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>运算符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>&lt;=</code> <code>&lt;</code> <code>&gt;</code> <code>&gt;=</code></td>
+<td>小于等于，小于，大于，大于等于</td>
+</tr>
+<tr class="even">
+<td><code>==</code> <code>!=</code></td>
+<td>等于，不等于</td>
+</tr>
+<tr class="odd">
+<td><code>is</code> <code>is not</code></td>
+<td>身份运算符</td>
+</tr>
+</tbody>
+</table>
+<p>其中，<code>==</code>只比较两个变量的值，<code>is</code>则要求两个指针指向同一个对象</p>
+<div class="cell" data-execution_count="20">
+<div class="sourceCode cell-code" id="cb26"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"1和True是否相等："</span>, <span class="dv">1</span> <span class="op">==</span> <span class="va">True</span>)</span>
+<span id="cb26-2"><a href="#cb26-2" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">"0和False是否相等："</span>, <span class="dv">0</span> <span class="op">==</span> <span class="va">False</span>)</span>
+<span id="cb26-3"><a href="#cb26-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb26-4"><a href="#cb26-4" aria-hidden="true" tabindex="-1"></a><span class="co"># True 和 False 可以被当作 1 和 0 进行算术运算</span></span>
+<span id="cb26-5"><a href="#cb26-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="va">True</span> <span class="op">+</span> <span class="va">False</span>) <span class="co"># 输出1</span></span>
+<span id="cb26-6"><a href="#cb26-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="va">False</span> <span class="op">-</span> <span class="va">True</span>)  <span class="co"># 输出-1</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>1和True是否相等： True
+0和False是否相等： True
+1
+-1</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="22">
+<div class="sourceCode cell-code" id="cb28"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> time</span>
+<span id="cb28-2"><a href="#cb28-2" aria-hidden="true" tabindex="-1"></a>a <span class="op">=</span> time.gmtime()</span>
+<span id="cb28-3"><a href="#cb28-3" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> time.gmtime()</span>
+<span id="cb28-4"><a href="#cb28-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a <span class="op">==</span> b) <span class="co"># a和b两个时间相等，输出True</span></span>
+<span id="cb28-5"><a href="#cb28-5" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(a <span class="kw">is</span> b) <span class="co"># a和b不是同一个对象，输出False</span></span>
+<span id="cb28-6"><a href="#cb28-6" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">id</span>(a)) <span class="co"># a所指向的内存地址</span></span>
+<span id="cb28-7"><a href="#cb28-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="bu">id</span>(b)) <span class="co"># b所指向的内存地址</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>True
+False
+1928088728384
+1928059746496</code></pre>
+</div>
+</div>
+</section>
+<section id="逻辑" class="level3">
+<h3 class="anchored" data-anchor-id="逻辑">逻辑</h3>
+<table class="table">
+<colgroup>
+<col style="width: 61%">
+<col style="width: 38%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>运算符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>not</code> <code>or</code> <code>and</code></td>
+<td>逻辑运算符</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="包含" class="level3">
+<h3 class="anchored" data-anchor-id="包含">包含</h3>
+<table class="table">
+<colgroup>
+<col style="width: 61%">
+<col style="width: 38%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>运算符</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><code>in</code> <code>not in</code></td>
+<td>成员运算符</td>
+</tr>
+</tbody>
+</table>
+<div class="cell" data-execution_count="15">
+<div class="sourceCode cell-code" id="cb30"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a><span class="dv">1</span> <span class="kw">not</span> <span class="kw">in</span> [<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>]</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="15">
+<pre><code>False</code></pre>
+</div>
+</div>
+<div class="cell" data-execution_count="21">
+<div class="sourceCode cell-code" id="cb32"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>a  <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb32-2"><a href="#cb32-2" aria-hidden="true" tabindex="-1"></a>b <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb32-3"><a href="#cb32-3" aria-hidden="true" tabindex="-1"></a>a <span class="kw">is</span> b</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell-output cell-output-display" data-execution_count="21">
+<pre><code>True</code></pre>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+</main>
+<!-- /main column -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    target: function(trigger) {
+      return trigger.previousElementSibling;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    setTimeout(function() {
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      let href = ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const cites = ref.parentNode.getAttribute('data-cites').split(' ');
+    tippyHover(ref, function() {
+      var popup = window.document.createElement('div');
+      cites.forEach(function(cite) {
+        var citeDiv = window.document.createElement('div');
+        citeDiv.classList.add('hanging-indent');
+        citeDiv.classList.add('csl-entry');
+        var biblioDiv = window.document.getElementById('ref-' + cite);
+        if (biblioDiv) {
+          citeDiv.innerHTML = biblioDiv.innerHTML;
+        }
+        popup.appendChild(citeDiv);
+      });
+      return popup.innerHTML;
+    });
+  }
+});
+</script>
+</div> <!-- /content -->
+
+
+
+</body></html>
